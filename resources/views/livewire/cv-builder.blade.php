@@ -65,7 +65,7 @@
                             : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                 >
                     <div class="relative mx-auto mb-4 h-[280px] w-full overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5">
-                        <div class="pointer-events-none" style="width: 700px; zoom: 0.48;">
+                        <div class="pointer-events-none mx-auto w-full flex h-full items-center justify-center" style="zoom: 0.4;">
                             @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
                         </div>
                     </div>
@@ -175,10 +175,10 @@
                                 class="card-hover relative rounded-2xl border p-4 text-left transition-all duration-300 {{ $selectedTemplate === $id ? 'border-emerald-400/50 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                             >
                                 <div class="relative mx-auto mb-3 h-[220px] w-full overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-black/5">
-                                    <div class="pointer-events-none" style="width: 700px; zoom: 0.48;">
-                                        @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
-                                    </div>
+                                <div class="pointer-events-none mx-auto w-full flex h-full items-center justify-center" style="zoom: 0.38;">
+                                    @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
                                 </div>
+                            </div>
                                 <div class="text-sm font-semibold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
                                     {{ $template['name'] }}
                                 </div>
