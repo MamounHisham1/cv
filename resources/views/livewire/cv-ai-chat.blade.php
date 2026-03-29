@@ -1,7 +1,14 @@
-<div class="flex flex-col h-full">
+<div class="flex flex-col h-full" x-data x-init="
+    $wire.on('message-added', () => {
+        setTimeout(() => {
+            const el = document.getElementById('chat-messages');
+            if (el) el.scrollTop = el.scrollHeight;
+        }, 100);
+    });
+">
     <!-- Quick Prompts -->
     <div class="p-4 border-b border-zinc-200 dark:border-zinc-700">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2" x-bind:class="{ 'pointer-events-none opacity-50': $wire.isLoading }">
             <flux:badge wire:click="quickPrompt('improve_summary')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
                 <flux:icon name="sparkles" class="w-3 h-3 mr-1" />
                 Improve
@@ -65,20 +72,35 @@
     </div>
 
     <!-- Input -->
-    <form wire:submit="sendMessage" class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+    <form
+        wire:submit="sendMessage"
+        x-on:submit.prevent="
+            if ($wire.isLoading) return;
+            const input = $el.querySelector('textarea');
+            const msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            $wire.sendMessage();
+            setTimeout(() => $wire.fetchAiResponse(msg), 150);
+        "
+        class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900"
+    >
         <div class="flex gap-2 items-end">
             <flux:textarea
                 wire:model="userMessage"
                 placeholder="Ask me anything about your CV..."
                 rows="2"
                 class="resize-none flex-1"
-                x-on:keydown.enter.prevent="$el.closest('form').requestSubmit()"
+                x-bind:disabled="$wire.isLoading"
+                x-on:keydown.enter.prevent="
+                    if (!$wire.isLoading) $el.closest('form').dispatchEvent(new Event('submit'));
+                "
             />
             <flux:button
                 type="submit"
                 variant="primary"
                 size="sm"
-                :disabled="$isLoading || empty($userMessage)"
+                x-bind:disabled="$wire.isLoading"
             >
                 <flux:icon name="paper-airplane" class="w-4 h-4" />
             </flux:button>

@@ -8,7 +8,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-
 #[Layout('layouts.app')]
 #[Title('CV Builder')]
 class CvBuilder extends Component
@@ -54,6 +53,15 @@ class CvBuilder extends Component
         }
 
         $this->templates = $this->getAvailableTemplates();
+    }
+
+    #[On('cv-updated')]
+    public function onCvUpdated(int $cvId): void
+    {
+        if ($this->cv && $this->cv->id === $cvId) {
+            $this->cv->refresh();
+            $this->loadCvData();
+        }
     }
 
     public function loadCvData(): void
@@ -122,11 +130,13 @@ class CvBuilder extends Component
         if ($this->cv->exists) {
             $this->cv->update($data);
             session()->flash('message', 'Personal information saved successfully!');
+
             return;
         }
-        
+
         $this->cv = Cv::create($data);
         session()->flash('message', 'CV created successfully!');
+
         return redirect()->route('cv.edit', $this->cv);
     }
 

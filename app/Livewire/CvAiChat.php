@@ -54,7 +54,6 @@ class CvAiChat extends Component
         $message = trim($this->userMessage);
         $this->userMessage = '';
 
-        // Add user message
         $this->messages[] = [
             'role' => 'user',
             'content' => $message,
@@ -63,10 +62,16 @@ class CvAiChat extends Component
 
         $this->isLoading = true;
 
-        // Get AI response
+        $this->dispatch('message-added');
+    }
+
+    public function fetchAiResponse(string $message): void
+    {
         $this->getAiResponse($message);
 
         $this->isLoading = false;
+
+        $this->dispatch('message-added');
     }
 
     private function getAiResponse(string $message): void
@@ -86,11 +91,18 @@ class CvAiChat extends Component
 
             $content = (string) $response;
 
+            $content = preg_replace('/\R{3,}/', "\n\n", trim($content));
+
             $this->messages[] = [
                 'role' => 'assistant',
                 'content' => $content,
                 'timestamp' => now()->toISOString(),
             ];
+
+            if ($this->cv && $this->cv->exists) {
+                $this->cv->refresh();
+                $this->dispatch('cv-updated', cvId: $this->cv->id);
+            }
         } catch (\Exception $e) {
             $this->messages[] = [
                 'role' => 'assistant',

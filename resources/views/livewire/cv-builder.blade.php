@@ -1,4 +1,30 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950" x-data>
+    <!-- Toast Notification -->
+    <div
+        x-data="{ shown: false, timeout: null }"
+        x-init="
+            Livewire.on('cv-updated', () => {
+                clearTimeout(timeout);
+                shown = true;
+                timeout = setTimeout(() => { shown = false }, 4000);
+            });
+        "
+        x-show="shown"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 translate-x-8"
+        x-transition:enter-end="opacity-100 translate-x-0"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 translate-x-0"
+        x-transition:leave-end="opacity-0 translate-x-8"
+        class="fixed top-6 right-6 z-[60]"
+        style="display: none;"
+    >
+        <div class="flex items-center gap-3 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-emerald-600/20">
+            <flux:icon name="check-circle" class="w-5 h-5 shrink-0" />
+            <span class="text-sm font-medium">CV updated by AI assistant</span>
+        </div>
+    </div>
+
     <!-- Gradient Accent Header -->
     <div class="h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700"></div>
 
