@@ -2,16 +2,13 @@
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Reset password')" :description="__('Please enter your new password below')" />
 
-        <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
         <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
             @csrf
-            <!-- Token -->
             <input type="hidden" name="token" value="{{ request()->route('token') }}">
 
-            <!-- Email Address -->
-            <flux:input
+            <x-ui::input
                 name="email"
                 value="{{ request('email') }}"
                 :label="__('Email')"
@@ -20,8 +17,7 @@
                 autocomplete="email"
             />
 
-            <!-- Password -->
-            <flux:input
+            <x-ui::input
                 name="password"
                 :label="__('Password')"
                 type="password"
@@ -31,8 +27,7 @@
                 viewable
             />
 
-            <!-- Confirm Password -->
-            <flux:input
+            <x-ui::input
                 name="password_confirmation"
                 :label="__('Confirm password')"
                 type="password"
@@ -43,9 +38,9 @@
             />
 
             <div class="flex items-center justify-end">
-                <flux:button type="submit" variant="primary" class="w-full" data-test="reset-password-button">
+                <x-ui::button type="submit" variant="primary" class="w-full" data-test="reset-password-button">
                     {{ __('Reset password') }}
-                </flux:button>
+                </x-ui::button>
             </div>
         </form>
     </div>

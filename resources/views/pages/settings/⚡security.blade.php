@@ -10,11 +10,14 @@ use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Security settings')] class extends Component {
+new #[Title('Security settings')] class extends Component
+{
     use PasswordValidationRules;
 
     public string $current_password = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     public bool $canManageTwoFactor;
@@ -23,9 +26,6 @@ new #[Title('Security settings')] class extends Component {
 
     public bool $requiresConfirmation;
 
-    /**
-     * Mount the component.
-     */
     public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
         $this->canManageTwoFactor = Features::canManageTwoFactorAuthentication();
@@ -40,9 +40,6 @@ new #[Title('Security settings')] class extends Component {
         }
     }
 
-    /**
-     * Update the password for the currently authenticated user.
-     */
     public function updatePassword(): void
     {
         try {
@@ -65,18 +62,12 @@ new #[Title('Security settings')] class extends Component {
         $this->dispatch('password-updated');
     }
 
-    /**
-     * Handle the two-factor authentication enabled event.
-     */
     #[On('two-factor-enabled')]
     public function onTwoFactorEnabled(): void
     {
         $this->twoFactorEnabled = true;
     }
 
-    /**
-     * Disable two-factor authentication for the user.
-     */
     public function disable(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
         $disableTwoFactorAuthentication(auth()->user());
@@ -88,11 +79,11 @@ new #[Title('Security settings')] class extends Component {
 <section class="w-full">
     @include('partials.settings-heading')
 
-    <flux:heading class="sr-only">{{ __('Security settings') }}</flux:heading>
+    <x-ui::heading class="sr-only">{{ __('Security settings') }}</x-ui::heading>
 
     <x-pages::settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
+            <x-ui::input
                 wire:model="current_password"
                 :label="__('Current password')"
                 type="password"
@@ -100,7 +91,7 @@ new #[Title('Security settings')] class extends Component {
                 autocomplete="current-password"
                 viewable
             />
-            <flux:input
+            <x-ui::input
                 wire:model="password"
                 :label="__('New password')"
                 type="password"
@@ -108,7 +99,7 @@ new #[Title('Security settings')] class extends Component {
                 autocomplete="new-password"
                 viewable
             />
-            <flux:input
+            <x-ui::input
                 wire:model="password_confirmation"
                 :label="__('Confirm password')"
                 type="password"
@@ -119,9 +110,9 @@ new #[Title('Security settings')] class extends Component {
 
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
+                    <x-ui::button variant="primary" type="submit" class="w-full" data-test="update-password-button">
                         {{ __('Save') }}
-                    </flux:button>
+                    </x-ui::button>
                 </div>
 
                 <x-action-message class="me-3" on="password-updated">
@@ -132,41 +123,41 @@ new #[Title('Security settings')] class extends Component {
 
         @if ($canManageTwoFactor)
             <section class="mt-12">
-                <flux:heading>{{ __('Two-factor authentication') }}</flux:heading>
-                <flux:subheading>{{ __('Manage your two-factor authentication settings') }}</flux:subheading>
+                <x-ui::heading>{{ __('Two-factor authentication') }}</x-ui::heading>
+                <x-ui::text size="lg" muted>{{ __('Manage your two-factor authentication settings') }}</x-ui::text>
 
                 <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
                     @if ($twoFactorEnabled)
                         <div class="space-y-4">
-                            <flux:text>
+                            <x-ui::text>
                                 {{ __('You will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.') }}
-                            </flux:text>
+                            </x-ui::text>
 
                             <div class="flex justify-start">
-                                <flux:button
+                                <x-ui::button
                                     variant="danger"
                                     wire:click="disable"
                                 >
                                     {{ __('Disable 2FA') }}
-                                </flux:button>
+                                </x-ui::button>
                             </div>
 
                             <livewire:pages::settings.two-factor.recovery-codes :$requiresConfirmation />
                         </div>
                     @else
                         <div class="space-y-4">
-                            <flux:text variant="subtle">
+                            <x-ui::text muted>
                                 {{ __('When you enable two-factor authentication, you will be prompted for a secure pin during login. This pin can be retrieved from a TOTP-supported application on your phone.') }}
-                            </flux:text>
+                            </x-ui::text>
 
-                            <flux:modal.trigger name="two-factor-setup-modal">
-                                <flux:button
+                            <button @click="$dispatch('open-dialog', 'two-factor-setup-modal')">
+                                <x-ui::button
                                     variant="primary"
                                     wire:click="$dispatch('start-two-factor-setup')"
                                 >
                                     {{ __('Enable 2FA') }}
-                                </flux:button>
-                            </flux:modal.trigger>
+                                </x-ui::button>
+                            </button>
 
                             <livewire:pages::settings.two-factor-setup-modal :requires-confirmation="$requiresConfirmation" />
                         </div>

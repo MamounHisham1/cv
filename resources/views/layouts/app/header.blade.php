@@ -4,75 +4,81 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.toggle class="lg:hidden mr-2" icon="bars-2" inset="left" />
+        <header class="sticky top-0 z-50 w-full border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 backdrop-blur-lg">
+            <div class="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8">
+                <button
+                    type="button"
+                    class="inline-flex items-center justify-center rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors lg:hidden mr-2"
+                    x-data
+                    x-on:click="$dispatch('toggle-sidebar')"
+                >
+                    <x-heroicon-c-bars-2 class="size-5" />
+                </button>
 
-            <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
+                <x-app-logo href="{{ route('dashboard') }}" wire:navigate />
 
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
-                </flux:navbar.item>
-            </flux:navbar>
+                <x-ui::navbar class="-mb-px max-lg:hidden">
+                    <x-ui::navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </x-ui::navbar.item>
+                </x-ui::navbar>
 
-            <flux:spacer />
+                <div class="flex-1"></div>
 
-            <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-                <flux:tooltip :content="__('Search')" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
-                </flux:tooltip>
-                <flux:tooltip :content="__('Repository')" position="bottom">
-                    <flux:navbar.item
-                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
-                        icon="folder-git-2"
-                        href="https://github.com/laravel/livewire-starter-kit"
-                        target="_blank"
-                        :label="__('Repository')"
-                    />
-                </flux:tooltip>
-                <flux:tooltip :content="__('Documentation')" position="bottom">
-                    <flux:navbar.item
-                        class="h-10 max-lg:hidden [&>div>svg]:size-5"
-                        icon="book-open-text"
-                        href="https://laravel.com/docs/starter-kits#livewire"
-                        target="_blank"
-                        :label="__('Documentation')"
-                    />
-                </flux:tooltip>
-            </flux:navbar>
+                <x-ui::navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0">
+                    <x-ui::tooltip :content="__('Search')" position="bottom">
+                        <x-ui::navbar.item icon="search" href="#" :label="__('Search')" />
+                    </x-ui::tooltip>
+                    <x-ui::tooltip :content="__('Repository')" position="bottom">
+                        <x-ui::navbar.item
+                            class="max-lg:hidden"
+                            icon="git-branch"
+                            href="https://github.com/laravel/livewire-starter-kit"
+                            target="_blank"
+                            :label="__('Repository')"
+                        />
+                    </x-ui::tooltip>
+                    <x-ui::tooltip :content="__('Documentation')" position="bottom">
+                        <x-ui::navbar.item
+                            class="max-lg:hidden"
+                            icon="book-open"
+                            href="https://laravel.com/docs/starter-kits#livewire"
+                            target="_blank"
+                            :label="__('Documentation')"
+                        />
+                    </x-ui::tooltip>
+                </x-ui::navbar>
 
-            <x-desktop-user-menu />
-        </flux:header>
+                <x-desktop-user-menu />
+            </div>
+        </header>
 
-        <!-- Mobile Menu -->
-        <flux:sidebar collapsible="mobile" sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.header>
+        <x-ui::sidebar collapsible="mobile" sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <x-ui::sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
-                <flux:sidebar.collapse class="in-data-flux-sidebar-on-desktop:not-in-data-flux-sidebar-collapsed-desktop:-mr-2" />
-            </flux:sidebar.header>
+                <x-ui::sidebar.collapse />
+            </x-ui::sidebar.header>
 
-            <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')">
-                    <flux:sidebar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+            <x-ui::sidebar.nav>
+                <x-ui::sidebar.group :heading="__('Platform')">
+                    <x-ui::sidebar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard')  }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
-            </flux:sidebar.nav>
+                    </x-ui::sidebar.item>
+                </x-ui::sidebar.group>
+            </x-ui::sidebar.nav>
 
-            <flux:spacer />
+            <div class="flex-1"></div>
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+            <x-ui::sidebar.nav>
+                <x-ui::sidebar.item icon="git-branch" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                     {{ __('Repository') }}
-                </flux:sidebar.item>
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
+                </x-ui::sidebar.item>
+                <x-ui::sidebar.item icon="book-open" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                     {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
-        </flux:sidebar>
+                </x-ui::sidebar.item>
+            </x-ui::sidebar.nav>
+        </x-ui::sidebar>
 
         {{ $slot }}
-
-        @fluxScripts
     </body>
 </html>

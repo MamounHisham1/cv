@@ -1,0 +1,81 @@
+@props([
+    'name',
+    'size' => 'md',
+    'variant' => 'default',
+])
+
+@php
+$heroiconMap = [
+    'sparkles' => 'sparkles',
+    'shield-check' => 'shield-check',
+    'file-text' => 'document-text',
+    'eye' => 'eye',
+    'lightbulb' => 'light-bulb',
+    'download' => 'arrow-down-tray',
+    'star' => 'star',
+    'check' => 'check',
+    'check-circle' => 'check-circle',
+    'x' => 'x-mark',
+    'arrow-right' => 'arrow-right',
+    'graduation-cap' => 'academic-cap',
+    'briefcase' => 'briefcase',
+    'zap' => 'bolt',
+    'trophy' => 'trophy',
+    'mail' => 'envelope',
+    'globe' => 'globe-alt',
+    'code-2' => 'code-bracket',
+    'code' => 'code-bracket',
+    'user' => 'user',
+    'send' => 'paper-airplane',
+    'trash-2' => 'trash',
+    'trash' => 'trash',
+    'pencil' => 'pencil',
+    'plus' => 'plus',
+    'folder' => 'folder',
+    'clock' => 'clock',
+    'arrow-path' => 'arrow-path',
+    'refresh-cw' => 'arrow-path',
+    'loader-2' => 'arrow-path',
+    'chevron-up' => 'chevron-up',
+    'chevron-down' => 'chevron-down',
+    'phone' => 'phone',
+    'map-pin' => 'map-pin',
+    'users' => 'users',
+    'heart' => 'heart',
+    'lock' => 'lock-closed',
+    'qr-code' => 'qr-code',
+    'copy' => 'clipboard-document',
+    'building-2' => 'building-office',
+    'key' => 'key',
+    'log-in' => 'arrow-right-end-on-rectangle',
+    'log-out' => 'arrow-right-start-on-rectangle',
+    'menu' => 'bars-2',
+    'search' => 'magnifying-glass',
+    'git-branch' => 'folder',
+    'folder-git-2' => 'folder',
+    'book-open' => 'book-open',
+    'book-open-text' => 'book-open',
+    'settings' => 'cog-6-tooth',
+    'layout-grid' => 'squares-2x2',
+    'external-link' => 'arrow-top-right-on-square',
+    'x-circle' => 'x-circle',
+    'eye-off' => 'eye-slash',
+    'monitor' => 'computer-desktop',
+    'moon' => 'moon',
+    'sun' => 'sun',
+    'info' => 'information-circle',
+    'alert-circle' => 'exclamation-circle',
+    'triangle-alert' => 'exclamation-triangle',
+    'panel-left-close' => 'bars-2',
+];
+
+$heroiconName = $heroiconMap[$name] ?? $name;
+$prefix = $variant === 'solid' ? 's' : 'c';
+$component = "heroicon-{$prefix}-{$heroiconName}";
+@endphp
+
+@php
+$sizeClass = 'size-' . ($size === 'sm' ? '4' : ($size === 'md' ? '5' : ($size === 'lg' ? '6' : '8')));
+@endphp
+
+<x-dynamic-component :component="$component" {{ $attributes->merge(['class' => $sizeClass]) }} />

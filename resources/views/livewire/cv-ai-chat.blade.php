@@ -6,32 +6,30 @@
         }, 100);
     });
 ">
-    <!-- Quick Prompts -->
     <div class="p-4 border-b border-zinc-200 dark:border-zinc-700">
         <div class="flex flex-wrap gap-2" x-bind:class="{ 'pointer-events-none opacity-50': $wire.isLoading }">
-            <flux:badge wire:click="quickPrompt('improve_summary')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
-                <flux:icon name="sparkles" class="w-3 h-3 mr-1" />
+            <x-ui::badge wire:click="quickPrompt('improve_summary')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <x-ui::icon name="sparkles" class="w-3 h-3 mr-1" />
                 Improve
-            </flux:badge>
-            <flux:badge wire:click="quickPrompt('keywords')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
-                <flux:icon name="key" class="w-3 h-3 mr-1" />
+            </x-ui::badge>
+            <x-ui::badge wire:click="quickPrompt('keywords')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <x-ui::icon name="key" class="w-3 h-3 mr-1" />
                 Keywords
-            </flux:badge>
-            <flux:badge wire:click="quickPrompt('ats_check')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
-                <flux:icon name="check-circle" class="w-3 h-3 mr-1" />
+            </x-ui::badge>
+            <x-ui::badge wire:click="quickPrompt('ats_check')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <x-ui::icon name="check-circle" class="w-3 h-3 mr-1" />
                 ATS Check
-            </flux:badge>
+            </x-ui::badge>
         </div>
     </div>
 
-    <!-- Messages -->
     <div class="flex-1 overflow-y-auto space-y-4 p-4" id="chat-messages">
         @forelse($messages as $message)
             <div class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                 <div class="{{ $message['role'] === 'user' ? 'message-bubble user' : 'message-bubble assistant' }}">
                     @if($message['role'] === 'assistant')
                         <div class="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
-                            <flux:icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                            <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
                             <span class="text-xs font-medium text-emerald-600 dark:text-emerald-400">AI Assistant</span>
                         </div>
                     @endif
@@ -45,9 +43,9 @@
             <div class="flex items-center justify-center h-full">
                 <div class="text-center">
                     <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mx-auto mb-4 flex items-center justify-center">
-                        <flux:icon name="sparkles" class="w-8 h-8 text-emerald-600" />
+                        <x-ui::icon name="sparkles" class="w-8 h-8 text-emerald-600" />
                     </div>
-                    <flux:heading size="md" class="mb-2">How can I help?</flux:heading>
+                    <x-ui::heading size="md" class="mb-2">How can I help?</x-ui::heading>
                     <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4 max-w-xs">
                         Ask me anything about your CV, ATS optimization, or get suggestions to improve your content.
                     </p>
@@ -59,7 +57,7 @@
             <div class="flex justify-start">
                 <div class="message-bubble assistant">
                     <div class="flex items-center gap-2">
-                        <flux:icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                        <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
                         <div class="flex gap-1">
                             <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></span>
                             <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
@@ -71,7 +69,6 @@
         @endif
     </div>
 
-    <!-- Input -->
     <form
         wire:submit="sendMessage"
         x-on:submit.prevent="
@@ -86,7 +83,7 @@
         class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900"
     >
         <div class="flex gap-2 items-end">
-            <flux:textarea
+            <x-ui::textarea
                 wire:model="userMessage"
                 placeholder="Ask me anything about your CV..."
                 rows="2"
@@ -96,19 +93,19 @@
                     if (!$wire.isLoading) $el.closest('form').dispatchEvent(new Event('submit'));
                 "
             />
-            <flux:button
+            <x-ui::button
                 type="submit"
                 variant="primary"
                 size="sm"
                 x-bind:disabled="$wire.isLoading"
             >
-                <flux:icon name="paper-airplane" class="w-4 h-4" />
-            </flux:button>
+                <x-ui::icon name="send" class="w-4 h-4" />
+            </x-ui::button>
         </div>
         <div class="flex items-center justify-between mt-2">
-            <flux:button variant="ghost" size="xs" wire:click="clearChat" icon="trash" class="text-zinc-500 hover:text-red-600">
+            <x-ui::button variant="ghost" size="sm" wire:click="clearChat" icon="trash-2" class="text-zinc-500 hover:text-red-600">
                 Clear Chat
-            </flux:button>
+            </x-ui::button>
             <p class="text-xs text-zinc-500">
                 Powered by AI
             </p>

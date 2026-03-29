@@ -4,21 +4,16 @@ use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
-new class extends Component {
+new class extends Component
+{
     #[Locked]
     public array $recoveryCodes = [];
 
-    /**
-     * Mount the component.
-     */
     public function mount(): void
     {
         $this->loadRecoveryCodes();
     }
 
-    /**
-     * Generate new recovery codes for the user.
-     */
     public function regenerateRecoveryCodes(GenerateNewRecoveryCodes $generateNewRecoveryCodes): void
     {
         $generateNewRecoveryCodes(auth()->user());
@@ -26,9 +21,6 @@ new class extends Component {
         $this->loadRecoveryCodes();
     }
 
-    /**
-     * Load the recovery codes for the user.
-     */
     private function loadRecoveryCodes(): void
     {
         $user = auth()->user();
@@ -52,49 +44,47 @@ new class extends Component {
 >
     <div class="px-6 space-y-2">
         <div class="flex items-center gap-2">
-            <flux:icon.lock-closed variant="outline" class="size-4"/>
-            <flux:heading size="lg" level="3">{{ __('2FA recovery codes') }}</flux:heading>
+            <x-ui::icon name="lock" size="sm"/>
+            <x-ui::heading size="lg">{{ __('2FA recovery codes') }}</x-ui::heading>
         </div>
-        <flux:text variant="subtle">
+        <x-ui::text muted>
             {{ __('Recovery codes let you regain access if you lose your 2FA device. Store them in a secure password manager.') }}
-        </flux:text>
+        </x-ui::text>
     </div>
 
     <div class="px-6">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <flux:button
+            <x-ui::button
                 x-show="!showRecoveryCodes"
                 icon="eye"
-                icon:variant="outline"
                 variant="primary"
                 @click="showRecoveryCodes = true;"
                 aria-expanded="false"
                 aria-controls="recovery-codes-section"
             >
                 {{ __('View recovery codes') }}
-            </flux:button>
+            </x-ui::button>
 
-            <flux:button
+            <x-ui::button
                 x-show="showRecoveryCodes"
-                icon="eye-slash"
-                icon:variant="outline"
+                icon="eye-off"
                 variant="primary"
                 @click="showRecoveryCodes = false"
                 aria-expanded="true"
                 aria-controls="recovery-codes-section"
             >
                 {{ __('Hide recovery codes') }}
-            </flux:button>
+            </x-ui::button>
 
             @if (filled($recoveryCodes))
-                <flux:button
+                <x-ui::button
                     x-show="showRecoveryCodes"
-                    icon="arrow-path"
-                    variant="filled"
+                    icon="refresh-cw"
+                    variant="secondary"
                     wire:click="regenerateRecoveryCodes"
                 >
                     {{ __('Regenerate codes') }}
-                </flux:button>
+                </x-ui::button>
             @endif
         </div>
 
@@ -107,7 +97,12 @@ new class extends Component {
         >
             <div class="mt-3 space-y-3">
                 @error('recoveryCodes')
-                    <flux:callout variant="danger" icon="x-circle" heading="{{$message}}"/>
+                    <x-ui::callout variant="destructive">
+                        <div class="flex items-center gap-2">
+                            <x-ui::icon name="x-circle" size="sm" />
+                            <span class="font-medium">{{ $message }}</span>
+                        </div>
+                    </x-ui::callout>
                 @enderror
 
                 @if (filled($recoveryCodes))
@@ -126,9 +121,9 @@ new class extends Component {
                             </div>
                         @endforeach
                     </div>
-                    <flux:text variant="subtle" class="text-xs">
+                    <x-ui::text muted class="text-xs">
                         {{ __('Each recovery code can be used once to access your account and will be removed after use. If you need more, click Regenerate codes above.') }}
-                    </flux:text>
+                    </x-ui::text>
                 @endif
             </div>
         </div>

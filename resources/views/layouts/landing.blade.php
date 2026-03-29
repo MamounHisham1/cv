@@ -4,42 +4,44 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-        <flux:header container sticky class="border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-lg">
-            <x-app-logo href="/" />
+        <header class="sticky top-0 z-50 w-full border-b border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-lg">
+            <div class="mx-auto flex h-16 max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8">
+                <x-app-logo href="/" />
 
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item href="/" :current="request()->routeIs('home')" wire:navigate>
-                    Home
-                </flux:navbar.item>
-                <flux:navbar.item href="{{ route('about') }}" :current="request()->routeIs('about')" wire:navigate>
-                    About
-                </flux:navbar.item>
-                <flux:navbar.item href="{{ route('faq') }}" :current="request()->routeIs('faq')" wire:navigate>
-                    FAQ
-                </flux:navbar.item>
-                <flux:navbar.item href="{{ route('contact') }}" :current="request()->routeIs('contact')" wire:navigate>
-                    Contact
-                </flux:navbar.item>
-            </flux:navbar>
+                <x-ui::navbar class="-mb-px max-lg:hidden">
+                    <x-ui::navbar.item href="/" :current="request()->routeIs('home')" wire:navigate>
+                        Home
+                    </x-ui::navbar.item>
+                    <x-ui::navbar.item href="{{ route('about') }}" :current="request()->routeIs('about')" wire:navigate>
+                        About
+                    </x-ui::navbar.item>
+                    <x-ui::navbar.item href="{{ route('faq') }}" :current="request()->routeIs('faq')" wire:navigate>
+                        FAQ
+                    </x-ui::navbar.item>
+                    <x-ui::navbar.item href="{{ route('contact') }}" :current="request()->routeIs('contact')" wire:navigate>
+                        Contact
+                    </x-ui::navbar.item>
+                </x-ui::navbar>
 
-            <flux:spacer />
+                <div class="flex-1"></div>
 
-            <flux:navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0!">
-                @guest
-                    <flux:navbar.item :href="route('login')" icon="arrow-right-to-bracket">
-                        {{ __('Login') }}
-                    </flux:navbar.item>
-                    <flux:button variant="primary" size="sm" :href="route('register')" class="max-lg:hidden">
-                        {{ __('Register') }}
-                    </flux:button>
-                @endguest
-                @auth
-                    <flux:navbar.item :href="route('cv.builder')" icon="document-text" wire:navigate>
-                        {{ __('My CVs') }}
-                    </flux:navbar.item>
-                @endauth
-            </flux:navbar>
-        </flux:header>
+                <x-ui::navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0">
+                    @guest
+                        <x-ui::navbar.item :href="route('login')" icon="log-in">
+                            {{ __('Login') }}
+                        </x-ui::navbar.item>
+                        <x-ui::button variant="primary" size="sm" :href="route('register')" class="max-lg:hidden">
+                            {{ __('Register') }}
+                        </x-ui::button>
+                    @endguest
+                    @auth
+                        <x-ui::navbar.item :href="route('cv.builder')" icon="file-text" wire:navigate>
+                            {{ __('My CVs') }}
+                        </x-ui::navbar.item>
+                    @endauth
+                </x-ui::navbar>
+            </div>
+        </header>
 
         {{ $slot }}
 
@@ -53,13 +55,13 @@
                         </p>
                         <div class="flex items-center gap-3 mt-6">
                             <a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                                <flux:icon name="globe" class="size-5" />
+                                <x-ui::icon name="globe" size="lg" />
                             </a>
                             <a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                                <flux:icon name="code-bracket" class="size-5" />
+                                <x-ui::icon name="code-2" size="lg" />
                             </a>
                             <a href="#" class="text-zinc-500 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                                <flux:icon name="mail" class="size-5" />
+                                <x-ui::icon name="mail" size="lg" />
                             </a>
                         </div>
                     </div>
@@ -96,7 +98,7 @@
 
                 <div class="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                        &copy; {{ date('Y') }} CVForge. All rights reserved.
+                        &copy; {{ date('Y') }} SeratyAI. All rights reserved.
                     </p>
                     <p class="text-sm text-zinc-500 dark:text-zinc-400">
                         Built with Laravel, Livewire & Flux
@@ -104,7 +106,5 @@
                 </div>
             </div>
         </footer>
-
-        @fluxScripts
     </body>
 </html>
