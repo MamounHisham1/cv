@@ -284,3 +284,49 @@
 .delay-400 { animation-delay: 0.4s; }
 .delay-500 { animation-delay: 0.5s; }
 .delay-700 { animation-delay: 0.7s; }
+.delay-1000 { animation-delay: 1s; }
+.delay-1200 { animation-delay: 1.2s; }
+.delay-1500 { animation-delay: 1.5s; }
+.delay-2000 { animation-delay: 2s; }
+
+@keyframes slide-in-left {
+    from { opacity: 0; transform: translateX(-40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-up {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes blur-in {
+    from { opacity: 0; filter: blur(10px); }
+    to { opacity: 1; filter: blur(0); }
+}
+
+@keyframes rotate-in {
+    from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
+    to { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+@keyframes width-grow {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes counter {
+    from { --num: 0; }
+    to { --num: var(--target); }
+}
+
+.animate-slide-in-left { animation: slide-in-left 0.8s ease-out both; }
+.animate-slide-in-right { animation: slide-in-right 0.8s ease-out both; }
+.animate-scale-up { animation: scale-up 0.6s ease-out both; }
+.animate-blur-in { animation: blur-in 0.8s ease-out both; }
+.animate-rotate-in { animation: rotate-in 0.7s ease-out both; }
+.animate-width-grow { animation: width-grow 1.5s ease-out both; }
