@@ -1,0 +1,94 @@
+<div class="flex flex-col h-full">
+    <!-- Quick Prompts -->
+    <div class="p-4 border-b border-zinc-200 dark:border-zinc-700">
+        <div class="flex flex-wrap gap-2">
+            <flux:badge wire:click="quickPrompt('improve_summary')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <flux:icon name="sparkles" class="w-3 h-3 mr-1" />
+                Improve
+            </flux:badge>
+            <flux:badge wire:click="quickPrompt('keywords')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <flux:icon name="key" class="w-3 h-3 mr-1" />
+                Keywords
+            </flux:badge>
+            <flux:badge wire:click="quickPrompt('ats_check')" variant="outline" class="cursor-pointer hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all duration-200">
+                <flux:icon name="check-circle" class="w-3 h-3 mr-1" />
+                ATS Check
+            </flux:badge>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="flex-1 overflow-y-auto space-y-4 p-4" id="chat-messages">
+        @forelse($messages as $message)
+            <div class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
+                <div class="{{ $message['role'] === 'user' ? 'message-bubble user' : 'message-bubble assistant' }}">
+                    @if($message['role'] === 'assistant')
+                        <div class="flex items-center gap-2 mb-2 pb-2 border-b border-zinc-200 dark:border-zinc-700">
+                            <flux:icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                            <span class="text-xs font-medium text-emerald-600 dark:text-emerald-400">AI Assistant</span>
+                        </div>
+                    @endif
+                    <div class="text-sm whitespace-pre-wrap leading-relaxed">{{ $message['content'] }}</div>
+                    <div class="text-xs mt-2 pt-2 border-t border-zinc-200/50 {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
+                        {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="flex items-center justify-center h-full">
+                <div class="text-center">
+                    <div class="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mx-auto mb-4 flex items-center justify-center">
+                        <flux:icon name="sparkles" class="w-8 h-8 text-emerald-600" />
+                    </div>
+                    <flux:heading size="md" class="mb-2">How can I help?</flux:heading>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4 max-w-xs">
+                        Ask me anything about your CV, ATS optimization, or get suggestions to improve your content.
+                    </p>
+                </div>
+            </div>
+        @endforelse
+
+        @if($isLoading)
+            <div class="flex justify-start">
+                <div class="message-bubble assistant">
+                    <div class="flex items-center gap-2">
+                        <flux:icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                        <div class="flex gap-1">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></span>
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div>
+
+    <!-- Input -->
+    <form wire:submit="sendMessage" class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+        <div class="relative">
+            <flux:textarea
+                wire:model="userMessage"
+                placeholder="Ask me anything about your CV..."
+                rows="3"
+                class="resize-none pr-12"
+            />
+            <flux:button
+                type="submit"
+                variant="primary"
+                class="absolute bottom-3 right-3"
+                :disabled="$isLoading || empty($userMessage)"
+            >
+                <flux:icon name="paper-airplane" class="w-4 h-4" />
+            </flux:button>
+        </div>
+        <div class="flex items-center justify-between mt-2">
+            <flux:button variant="ghost" size="xs" wire:click="clearChat" icon="trash" class="text-zinc-500 hover:text-red-600">
+                Clear Chat
+            </flux:button>
+            <p class="text-xs text-zinc-500">
+                Powered by AI
+            </p>
+        </div>
+    </form>
+</div>

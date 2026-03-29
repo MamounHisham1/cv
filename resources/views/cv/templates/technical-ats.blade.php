@@ -1,0 +1,80 @@
+<div class="p-8 font-sans text-gray-900 max-w-[210mm]">
+    <!-- Header - Simple format for ATS -->
+    <header class="mb-6">
+        <h1 class="text-2xl font-bold">
+            {{ $cv->personal_info['first_name'] ?? '' }} {{ $cv->personal_info['last_name'] ?? '' }}
+        </h1>
+        <div class="text-sm mt-2">
+            {{ $cv->personal_info['email'] ?? '' }} | {{ $cv->personal_info['phone'] ?? '' }} | {{ $cv->personal_info['location'] ?? '' }}
+            @if($cv->personal_info['linkedin'] ?? false)
+                | {{ $cv->personal_info['linkedin'] }}
+            @endif
+        </div>
+    </header>
+
+    <!-- Summary -->
+    @if($cv->summary)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Professional Summary</h2>
+            <p class="text-sm">{{ $cv->summary }}</p>
+        </section>
+    @endif
+
+    <!-- Skills - Keywords prominently displayed -->
+    @if($cv->skills->count() > 0)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Technical Skills</h2>
+            <p class="text-sm">
+                <strong>Core Competencies:</strong>
+                {{ $cv->skills->pluck('name')->implode(', ') }}
+            </p>
+        </section>
+    @endif
+
+    <!-- Experience -->
+    @if($cv->experiences->count() > 0)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Work Experience</h2>
+            @foreach($cv->experiences as $exp)
+                <div class="mb-4">
+                    <div class="flex justify-between">
+                        <span class="font-bold">{{ $exp->title }}</span>
+                        <span class="text-sm">{{ $exp->start_date?->format('m/Y') }} - {{ $exp->is_current ? 'Present' : $exp->end_date?->format('m/Y') }}</span>
+                    </div>
+                    <div class="text-sm">{{ $exp->company }}{{ $exp->location ? ' | ' . $exp->location : '' }}</div>
+                    <p class="text-sm mt-1">{{ $exp->description }}</p>
+                    @if($exp->technologies)
+                        <p class="text-sm mt-1"><strong>Technologies:</strong> {{ implode(', ', $exp->technologies) }}</p>
+                    @endif
+                </div>
+            @endforeach
+        </section>
+    @endif
+
+    <!-- Certifications -->
+    @if($cv->certifications->count() > 0)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Certifications</h2>
+            @foreach($cv->certifications as $cert)
+                <div class="text-sm">
+                    {{ $cert->name }} - {{ $cert->issuing_organization }}
+                    @if($cert->issue_date)
+                        ({{ $cert->issue_date->format('Y') }})
+                    @endif
+                </div>
+            @endforeach
+        </section>
+    @endif
+
+    <!-- Education -->
+    @if($cv->educations->count() > 0)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Education</h2>
+            @foreach($cv->educations as $edu)
+                <div class="text-sm">
+                    <strong>{{ $edu->degree }}</strong>{{ $edu->field_of_study ? ' in ' . $edu->field_of_study : '' }} - {{ $edu->institution }}
+                </div>
+            @endforeach
+        </section>
+    @endif
+</div>
