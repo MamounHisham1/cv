@@ -52,4 +52,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Cv::class);
     }
+
+    /**
+     * Get the user's CV evaluations
+     */
+    public function cvEvaluations(): HasMany
+    {
+        return $this->hasMany(CvEvaluation::class);
+    }
 }

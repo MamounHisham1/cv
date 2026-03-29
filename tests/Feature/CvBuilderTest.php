@@ -23,6 +23,8 @@ describe('CV Builder', function () {
     });
 
     it('renders the builder with design 4 glassmorphism styling', function () {
+        Cv::factory()->for($this->user)->create();
+
         $this->actingAs($this->user)
             ->get(route('cv.builder'))
             ->assertOk()

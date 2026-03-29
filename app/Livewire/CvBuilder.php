@@ -14,6 +14,9 @@ class CvBuilder extends Component
 {
     public ?Cv $cv = null;
 
+    /** 'onboarding' | 'builder' */
+    public string $stage = 'builder';
+
     public string $activeSection = 'personal';
 
     public array $templates = [];
@@ -46,13 +49,35 @@ class CvBuilder extends Component
         if ($cv && $cv->exists) {
             $this->authorize('update', $cv);
             $this->cv = $cv;
+            $this->stage = 'builder';
             $this->loadCvData();
         } else {
             $this->cv = new Cv;
             $this->personalInfo['email'] = Auth::user()->email;
+
+            // Show onboarding when the user has no CVs yet
+            $hasCvs = Auth::user()->cvs()->exists();
+            $this->stage = $hasCvs ? 'builder' : 'onboarding';
         }
 
         $this->templates = $this->getAvailableTemplates();
+    }
+
+    /**
+     * Select a template during onboarding and advance to the builder stage.
+     */
+    public function onboardingSelectTemplate(string $templateId): void
+    {
+        $this->selectedTemplate = $templateId;
+        $this->stage = 'builder';
+    }
+
+    /**
+     * Skip onboarding and go directly to the builder stage.
+     */
+    public function skipOnboarding(): void
+    {
+        $this->stage = 'builder';
     }
 
     #[On('cv-updated')]
@@ -187,6 +212,91 @@ class CvBuilder extends Component
             'skills' => $this->cv->skills,
             'certifications' => $this->cv->certifications,
             'projects' => $this->cv->projects,
+        ];
+    }
+
+    public function getSampleCvProperty(): object
+    {
+        $experiences = collect([
+            (object) [
+                'title' => 'Senior Product Designer',
+                'company' => 'TechCorp Inc.',
+                'location' => 'San Francisco, CA',
+                'duration' => '2022 – Present',
+                'description' => 'Leading a cross-functional design team in creating user-centered digital products for enterprise clients.',
+                'achievements' => ['Increased user engagement by 40%', 'Established company-wide design system'],
+                'technologies' => ['Figma', 'React', 'Tailwind CSS'],
+                'start_date' => now()->subYears(3),
+                'end_date' => null,
+                'is_current' => true,
+            ],
+            (object) [
+                'title' => 'Product Designer',
+                'company' => 'StartupXYZ',
+                'location' => 'New York, NY',
+                'duration' => '2019 – 2022',
+                'description' => 'Designed end-to-end user experiences for a B2B SaaS platform serving 50K+ users.',
+                'achievements' => ['Shipped 3 major product launches'],
+                'technologies' => ['Sketch', 'InVision', 'CSS'],
+                'start_date' => now()->subYears(6),
+                'end_date' => now()->subYears(3),
+                'is_current' => false,
+            ],
+        ]);
+
+        $educations = collect([
+            (object) [
+                'institution' => 'Stanford University',
+                'degree' => 'Bachelor of Arts',
+                'field_of_study' => 'Human-Computer Interaction',
+                'start_date' => now()->subYears(10),
+                'end_date' => now()->subYears(6),
+                'is_current' => false,
+            ],
+        ]);
+
+        $skills = collect([
+            (object) ['name' => 'UI/UX Design', 'proficiency' => 5],
+            (object) ['name' => 'Figma', 'proficiency' => 5],
+            (object) ['name' => 'Design Systems', 'proficiency' => 4],
+            (object) ['name' => 'Prototyping', 'proficiency' => 4],
+            (object) ['name' => 'User Research', 'proficiency' => 4],
+            (object) ['name' => 'React', 'proficiency' => 3],
+            (object) ['name' => 'Tailwind CSS', 'proficiency' => 3],
+            (object) ['name' => 'Accessibility', 'proficiency' => 4],
+        ]);
+
+        $certifications = collect([
+            (object) [
+                'name' => 'Google UX Design Certificate',
+                'issuing_organization' => 'Google',
+                'issue_date' => now()->subYears(4),
+            ],
+            (object) [
+                'name' => 'NN/g UX Certification',
+                'issuing_organization' => 'Nielsen Norman Group',
+                'issue_date' => now()->subYear(),
+            ],
+        ]);
+
+        return (object) [
+            'personal_info' => [
+                'first_name' => 'Sarah',
+                'last_name' => 'Mitchell',
+                'email' => 'sarah.mitchell@email.com',
+                'phone' => '+1 (555) 234-5678',
+                'location' => 'San Francisco, CA',
+                'linkedin' => 'linkedin.com/in/sarahmitchell',
+                'github' => 'github.com/sarahm',
+                'website' => 'sarahmitchell.design',
+                'title' => 'Senior Product Designer',
+            ],
+            'summary' => 'Senior product designer with 6+ years of experience crafting intuitive digital experiences for leading tech companies. Passionate about design systems and accessibility.',
+            'title' => 'Senior Product Designer',
+            'experiences' => $experiences,
+            'educations' => $educations,
+            'skills' => $skills,
+            'certifications' => $certifications,
         ];
     }
 

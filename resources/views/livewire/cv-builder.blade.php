@@ -38,6 +38,80 @@
 
     <div class="h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700"></div>
 
+    {{-- ===================== ONBOARDING STAGE ===================== --}}
+    @if($stage === 'onboarding')
+    <div class="relative mx-auto max-w-5xl px-4 py-16 md:px-6 lg:px-8">
+        {{-- Header --}}
+        <div class="mb-12 text-center">
+            <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-300">
+                Welcome — Let's get started
+            </div>
+            <h1 class="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+                Choose your <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">template</span>
+            </h1>
+            <p class="mx-auto max-w-xl text-base text-zinc-400">
+                Pick the layout that fits your career goals. You can always switch later.
+            </p>
+        </div>
+
+        {{-- Template gallery --}}
+        <div class="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+            @foreach($templates as $id => $template)
+                <button
+                    wire:click="onboardingSelectTemplate('{{ $id }}')"
+                    class="group card-hover relative flex flex-col rounded-3xl border p-5 text-left transition-all duration-300
+                        {{ $selectedTemplate === $id
+                            ? 'border-emerald-400/50 bg-emerald-500/10 shadow-xl shadow-emerald-500/20'
+                            : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
+                >
+                    <div class="relative mx-auto mb-4 h-[280px] w-full overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5">
+                        <div class="pointer-events-none" style="width: 700px; zoom: 0.48;">
+                            @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
+                        </div>
+                    </div>
+                    <div class="mb-1 text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
+                        {{ $template['name'] }}
+                    </div>
+                    <div class="line-clamp-2 text-xs leading-relaxed text-zinc-400">
+                        {{ $template['description'] }}
+                    </div>
+                    @if($selectedTemplate === $id)
+                        <div class="absolute right-4 top-4 z-10">
+                            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
+                                <x-ui::icon name="check" class="h-4 w-4 text-white" />
+                            </div>
+                        </div>
+                    @endif
+                </button>
+            @endforeach
+        </div>
+
+        {{-- Action row --}}
+        <div class="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <button
+                wire:click="onboardingSelectTemplate('{{ $selectedTemplate }}')"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-8 py-3.5 text-sm font-semibold text-white shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-emerald-500/40 sm:w-auto"
+            >
+                <x-ui::icon name="pencil" class="h-4 w-4" />
+                Create from Scratch
+            </button>
+            <a
+                href="{{ route('cv.evaluator') }}"
+                wire:navigate
+                class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-8 py-3.5 text-sm font-semibold text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white sm:w-auto"
+            >
+                <x-ui::icon name="upload" class="h-4 w-4" />
+                Upload & Parse Existing CV
+            </a>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-zinc-500">
+            You can skip template selection and
+            <button wire:click="skipOnboarding" class="text-emerald-400 underline-offset-2 hover:underline">go straight to the builder</button>.
+        </p>
+    </div>
+    @else
+    {{-- ===================== BUILDER STAGE ===================== --}}
     <div class="relative mx-auto max-w-[1800px] p-4 md:p-6 lg:p-8">
         <div class="mb-6 rounded-3xl border border-white/10 bg-zinc-950/80 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl md:p-6">
             <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -94,24 +168,25 @@
                         </div>
                         <x-ui::heading size="lg" class="text-white">Choose Template</x-ui::heading>
                     </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-8">
                         @foreach($templates as $id => $template)
                             <button
                                 wire:click="updateTemplate('{{ $id }}')"
                                 class="card-hover relative rounded-2xl border p-4 text-left transition-all duration-300 {{ $selectedTemplate === $id ? 'border-emerald-400/50 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                             >
-                                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl {{ $selectedTemplate === $id ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'border border-white/10 bg-zinc-900/70 text-zinc-400' }}">
-                                    <x-ui::icon name="{{ $template['icon'] }}" class="w-6 h-6" />
+                                <div class="relative mx-auto mb-3 h-[220px] w-full overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-black/5">
+                                    <div class="pointer-events-none" style="width: 700px; zoom: 0.48;">
+                                        @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
+                                    </div>
                                 </div>
                                 <div class="text-sm font-semibold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
                                     {{ $template['name'] }}
                                 </div>
-                                <div class="mt-1 line-clamp-2 text-xs text-zinc-400">
-                                    {{ $template['description'] }}
-                                </div>
                                 @if($selectedTemplate === $id)
-                                    <div class="absolute top-2 right-2">
-                                        <x-ui::icon name="check-circle" class="w-5 h-5 text-emerald-400" />
+                                    <div class="absolute top-3 right-3 z-10">
+                                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
+                                            <x-ui::icon name="check" class="h-3.5 w-3.5 text-white" />
+                                        </div>
                                     </div>
                                 @endif
                             </button>
@@ -221,9 +296,18 @@
     </div>
 
     @if($showAiChat)
-        <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" wire:click="toggleAiChat"></div>
-        <div class="fixed bottom-0 right-0 z-50 flex h-[75vh] w-full flex-col rounded-t-3xl border border-white/10 bg-zinc-950/90 shadow-2xl shadow-black/40 backdrop-blur-xl sm:bottom-6 sm:right-6 sm:h-[680px] sm:w-[470px] sm:rounded-3xl">
-            <div class="flex items-center justify-between border-b border-white/10 p-4">
+        {{-- Scrim — full viewport, z-[55] overlays the z-50 nav --}}
+        <div class="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm" wire:click="toggleAiChat"></div>
+
+        {{-- Chat panel — full-height right sidebar
+             z-[60] sits above scrim (z-[55]) and nav (z-50).
+             Mobile  → full-screen overlay
+             Desktop → 420px sidebar pinned to the right edge
+        --}}
+        <div class="fixed inset-0 z-[60] flex flex-col border-l border-white/10 bg-zinc-950/90 shadow-2xl shadow-black/40 backdrop-blur-xl
+                    sm:inset-y-0 sm:left-auto sm:right-0 sm:w-[420px]">
+            {{-- Panel header --}}
+            <div class="flex shrink-0 items-center justify-between border-b border-white/10 p-4">
                 <div class="flex items-center gap-3">
                     <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
                         <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-300" />
@@ -236,9 +320,11 @@
                 <x-ui::button variant="ghost" size="sm" wire:click="toggleAiChat" icon="x" class="{{ $secondaryButtonClasses }} h-9 w-9 px-0 text-zinc-400 hover:text-white" />
             </div>
 
-            <div class="flex-1 overflow-hidden">
+            {{-- Scrollable chat body + input — min-h-0 enables flex shrink for overflow --}}
+            <div class="min-h-0 flex-1 overflow-hidden">
                 <livewire:cv-ai-chat :cv="$cv" />
             </div>
         </div>
     @endif
+    @endif {{-- end @else (builder stage) --}}
 </div>

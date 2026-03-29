@@ -70,8 +70,11 @@ $heroiconMap = [
     'info' => 'information-circle',
     'alert-circle' => 'exclamation-circle',
     'triangle-alert' => 'exclamation-triangle',
+    'alert-triangle' => 'exclamation-triangle',
     'panel-left-close' => 'bars-2',
     'help' => 'question-mark-circle',
+    'upload' => 'arrow-up-tray',
+    'upload-cloud' => 'arrow-up-tray',
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;

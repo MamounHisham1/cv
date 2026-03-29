@@ -11,6 +11,7 @@ use App\Ai\Tools\AnalyzeJobDescription;
 use App\Ai\Tools\GenerateProfessionalSummary;
 use App\Ai\Tools\ImproveProjectDescription;
 use App\Ai\Tools\OptimizeForAts;
+use App\Ai\Tools\SearchResumes;
 use App\Ai\Tools\SelectBestTemplate;
 use App\Ai\Tools\SuggestKeywords;
 use App\Ai\Tools\UpdateCvPersonalInfo;

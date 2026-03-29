@@ -5,14 +5,13 @@
     $ghostButtonClasses = 'border border-white/10 bg-white/5 text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white';
 @endphp
 
-<div class="flex h-full flex-col bg-transparent" x-data x-init="
-    $wire.on('message-added', () => {
-        setTimeout(() => {
-            const el = document.getElementById('chat-messages');
-            if (el) el.scrollTop = el.scrollHeight;
-        }, 100);
-    });
-">
+<div class="flex h-full flex-col bg-transparent"
+    x-data="{ scrollToBottom() { this.$nextTick(() => { const el = this.$refs.chatMessages; if (el) el.scrollTop = el.scrollHeight; }); } }"
+    x-init="
+        scrollToBottom();
+        $wire.on('message-added', () => scrollToBottom());
+    "
+>
     <div class="border-b border-white/10 bg-white/5 p-4 backdrop-blur-sm">
         <div class="flex flex-wrap gap-2" x-bind:class="{ 'pointer-events-none opacity-50': $wire.isLoading }">
             <x-ui::badge wire:click="quickPrompt('improve_summary')" variant="outline" class="{{ $quickPromptClasses }}">
@@ -30,7 +29,7 @@
         </div>
     </div>
 
-    <div class="flex-1 space-y-4 overflow-y-auto p-4" id="chat-messages">
+    <div class="flex-1 space-y-4 overflow-y-auto overscroll-contain p-4" id="chat-messages" x-ref="chatMessages">
         @forelse($messages as $message)
             <div class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                 <div class="{{ $message['role'] === 'user' ? 'message-bubble user border border-emerald-400/20 shadow-lg shadow-emerald-500/10' : 'message-bubble assistant shadow-xl shadow-black/15' }}">
@@ -85,9 +84,10 @@
             if (!msg) return;
             input.value = '';
             $wire.sendMessage();
+            scrollToBottom();
             setTimeout(() => $wire.fetchAiResponse(msg), 150);
         "
-        class="border-t border-white/10 bg-zinc-950/80 p-4 backdrop-blur-xl"
+        class="shrink-0 border-t border-white/10 bg-zinc-950/80 p-4 backdrop-blur-xl"
     >
         <div class="flex gap-2 items-end">
             <x-ui::textarea
