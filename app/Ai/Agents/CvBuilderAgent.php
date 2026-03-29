@@ -90,12 +90,10 @@ INSTRUCTIONS;
     {
         return [
             'response' => $schema->string()->required(),
-            'suggestions' => $schema->array(
-                items: $schema->string()
-            ),
-            'action_items' => $schema->array(
-                items: $schema->string()
-            ),
+            'suggestions' => $schema->array()
+                ->description('Suggested improvements or next steps'),
+            'action_items' => $schema->array()
+                ->description('Action items to improve the CV'),
             'confidence' => $schema->integer()->min(1)->max(10),
         ];
     }
