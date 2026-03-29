@@ -1,8 +1,13 @@
 <?php
 
+use App\Livewire\CvAiChat;
+use App\Livewire\CvCertificationsManager;
+use App\Livewire\CvExperienceManager;
+use App\Livewire\CvSkillsManager;
 use App\Models\Cv;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -15,6 +20,19 @@ describe('CV Builder', function () {
         $response = $this->get('/cv-builder');
 
         $response->assertRedirect('/login');
+    });
+
+    it('renders the builder with design 4 glassmorphism styling', function () {
+        $this->actingAs($this->user)
+            ->get(route('cv.builder'))
+            ->assertOk()
+            ->assertSee('Design 4 Builder')
+            ->assertSee('bg-zinc-950/80', false)
+            ->assertSee('backdrop-blur-xl', false)
+            ->assertSee('bg-zinc-900/50', false)
+            ->assertSee('border-white/10', false)
+            ->assertSee('form-field', false)
+            ->assertSee('focus-visible:border-emerald-500/50', false);
     });
 
     it('has all 5 templates available', function () {
@@ -49,6 +67,51 @@ describe('CV Builder', function () {
             'id' => $cv->id,
             'title' => 'My Test CV',
         ]);
+    });
+
+    it('renders the manager and ai chat components with the shared glass styling', function () {
+        $cv = Cv::factory()
+            ->for($this->user)
+            ->create([
+                'title' => 'Design 4 CV',
+                'template_id' => 'professional-classic',
+                'personal_info' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'email' => 'john@example.com',
+                ],
+            ]);
+
+        Livewire::actingAs($this->user)
+            ->test(CvExperienceManager::class, ['cv' => $cv])
+            ->call('addExperience')
+            ->assertSee('Work Experience')
+            ->assertSee('bg-zinc-950/80', false)
+            ->assertSee('form-section', false)
+            ->assertSee('form-field', false)
+            ->assertSee('border-white/10', false);
+
+        Livewire::actingAs($this->user)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->call('addSkill')
+            ->assertSee('Quick Add Common Skills')
+            ->assertSee('bg-zinc-950/80', false)
+            ->assertSee('form-field', false)
+            ->assertSee('border-white/10', false);
+
+        Livewire::actingAs($this->user)
+            ->test(CvCertificationsManager::class, ['cv' => $cv])
+            ->call('addCertification')
+            ->assertSee('Certifications')
+            ->assertSee('bg-zinc-950/80', false)
+            ->assertSee('form-field', false)
+            ->assertSee('border-white/10', false);
+
+        Livewire::actingAs($this->user)
+            ->test(CvAiChat::class, ['cv' => $cv])
+            ->assertSee('AI Assistant')
+            ->assertSee('bg-white/5', false)
+            ->assertSee('backdrop-blur-sm', false);
     });
 });
 

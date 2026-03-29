@@ -9,9 +9,11 @@ $heroiconMap = [
     'sparkles' => 'sparkles',
     'shield-check' => 'shield-check',
     'file-text' => 'document-text',
+    'document-text' => 'document-text',
     'eye' => 'eye',
     'lightbulb' => 'light-bulb',
     'download' => 'arrow-down-tray',
+    'arrow-down-tray' => 'arrow-down-tray',
     'star' => 'star',
     'check' => 'check',
     'check-circle' => 'check-circle',
@@ -69,6 +71,7 @@ $heroiconMap = [
     'alert-circle' => 'exclamation-circle',
     'triangle-alert' => 'exclamation-triangle',
     'panel-left-close' => 'bars-2',
+    'help' => 'question-mark-circle',
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;

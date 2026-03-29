@@ -2,10 +2,10 @@
     <button
         type="button"
         data-test="sidebar-menu-button"
-        class="inline-flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+        class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
     >
         <x-ui::avatar :name="auth()->user()->name" :initials="auth()->user()->initials()" size="sm" />
-        <x-heroicon-c-chevron-down class="size-4 text-muted-foreground" />
+        <x-heroicon-c-chevron-down class="size-4 text-zinc-500" />
     </button>
 
     <x-slot:items>

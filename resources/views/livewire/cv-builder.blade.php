@@ -1,4 +1,16 @@
-<div class="min-h-screen bg-zinc-50 dark:bg-zinc-950" x-data>
+@php
+    $glassCardClasses = 'card-hover overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/80 p-5 md:p-6 text-zinc-100 shadow-2xl shadow-black/20 backdrop-blur-xl';
+    $fieldClasses = 'border-white/10 bg-zinc-900/50 text-zinc-100 placeholder:text-zinc-500 shadow-inner shadow-black/10 backdrop-blur-sm focus-visible:border-emerald-500/50 focus-visible:ring-emerald-500/20 focus-visible:ring-offset-0 focus-visible:ring-offset-zinc-950';
+    $errorFieldClasses = 'border-red-400/70 focus-visible:border-red-400/70 focus-visible:ring-red-500/25';
+    $secondaryButtonClasses = 'border border-white/10 bg-white/5 text-zinc-100 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white';
+    $primaryButtonClasses = 'border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl hover:shadow-emerald-500/30';
+    $emptyStateClasses = 'rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center shadow-xl shadow-black/10 backdrop-blur-xl';
+@endphp
+
+<div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100" x-data>
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_45%)]"></div>
+    <div class="pointer-events-none absolute right-0 top-24 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl"></div>
+
     <div
         x-data="{ shown: false, timeout: null }"
         x-init="
@@ -18,7 +30,7 @@
         class="fixed top-6 right-6 z-[60]"
         style="display: none;"
     >
-        <div class="flex items-center gap-3 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-lg shadow-emerald-600/20">
+        <div class="flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-zinc-950/90 px-5 py-3 text-white shadow-xl shadow-emerald-500/20 backdrop-blur-xl">
             <x-ui::icon name="check-circle" class="w-5 h-5 shrink-0" />
             <span class="text-sm font-medium">CV updated by AI assistant</span>
         </div>
@@ -26,25 +38,28 @@
 
     <div class="h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700"></div>
 
-    <div class="max-w-[1800px] mx-auto p-4 md:p-6 lg:p-8">
-        <div class="mb-6">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+    <div class="relative mx-auto max-w-[1800px] p-4 md:p-6 lg:p-8">
+        <div class="mb-6 rounded-3xl border border-white/10 bg-zinc-950/80 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl md:p-6">
+            <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
-                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-zinc-900 dark:text-white mb-2">
+                    <div class="mb-3 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
+                        Design 4 Builder
+                    </div>
+                    <h1 class="mb-2 text-2xl font-bold text-white md:text-3xl lg:text-4xl">
                         {{ $cv->exists ? 'Edit CV' : 'Create New CV' }}
                     </h1>
-                    <p class="text-sm md:text-base text-zinc-600 dark:text-zinc-400">
+                    <p class="text-sm text-zinc-400 md:text-base">
                         Build your ATS-optimized CV with AI assistance
                     </p>
                 </div>
                 @if($cv->exists)
-                    <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link">
+                    <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link" class="{{ $secondaryButtonClasses }} w-full sm:w-auto">
                         Open Preview
                     </x-ui::button>
                 @endif
             </div>
 
-            <div class="flex items-center gap-2 overflow-x-auto pb-2 -mx-2 px-2">
+            <div class="flex items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/5 p-2 backdrop-blur-xl">
                 @php
                     $sections = [
                         'personal' => ['name' => 'Personal', 'icon' => 'user'],
@@ -59,10 +74,12 @@
                 @foreach($sections as $key => $section)
                     <button
                         wire:click="setActiveSection('{{ $key }}')"
-                        class="shrink-0 flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200 whitespace-nowrap {{ $activeSection === $key ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700' }}"
+                        class="shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 {{ $activeSection === $key ? 'bg-white/10 text-white shadow-lg shadow-emerald-500/10' : 'text-zinc-400 hover:bg-white/10 hover:text-white' }}"
                     >
-                        <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
-                        {{ $section['name'] }}
+                        <span class="inline-flex items-center gap-2">
+                            <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
+                            {{ $section['name'] }}
+                        </span>
                     </button>
                 @endforeach
             </div>
@@ -70,31 +87,31 @@
 
         <div class="space-y-6">
             @if($activeSection === 'personal')
-                <x-ui::card class="card-hover">
+                <x-ui::card class="{{ $glassCardClasses }}">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                            <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-600" />
+                        <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
+                            <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-300" />
                         </div>
-                        <x-ui::heading size="lg">Choose Template</x-ui::heading>
+                        <x-ui::heading size="lg" class="text-white">Choose Template</x-ui::heading>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                         @foreach($templates as $id => $template)
                             <button
                                 wire:click="updateTemplate('{{ $id }}')"
-                                class="relative p-4 rounded-xl border-2 text-left transition-all duration-200 card-hover {{ $selectedTemplate === $id ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20' : 'border-zinc-200 dark:border-zinc-700 hover:border-emerald-300' }}"
+                                class="card-hover relative rounded-2xl border p-4 text-left transition-all duration-300 {{ $selectedTemplate === $id ? 'border-emerald-400/50 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                             >
-                                <div class="w-12 h-12 rounded-lg mb-3 flex items-center justify-center {{ $selectedTemplate === $id ? 'bg-emerald-500 text-white' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400' }}">
+                                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl {{ $selectedTemplate === $id ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'border border-white/10 bg-zinc-900/70 text-zinc-400' }}">
                                     <x-ui::icon name="{{ $template['icon'] }}" class="w-6 h-6" />
                                 </div>
-                                <div class="text-sm font-semibold {{ $selectedTemplate === $id ? 'text-emerald-900 dark:text-emerald-100' : 'text-zinc-900 dark:text-white' }}">
+                                <div class="text-sm font-semibold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
                                     {{ $template['name'] }}
                                 </div>
-                                <div class="text-xs text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2">
+                                <div class="mt-1 line-clamp-2 text-xs text-zinc-400">
                                     {{ $template['description'] }}
                                 </div>
                                 @if($selectedTemplate === $id)
                                     <div class="absolute top-2 right-2">
-                                        <x-ui::icon name="check-circle" class="w-5 h-5 text-emerald-500" />
+                                        <x-ui::icon name="check-circle" class="w-5 h-5 text-emerald-400" />
                                     </div>
                                 @endif
                             </button>
@@ -102,39 +119,53 @@
                     </div>
                 </x-ui::card>
 
-                <x-ui::card class="card-hover">
+                <x-ui::card class="{{ $glassCardClasses }}">
                     <div class="mb-6">
-                        <h2 class="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white mb-2">Personal Information</h2>
-                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Start with your basic contact details</p>
+                        <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">Personal Information</h2>
+                        <p class="text-sm text-zinc-400">Start with your basic contact details</p>
                     </div>
                     <form wire:submit="savePersonalInfo" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-ui::input wire:model="personalInfo.first_name" label="First Name" placeholder="John" required />
-                            <x-ui::input wire:model="personalInfo.last_name" label="Last Name" placeholder="Doe" required />
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />
+                            </div>
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.last_name" label="Last Name" placeholder="Doe" required :error="$errors->first('personalInfo.last_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.last_name') ? $errorFieldClasses : '' }}" />
+                            </div>
                         </div>
 
-                        <x-ui::input wire:model="title" label="CV Title" placeholder="e.g., Senior Software Engineer" required />
-                        <x-ui::description>How you want to be known professionally</x-ui::description>
+                        <x-ui::input wire:model="title" label="CV Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
+                        <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <x-ui::input wire:model="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required />
-                            <x-ui::input wire:model="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" />
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required :error="$errors->first('personalInfo.email')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.email') ? $errorFieldClasses : '' }}" />
+                            </div>
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" :error="$errors->first('personalInfo.phone')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.phone') ? $errorFieldClasses : '' }}" />
+                            </div>
                         </div>
 
-                        <x-ui::input wire:model="personalInfo.location" label="Location" placeholder="City, Country" />
-                        <x-ui::description>City and country where you're based</x-ui::description>
+                        <x-ui::input wire:model="personalInfo.location" label="Location" placeholder="City, Country" :error="$errors->first('personalInfo.location')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.location') ? $errorFieldClasses : '' }}" />
+                        <x-ui::description class="text-zinc-400">City and country where you're based</x-ui::description>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <x-ui::input wire:model="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." />
-                            <x-ui::input wire:model="personalInfo.github" label="GitHub" placeholder="github.com/..." />
-                            <x-ui::input wire:model="personalInfo.website" label="Website" placeholder="yoursite.com" />
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." :error="$errors->first('personalInfo.linkedin')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.linkedin') ? $errorFieldClasses : '' }}" />
+                            </div>
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.github" label="GitHub" placeholder="github.com/..." :error="$errors->first('personalInfo.github')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.github') ? $errorFieldClasses : '' }}" />
+                            </div>
+                            <div class="form-field">
+                                <x-ui::input wire:model="personalInfo.website" label="Website" placeholder="yoursite.com" :error="$errors->first('personalInfo.website')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.website') ? $errorFieldClasses : '' }}" />
+                            </div>
                         </div>
 
-                        <x-ui::textarea wire:model="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" />
-                        <x-ui::description>2-4 sentences highlighting your key strengths and what you bring to the table</x-ui::description>
+                        <x-ui::textarea wire:model="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" :error="$errors->first('summary')" class="{{ $fieldClasses }} {{ $errors->has('summary') ? $errorFieldClasses : '' }}" />
+                        <x-ui::description class="text-zinc-400">2-4 sentences highlighting your key strengths and what you bring to the table</x-ui::description>
 
-                        <div class="flex justify-end pt-4 border-t border-zinc-200 dark:border-zinc-700">
-                            <x-ui::button type="submit" variant="primary" icon="check">
+                        <div class="flex justify-end border-t border-white/10 pt-4">
+                            <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">
                                 Save Personal Info
                             </x-ui::button>
                         </div>
@@ -155,25 +186,25 @@
             @endif
 
             @if($activeSection === 'education')
-                <x-ui::card class="card-hover">
+                <x-ui::card class="{{ $glassCardClasses }}">
                     <div class="text-center py-12">
-                        <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 mx-auto mb-4 flex items-center justify-center">
-                            <x-ui::icon name="graduation-cap" class="w-8 h-8 text-zinc-400" />
+                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                            <x-ui::icon name="graduation-cap" class="w-8 h-8 text-emerald-300" />
                         </div>
-                        <x-ui::heading size="lg" class="mb-2">Education</x-ui::heading>
-                        <p class="text-zinc-600 dark:text-zinc-400">Education management coming soon...</p>
+                        <x-ui::heading size="lg" class="mb-2 text-white">Education</x-ui::heading>
+                        <p class="text-zinc-400">Education management coming soon...</p>
                     </div>
                 </x-ui::card>
             @endif
 
             @if($activeSection === 'projects')
-                <x-ui::card class="card-hover">
+                <x-ui::card class="{{ $glassCardClasses }}">
                     <div class="text-center py-12">
-                        <div class="w-16 h-16 rounded-full bg-zinc-100 dark:bg-zinc-800 mx-auto mb-4 flex items-center justify-center">
-                            <x-ui::icon name="folder" class="w-8 h-8 text-zinc-400" />
+                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
+                            <x-ui::icon name="folder" class="w-8 h-8 text-emerald-300" />
                         </div>
-                        <x-ui::heading size="lg" class="mb-2">Projects</x-ui::heading>
-                        <p class="text-zinc-600 dark:text-zinc-400">Projects management coming soon...</p>
+                        <x-ui::heading size="lg" class="mb-2 text-white">Projects</x-ui::heading>
+                        <p class="text-zinc-400">Projects management coming soon...</p>
                     </div>
                 </x-ui::card>
             @endif
@@ -185,24 +216,24 @@
             wire:click="toggleAiChat"
             variant="primary"
             icon="sparkles"
-            class="rounded-full w-14 h-14 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 {{ $showAiChat ? 'bg-emerald-700' : 'bg-emerald-600' }}"
+            class="h-14 w-14 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-emerald-500"
         />
     </div>
 
     @if($showAiChat)
         <div class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" wire:click="toggleAiChat"></div>
-        <div class="fixed bottom-0 right-0 w-full sm:w-[450px] h-[75vh] sm:h-[600px] z-50 bg-white dark:bg-zinc-900 rounded-t-2xl shadow-2xl flex flex-col">
-            <div class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-700">
+        <div class="fixed bottom-0 right-0 z-50 flex h-[75vh] w-full flex-col rounded-t-3xl border border-white/10 bg-zinc-950/90 shadow-2xl shadow-black/40 backdrop-blur-xl sm:bottom-6 sm:right-6 sm:h-[680px] sm:w-[470px] sm:rounded-3xl">
+            <div class="flex items-center justify-between border-b border-white/10 p-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                        <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-600" />
+                    <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
+                        <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-300" />
                     </div>
                     <div>
-                        <x-ui::heading size="md">AI Assistant</x-ui::heading>
-                        <x-ui::text size="sm" class="text-zinc-500 dark:text-zinc-400">Always here to help</x-ui::text>
+                        <x-ui::heading size="md" class="text-white">AI Assistant</x-ui::heading>
+                        <x-ui::text size="sm" class="text-zinc-400">Always here to help</x-ui::text>
                     </div>
                 </div>
-                <x-ui::button variant="ghost" size="sm" wire:click="toggleAiChat" icon="x" class="text-zinc-500 hover:text-zinc-700" />
+                <x-ui::button variant="ghost" size="sm" wire:click="toggleAiChat" icon="x" class="{{ $secondaryButtonClasses }} h-9 w-9 px-0 text-zinc-400 hover:text-white" />
             </div>
 
             <div class="flex-1 overflow-hidden">
