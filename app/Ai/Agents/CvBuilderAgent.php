@@ -9,21 +9,22 @@ use App\Ai\Tools\OptimizeForAts;
 use App\Ai\Tools\SelectBestTemplate;
 use App\Ai\Tools\SuggestKeywords;
 use App\Models\Cv;
-use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Conversational;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Contracts\HasTools;
+use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
 use Stringable;
 
 #[Provider(Lab::Ollama)]
+#[Model('mistral-large-3:675b-cloud')]
 #[Temperature(0.7)]
-class CvBuilderAgent implements Agent, Conversational, HasTools, HasStructuredOutput
+class CvBuilderAgent implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;
 
@@ -69,7 +70,7 @@ INSTRUCTIONS;
     /**
      * Get the tools available to the agent.
      *
-     * @return \Laravel\Ai\Contracts\Tool[]
+     * @return Tool[]
      */
     public function tools(): iterable
     {
@@ -84,26 +85,11 @@ INSTRUCTIONS;
     }
 
     /**
-     * Get the agent's structured output schema definition.
-     */
-    public function schema(JsonSchema $schema): array
-    {
-        return [
-            'response' => $schema->string()->required(),
-            'suggestions' => $schema->array()
-                ->description('Suggested improvements or next steps'),
-            'action_items' => $schema->array()
-                ->description('Action items to improve the CV'),
-            'confidence' => $schema->integer()->min(1)->max(10),
-        ];
-    }
-
-    /**
      * Get the current CV context for the conversation.
      */
     public function getCvContext(): array
     {
-        if (!$this->cv) {
+        if (! $this->cv) {
             return [];
         }
 

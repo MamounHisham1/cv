@@ -28,7 +28,7 @@
                             <span class="text-xs font-medium text-emerald-600 dark:text-emerald-400">AI Assistant</span>
                         </div>
                     @endif
-                    <div class="text-sm whitespace-pre-wrap leading-relaxed">{{ $message['content'] }}</div>
+                    <div class="text-sm whitespace-pre-wrap leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown($message['content']) !!}</div>
                     <div class="text-xs mt-2 pt-2 border-t border-zinc-200/50 {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
                         {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
                     </div>
@@ -66,17 +66,18 @@
 
     <!-- Input -->
     <form wire:submit="sendMessage" class="p-4 border-t border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-        <div class="relative">
+        <div class="flex gap-2 items-end">
             <flux:textarea
                 wire:model="userMessage"
                 placeholder="Ask me anything about your CV..."
-                rows="3"
-                class="resize-none pr-12"
+                rows="2"
+                class="resize-none flex-1"
+                x-on:keydown.enter.prevent="$el.closest('form').requestSubmit()"
             />
             <flux:button
                 type="submit"
                 variant="primary"
-                class="absolute bottom-3 right-3"
+                size="sm"
                 :disabled="$isLoading || empty($userMessage)"
             >
                 <flux:icon name="paper-airplane" class="w-4 h-4" />

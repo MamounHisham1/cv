@@ -11,10 +11,14 @@ use Livewire\Component;
 class CvAiChat extends Component
 {
     public ?Cv $cv = null;
+
     public array $messages = [];
+
     public string $userMessage = '';
+
     public bool $isLoading = false;
-    public ?int $conversationId = null;
+
+    public ?string $conversationId = null;
 
     public function mount(?Cv $cv = null): void
     {
@@ -22,14 +26,14 @@ class CvAiChat extends Component
         $this->messages = [
             [
                 'role' => 'assistant',
-                'content' => "Hello! I'm your ATS CV Builder assistant. I can help you:\n\n" .
-                    "• Craft compelling project descriptions\n" .
-                    "• Optimize your CV for ATS systems\n" .
-                    "• Suggest relevant keywords for your industry\n" .
-                    "• Analyze job descriptions for keyword matching\n" .
-                    "• Generate professional summaries\n" .
-                    "• Recommend the best CV template\n\n" .
-                    "What would you like help with today?",
+                'content' => "Hello! I'm your ATS CV Builder assistant. I can help you:\n\n".
+                    "• Craft compelling project descriptions\n".
+                    "• Optimize your CV for ATS systems\n".
+                    "• Suggest relevant keywords for your industry\n".
+                    "• Analyze job descriptions for keyword matching\n".
+                    "• Generate professional summaries\n".
+                    "• Recommend the best CV template\n\n".
+                    'What would you like help with today?',
                 'timestamp' => now()->toISOString(),
             ],
         ];
@@ -78,29 +82,9 @@ class CvAiChat extends Component
 
             $response = $agent->prompt($message);
 
-            // Store conversation ID for continuity
             $this->conversationId = $response->conversationId;
 
-            // Handle structured response
-            if (is_array($response)) {
-                $content = $response['response'] ?? '';
-
-                if (!empty($response['suggestions'])) {
-                    $content .= "\n\n**Suggestions:**\n";
-                    foreach ($response['suggestions'] as $suggestion) {
-                        $content .= "• {$suggestion}\n";
-                    }
-                }
-
-                if (!empty($response['action_items'])) {
-                    $content .= "\n**Action Items:**\n";
-                    foreach ($response['action_items'] as $item) {
-                        $content .= "• {$item}\n";
-                    }
-                }
-            } else {
-                $content = (string) $response;
-            }
+            $content = (string) $response;
 
             $this->messages[] = [
                 'role' => 'assistant',
@@ -139,7 +123,7 @@ class CvAiChat extends Component
         $this->messages = [
             [
                 'role' => 'assistant',
-                'content' => "Chat cleared. How can I help you today?",
+                'content' => 'Chat cleared. How can I help you today?',
                 'timestamp' => now()->toISOString(),
             ],
         ];
