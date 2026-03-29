@@ -21,3 +21,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+
+# Resume/Dataset files
+'resume data'
+resume_dataset.csv
+master_resumes.jsonl
+*.pdf

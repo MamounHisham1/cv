@@ -1,279 +1,215 @@
 <x-layouts::landing>
-    <main>
-        <section class="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 py-20 lg:py-28">
-            <div class="mx-auto max-w-7xl px-6 lg:px-8 text-center">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">Frequently Asked Questions</h1>
-                <p class="text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Find answers to the most common questions about SeratyAI. Can't find what you need? Reach out to our support team.
+    <main class="relative">
+        {{-- Animated Background Elements --}}
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-40 left-10 w-72 h-72 bg-emerald-200 dark:bg-emerald-900/20 rounded-full blur-3xl animate-pulse-glow opacity-50"></div>
+            <div class="absolute bottom-40 right-10 w-96 h-96 bg-emerald-300 dark:bg-emerald-800/20 rounded-full blur-3xl animate-pulse-glow opacity-50" style="animation-delay: 2s;"></div>
+        </div>
+
+        {{-- Hero Section with Modern Design --}}
+        <section class="relative bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 py-24 lg:py-32 overflow-hidden">
+            {{-- Geometric Pattern Overlay --}}
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute inset-0" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 48px 48px;"></div>
+            </div>
+
+            {{-- Floating Elements --}}
+            <div class="absolute top-20 left-1/4 w-3 h-3 bg-white rounded-full animate-float opacity-30"></div>
+            <div class="absolute bottom-32 right-1/4 w-2 h-2 bg-emerald-200 rounded-full animate-float-reverse opacity-40" style="animation-delay: 1s;"></div>
+            <div class="absolute top-1/3 right-10 w-4 h-4 bg-emerald-300 rounded-full animate-float-slow opacity-25" style="animation-delay: 0.5s;"></div>
+
+            <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
+                <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
+                    <x-ui::icon name="sparkles" size="sm" />
+                    Support Center
+                </div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                    Frequently Asked Questions
+                </h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
+                    Find answers to the most common questions about SeratyAI. Can't find what you need? Our support team is here to help.
                 </p>
             </div>
         </section>
 
-        <section class="py-20 lg:py-28 bg-white dark:bg-zinc-950">
-            <div class="mx-auto max-w-3xl px-6 lg:px-8">
-                <div x-data="{ open: null }" class="mb-12">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-                        {{-- <x-heroicon.c-globe class="size-[22px] text-emerald-600 dark:text-emerald-400" /> --}}
-                        General
-                    </h2>
-                    <div class="space-y-3">
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'g1' ? null : 'g1'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">What is SeratyAI?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'g1'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'g1'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'g1'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    SeratyAI is an AI-powered CV builder that helps you create professional, ATS-optimized resumes. Our platform analyzes job descriptions, suggests improvements to your content, and provides real-time compatibility scoring to maximize your chances of getting past automated screening systems.
-                                </div>
-                            </div>
+        {{-- FAQ Content with Modern Accordion --}}
+        <section class="relative py-20 lg:py-28 bg-white dark:bg-zinc-950">
+            <div class="mx-auto max-w-4xl px-6 lg:px-8">
+                {{-- General Questions --}}
+                <div class="mb-16" x-data="{ open: null }">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                            <x-ui::icon name="globe" size="lg" class="text-white" />
                         </div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">General Questions</h2>
+                    </div>
 
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                    <div class="space-y-4">
+                        @foreach([
+                            ['id' => 'g1', 'question' => 'What is SeratyAI?', 'answer' => 'SeratyAI is an AI-powered CV builder that helps you create professional, ATS-optimized resumes. Our platform analyzes job descriptions, suggests improvements to your content, and provides real-time compatibility scoring to maximize your chances of getting past automated screening systems.'],
+                            ['id' => 'g2', 'question' => 'Who is SeratyAI for?', 'answer' => 'SeratyAI is designed for anyone looking to create a professional resume, from recent graduates entering the job market to experienced professionals making career transitions. Whether you are applying for your first role or your twentieth, our AI adapts to your experience level and industry.'],
+                            ['id' => 'g3', 'question' => 'Is my data secure?', 'answer' => 'Absolutely. We take data privacy seriously. All personal information is encrypted at rest and in transit using industry-standard protocols. We never sell or share your data with third parties. SeratyAI is fully compliant with GDPR and SOC 2 standards.'],
+                            ['id' => 'g4', 'question' => 'Can I use SeratyAI on mobile devices?', 'answer' => 'Yes. SeratyAI is fully responsive and works on any device with a modern web browser, including smartphones and tablets. You can start building your CV on your laptop and continue editing on your phone seamlessly.']
+                        ] as $faq)
+                        <div class="group border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
                             <button
-                                @click="open = open === 'g2' ? null : 'g2'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'"
+                                class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200"
                             >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Who is SeratyAI for?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'g2'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'g2'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
+                                <span class="text-base font-semibold text-zinc-900 dark:text-white pr-4">{{ $faq['question'] }}</span>
+                                <div class="relative w-8 h-8 shrink-0">
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'">
+                                        <x-ui::icon name="chevron-down" size="md" class="text-zinc-400" />
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'">
+                                        <x-ui::icon name="chevron-up" size="md" class="text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                </div>
                             </button>
-                            <div x-show="open === 'g2'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    SeratyAI is designed for anyone looking to create a professional resume, from recent graduates entering the job market to experienced professionals making career transitions. Whether you are applying for your first role or your twentieth, our AI adapts to your experience level and industry.
+                            <div x-show="open === '{{ $faq['id'] }}'" x-collapse x-cloak>
+                                <div class="px-6 pb-6 pt-2 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed bg-gradient-to-r from-zinc-50/50 to-transparent dark:from-zinc-900/50">
+                                    {{ $faq['answer'] }}
                                 </div>
                             </div>
                         </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'g3' ? null : 'g3'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Is my data secure?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'g3'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'g3'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'g3'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Absolutely. We take data privacy seriously. All personal information is encrypted at rest and in transit using industry-standard protocols. We never sell or share your data with third parties. SeratyAI is fully compliant with GDPR and SOC 2 standards.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'g4' ? null : 'g4'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Can I use SeratyAI on mobile devices?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'g4'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'g4'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'g4'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Yes. SeratyAI is fully responsive and works on any device with a modern web browser, including smartphones and tablets. You can start building your CV on your laptop and continue editing on your phone seamlessly.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
-                <div x-data="{ open: null }" class="mb-12">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-                        {{-- <x-heroicon.c-bolt class="size-[22px] text-emerald-600 dark:text-emerald-400" /> --}}
-                        Features
-                    </h2>
-                    <div class="space-y-3">
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'f1' ? null : 'f1'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">How does the AI writing assistant work?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'f1'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'f1'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'f1'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Our AI analyzes your work experience, the target job description, and current hiring trends to generate optimized bullet points and summaries. It suggests stronger action verbs, quantifies achievements, and ensures your content aligns with what recruiters in your industry are looking for.
-                                </div>
-                            </div>
+                {{-- Features Questions --}}
+                <div class="mb-16" x-data="{ open: null }">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                            <x-ui::icon name="sparkles" size="lg" class="text-white" />
                         </div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Features & Capabilities</h2>
+                    </div>
 
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                    <div class="space-y-4">
+                        @foreach([
+                            ['id' => 'f1', 'question' => 'How does the AI writing assistant work?', 'answer' => 'Our AI analyzes your work experience, the target job description, and current hiring trends to generate optimized bullet points and summaries. It suggests stronger action verbs, quantifies achievements, and ensures your content aligns with what recruiters in your industry are looking for.'],
+                            ['id' => 'f2', 'question' => 'What does ATS optimization mean?', 'answer' => 'ATS stands for Applicant Tracking System. Over 98% of large companies use ATS software to filter resumes before a human ever sees them. Our optimization engine scans your CV against a job description, checks for required keywords, proper formatting, and common ATS pitfalls, then gives you a compatibility score with actionable improvement suggestions.'],
+                            ['id' => 'f3', 'question' => 'What file formats can I export my CV in?', 'answer' => 'You can export your CV as a high-quality PDF, which is the industry standard for job applications. PDF files preserve your formatting exactly as designed and are universally accepted by ATS systems and hiring managers.'],
+                            ['id' => 'f4', 'question' => 'Can I create multiple CVs for different job applications?', 'answer' => 'Yes. Pro and Enterprise users can create unlimited CVs and tailor each one to specific job applications. This is highly recommended, as customizing your CV for each role significantly increases your chances of passing ATS screening and landing interviews.']
+                        ] as $faq)
+                        <div class="group border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
                             <button
-                                @click="open = open === 'f2' ? null : 'f2'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'"
+                                class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200"
                             >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">What does ATS optimization mean?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'f2'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'f2'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
+                                <span class="text-base font-semibold text-zinc-900 dark:text-white pr-4">{{ $faq['question'] }}</span>
+                                <div class="relative w-8 h-8 shrink-0">
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'">
+                                        <x-ui::icon name="chevron-down" size="md" class="text-zinc-400" />
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'">
+                                        <x-ui::icon name="chevron-up" size="md" class="text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                </div>
                             </button>
-                            <div x-show="open === 'f2'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    ATS stands for Applicant Tracking System. Over 98% of large companies use ATS software to filter resumes before a human ever sees them. Our optimization engine scans your CV against a job description, checks for required keywords, proper formatting, and common ATS pitfalls, then gives you a compatibility score with actionable improvement suggestions.
+                            <div x-show="open === '{{ $faq['id'] }}'" x-collapse x-cloak>
+                                <div class="px-6 pb-6 pt-2 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed bg-gradient-to-r from-zinc-50/50 to-transparent dark:from-zinc-900/50">
+                                    {{ $faq['answer'] }}
                                 </div>
                             </div>
                         </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'f3' ? null : 'f3'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">What file formats can I export my CV in?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'f3'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'f3'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'f3'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    You can export your CV as a high-quality PDF, which is the industry standard for job applications. PDF files preserve your formatting exactly as designed and are universally accepted by ATS systems and hiring managers.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'f4' ? null : 'f4'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Can I create multiple CVs for different job applications?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'f4'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'f4'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'f4'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Yes. Pro and Enterprise users can create unlimited CVs and tailor each one to specific job applications. This is highly recommended, as customizing your CV for each role significantly increases your chances of passing ATS screening and landing interviews.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
-                <div x-data="{ open: null }" class="mb-12">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-                        {{-- <x-heroicon.c-briefcase class="size-[22px] text-emerald-600 dark:text-emerald-400" /> --}}
-                        Pricing
-                    </h2>
-                    <div class="space-y-3">
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'p1' ? null : 'p1'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Is there a free trial for the Pro plan?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'p1'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'p1'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'p1'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Yes. Every new account starts with a 7-day free trial of the Pro plan. You get full access to all Pro features, including unlimited CVs, all templates, and unlimited AI suggestions. No credit card is required to start your trial.
-                                </div>
-                            </div>
+                {{-- Pricing Questions --}}
+                <div class="mb-16" x-data="{ open: null }">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                            <x-ui::icon name="briefcase" size="lg" class="text-white" />
                         </div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Pricing & Subscriptions</h2>
+                    </div>
 
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                    <div class="space-y-4">
+                        @foreach([
+                            ['id' => 'p1', 'question' => 'Is there a free trial for the Pro plan?', 'answer' => 'Yes. Every new account starts with a 7-day free trial of the Pro plan. You get full access to all Pro features, including unlimited CVs, all templates, and unlimited AI suggestions. No credit card is required to start your trial.'],
+                            ['id' => 'p2', 'question' => 'Can I cancel my subscription at any time?', 'answer' => 'Absolutely. You can cancel your subscription at any time from your account settings. There are no cancellation fees or long-term commitments. If you cancel, you will retain access to Pro features until the end of your current billing period.'],
+                            ['id' => 'p3', 'question' => 'Do you offer discounts for annual billing?', 'answer' => 'Yes. When you choose annual billing, you save 20% compared to the monthly price. That brings the Pro plan down to $7.20/month and the Enterprise plan to $23.20/month. The discount is applied automatically when you select the annual option.']
+                        ] as $faq)
+                        <div class="group border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
                             <button
-                                @click="open = open === 'p2' ? null : 'p2'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'"
+                                class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200"
                             >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Can I cancel my subscription at any time?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'p2'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'p2'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
+                                <span class="text-base font-semibold text-zinc-900 dark:text-white pr-4">{{ $faq['question'] }}</span>
+                                <div class="relative w-8 h-8 shrink-0">
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'">
+                                        <x-ui::icon name="chevron-down" size="md" class="text-zinc-400" />
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'">
+                                        <x-ui::icon name="chevron-up" size="md" class="text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                </div>
                             </button>
-                            <div x-show="open === 'p2'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Absolutely. You can cancel your subscription at any time from your account settings. There are no cancellation fees or long-term commitments. If you cancel, you will retain access to Pro features until the end of your current billing period.
+                            <div x-show="open === '{{ $faq['id'] }}'" x-collapse x-cloak>
+                                <div class="px-6 pb-6 pt-2 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed bg-gradient-to-r from-zinc-50/50 to-transparent dark:from-zinc-900/50">
+                                    {{ $faq['answer'] }}
                                 </div>
                             </div>
                         </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 'p3' ? null : 'p3'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Do you offer discounts for annual billing?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 'p3'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 'p3'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 'p3'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Yes. When you choose annual billing, you save 20% compared to the monthly price. That brings the Pro plan down to $7.20/month and the Enterprise plan to $23.20/month. The discount is applied automatically when you select the annual option.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
-                <div x-data="{ open: null }">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6 flex items-center gap-3">
-                        {{-- <x-heroicon.c-code-bracket class="size-[22px] text-emerald-600 dark:text-emerald-400" /> --}}
-                        Technical
-                    </h2>
-                    <div class="space-y-3">
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 't1' ? null : 't1'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Which browsers are supported?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 't1'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 't1'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 't1'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    SeratyAI supports all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your preferred browser for the best experience. Internet Explorer is not supported.
-                                </div>
-                            </div>
+                {{-- Technical Questions --}}
+                <div class="mb-16" x-data="{ open: null }">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                            <x-ui::icon name="code" size="lg" class="text-white" />
                         </div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Technical Support</h2>
+                    </div>
 
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                    <div class="space-y-4">
+                        @foreach([
+                            ['id' => 't1', 'question' => 'Which browsers are supported?', 'answer' => 'SeratyAI supports all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your preferred browser for the best experience. Internet Explorer is not supported.'],
+                            ['id' => 't2', 'question' => 'Does SeratyAI offer an API?', 'answer' => 'Yes, API access is available on the Enterprise plan. Our RESTful API allows you to integrate SeratyAI functionality into your existing HR tools, job boards, or career platforms. Full documentation and SDK support are provided upon request.'],
+                            ['id' => 't3', 'question' => 'How do I report a bug or request a feature?', 'answer' => 'You can report bugs or request features through our contact page, by emailing support@seratyai.com, or by using the in-app feedback button. Our team reviews all submissions and aims to respond within 24 hours. Many of our most popular features started as user suggestions.']
+                        ] as $faq)
+                        <div class="group border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10">
                             <button
-                                @click="open = open === 't2' ? null : 't2'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'"
+                                class="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-all duration-200"
                             >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">Does SeratyAI offer an API?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 't2'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 't2'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
+                                <span class="text-base font-semibold text-zinc-900 dark:text-white pr-4">{{ $faq['question'] }}</span>
+                                <div class="relative w-8 h-8 shrink-0">
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-180 opacity-0' : 'rotate-0 opacity-100'">
+                                        <x-ui::icon name="chevron-down" size="md" class="text-zinc-400" />
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center transition-all duration-300" :class="open === '{{ $faq['id'] }}' ? 'rotate-0 opacity-100' : '-rotate-180 opacity-0'">
+                                        <x-ui::icon name="chevron-up" size="md" class="text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                </div>
                             </button>
-                            <div x-show="open === 't2'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    Yes, API access is available on the Enterprise plan. Our RESTful API allows you to integrate SeratyAI functionality into your existing HR tools, job boards, or career platforms. Full documentation and SDK support are provided upon request.
+                            <div x-show="open === '{{ $faq['id'] }}'" x-collapse x-cloak>
+                                <div class="px-6 pb-6 pt-2 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed bg-gradient-to-r from-zinc-50/50 to-transparent dark:from-zinc-900/50">
+                                    {{ $faq['answer'] }}
                                 </div>
                             </div>
                         </div>
-
-                        <div class="border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
-                            <button
-                                @click="open = open === 't3' ? null : 't3'"
-                                class="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                            >
-                                <span class="text-sm font-medium text-zinc-900 dark:text-white pr-4">How do I report a bug or request a feature?</span>
-                                {{-- <x-heroicon.c-chevron-down x-show="open !== 't3'" class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" />
-                                <x-heroicon.c-chevron-up x-show="open === 't3'" x-cloak class="size-5 text-zinc-500 dark:text-zinc-400 shrink-0" /> --}}
-                            </button>
-                            <div x-show="open === 't3'" x-collapse x-cloak>
-                                <div class="px-6 pb-4 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                                    You can report bugs or request features through our contact page, by emailing support@seratyai.com, or by using the in-app feedback button. Our team reviews all submissions and aims to respond within 24 hours. Many of our most popular features started as user suggestions.
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
 
-                <div class="mt-16 text-center">
-                    <x-ui::card>
-                        <div class="p-8 lg:p-12">
-                            <x-ui::icon name="mail" class="text-emerald-600 dark:text-emerald-400 mx-auto mb-4" style="width: 40px; height: 40px;" />
-                            <h3 class="text-xl font-bold text-zinc-900 dark:text-white mb-2">Still Have Questions?</h3>
-                            <p class="text-zinc-600 dark:text-zinc-400 mb-6">Our support team is ready to help you with anything you need.</p>
-                            <x-ui::button variant="primary" href="{{ route('contact') }}" icon="arrow-right">
+                {{-- Contact Support CTA --}}
+                <div class="mt-20">
+                    <x-ui::card class="relative overflow-hidden border-2 border-emerald-200 dark:border-emerald-800">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-500/10 to-transparent rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                        <div class="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-tr from-emerald-500/10 to-transparent rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+
+                        <div class="relative p-8 lg:p-12 text-center">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30 animate-pulse">
+                                <x-ui::icon name="mail" size="xl" class="text-white" />
+                            </div>
+                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Still Have Questions?</h3>
+                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">Our support team is ready to help you with anything you need. We typically respond within 24 hours.</p>
+                            <x-ui::button variant="primary" href="{{ route('contact') }}" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                                 Contact Support
                             </x-ui::button>
                         </div>

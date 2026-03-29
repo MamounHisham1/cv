@@ -16,6 +16,7 @@ use App\Ai\Tools\SuggestKeywords;
 use App\Ai\Tools\UpdateCvPersonalInfo;
 use App\Ai\Tools\UpdateCvSummary;
 use App\Models\Cv;
+use App\Services\ResumeVectorStore;
 use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
@@ -182,6 +183,7 @@ INSTRUCTIONS;
             new ImproveProjectDescription,
             new GenerateProfessionalSummary,
             new SelectBestTemplate,
+            new SearchResumes(app(ResumeVectorStore::class)),
             (new UpdateCvSummary)->setCv($this->cv),
             (new UpdateCvPersonalInfo)->setCv($this->cv),
             (new AddCvSkill)->setCv($this->cv),
