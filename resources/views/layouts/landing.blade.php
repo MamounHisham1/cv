@@ -1,47 +1,10 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="antialiased scroll-smooth">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark antialiased scroll-smooth">
     <head>
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-zinc-950 text-zinc-100">
-        <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
-            <div class="mx-auto flex min-h-16 max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
-                <x-app-logo href="/" class="shrink-0" />
-
-                <x-ui::navbar class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl lg:flex">
-                    <x-ui::navbar.item href="/" :current="request()->routeIs('home')" wire:navigate class="!rounded-full !px-4 !py-2 {{ request()->routeIs('home') ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white' }}">
-                        Home
-                    </x-ui::navbar.item>
-                    <x-ui::navbar.item href="{{ route('home') }}#about" class="!rounded-full !px-4 !py-2 !text-zinc-400 hover:!bg-white/10 hover:!text-white">
-                        About
-                    </x-ui::navbar.item>
-                    <x-ui::navbar.item href="{{ route('home') }}#faq" class="!rounded-full !px-4 !py-2 !text-zinc-400 hover:!bg-white/10 hover:!text-white">
-                        FAQ
-                    </x-ui::navbar.item>
-                    <x-ui::navbar.item href="{{ route('home') }}#contact" class="!rounded-full !px-4 !py-2 !text-zinc-400 hover:!bg-white/10 hover:!text-white">
-                        Contact
-                    </x-ui::navbar.item>
-                </x-ui::navbar>
-
-                <div class="flex-1"></div>
-
-                <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
-                    @guest
-                        <x-ui::navbar.item :href="route('login')" icon="log-in" class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
-                            {{ __('Login') }}
-                        </x-ui::navbar.item>
-                        <x-ui::button variant="primary" size="sm" :href="route('register')" class="max-lg:hidden border border-white/10 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-emerald-500">
-                            {{ __('Register') }}
-                        </x-ui::button>
-                    @endguest
-                    @auth
-                        <x-ui::navbar.item :href="route('cv.builder')" icon="file-text" wire:navigate class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
-                            {{ __('My CVs') }}
-                        </x-ui::navbar.item>
-                    @endauth
-                </x-ui::navbar>
-            </div>
-        </header>
+        <x-landing-navbar />
 
         {{ $slot }}
 

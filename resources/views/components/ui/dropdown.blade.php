@@ -13,20 +13,21 @@ $positionClasses = [
 $positionClass = $positionClasses[$position] ?? $positionClasses['bottom-start'];
 @endphp
 
-<div x-data="{ open: false }" class="relative inline-block">
+<div x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false" class="relative inline-block">
     <div @click="open = !open">
         {{ $slot }}
     </div>
 
     <div
         x-show="open"
+        x-cloak
         x-transition:enter="transition ease-out duration-100"
         x-transition:enter-start="opacity-0 scale-95"
         x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-75"
         x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95"
-        x-on:click.outside="open = false"
+        @click="open = false"
         class="absolute z-50 {{ $positionClass }} min-w-[8rem] overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-lg"
     >
         {{ $items }}

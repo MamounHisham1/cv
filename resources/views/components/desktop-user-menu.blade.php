@@ -1,4 +1,4 @@
-<x-ui::dropdown position="bottom-start">
+<x-ui::dropdown position="bottom-start" class="dark">
     <button
         type="button"
         data-test="sidebar-menu-button"
@@ -17,7 +17,7 @@
             </div>
         </div>
         <x-ui::menu separator />
-        <a href="{{ route('profile.edit') }}" wire:navigate class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+        <a href="{{ route('profile.edit') }}" wire:navigate class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300 outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white">
             <x-heroicon-c-cog-6-tooth class="size-4" />
             {{ __('Settings') }}
         </a>
@@ -25,7 +25,7 @@
             @csrf
             <button
                 type="submit"
-                class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300 outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white"
                 data-test="logout-button"
             >
                 <x-heroicon-c-arrow-right-start-on-rectangle class="size-4" />

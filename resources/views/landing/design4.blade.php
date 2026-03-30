@@ -1,7 +1,7 @@
 <x-layouts::landing>
     <main class="relative bg-zinc-950">
         {{-- Hero: Gradient mesh with glassmorphism --}}
-        <section class="relative min-h-screen flex items-center overflow-hidden">
+        <section id="home" class="scroll-mt-16 relative min-h-screen flex items-center overflow-hidden">
             <div class="absolute inset-0">
                 <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-600/30 rounded-full blur-[150px] animate-pulse-glow"></div>
                 <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[130px] animate-pulse-glow" style="animation-delay: 2s;"></div>
@@ -117,7 +117,7 @@
         @endphp
 
         {{-- Templates showcase: Moving miniature previews --}}
-        <section id="templates" class="relative overflow-hidden py-20 lg:py-28">
+        <section id="templates" class="scroll-mt-16 relative overflow-hidden py-20 lg:py-28">
             <div class="absolute left-0 top-12 h-[360px] w-[360px] rounded-full bg-purple-600/10 blur-[120px]"></div>
             <div class="absolute bottom-0 right-0 h-[320px] w-[320px] rounded-full bg-emerald-600/10 blur-[120px]"></div>
 
@@ -329,7 +329,7 @@
         </section>
 
         {{-- Features: Glass cards --}}
-        <section id="features" class="relative py-20 lg:py-28 overflow-hidden">
+        <section id="features" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
             <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-600/10 rounded-full blur-[100px]"></div>
 
@@ -423,7 +423,7 @@
         </section>
 
         {{-- About: Glass section --}}
-        <section id="about" class="relative py-20 lg:py-28 overflow-hidden">
+        <section id="about" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -536,7 +536,7 @@
         </section>
 
         {{-- Pricing: Glass tiers --}}
-        <section id="pricing" class="relative py-20 lg:py-28 overflow-hidden">
+        <section id="pricing" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/5 rounded-full blur-[150px]"></div>
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
@@ -592,7 +592,7 @@
         </section>
 
         {{-- FAQ: Glass accordion --}}
-        <section id="faq" class="relative py-20 lg:py-28 overflow-hidden">
+        <section id="faq" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
             <div class="relative mx-auto max-w-3xl px-6 lg:px-8">
                 <div class="text-center mb-16">
@@ -622,65 +622,6 @@
                         </div>
                     </div>
                     @endforeach
-                </div>
-            </div>
-        </section>
-
-        {{-- Contact: Glass form --}}
-        <section id="contact" class="relative py-20 lg:py-28 overflow-hidden">
-            <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[120px]"></div>
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="text-center max-w-2xl mx-auto mb-16">
-                    <div class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-blue-500/20">
-                        <x-ui::icon name="mail" size="sm" />
-                        Contact
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Get in Touch</h2>
-                    <p class="text-lg text-zinc-400">We respond within 24 hours.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2">
-                        <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
-                            <div class="flex items-center gap-3 mb-6">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center border border-emerald-500/20">
-                                    <x-ui::icon name="send" size="md" class="text-emerald-400" />
-                                </div>
-                                <h3 class="text-xl font-bold text-white">Send a Message</h3>
-                            </div>
-                            <livewire:contact-form />
-                        </div>
-                    </div>
-                    <div class="space-y-4">
-                        @foreach([
-                            ['icon' => 'mail', 'title' => 'Email', 'value' => 'support@seratyai.com', 'color' => 'emerald'],
-                            ['icon' => 'phone', 'title' => 'Phone', 'value' => '+1 (555) 123-4567', 'color' => 'blue'],
-                            ['icon' => 'map-pin', 'title' => 'Office', 'value' => '123 Innovation Drive, SF, CA 94107', 'color' => 'purple']
-                        ] as $info)
-                        <div class="bg-white/5 backdrop-blur-xl rounded-xl p-5 border border-white/10 hover:border-{{ $info['color'] }}-500/20 transition-all duration-300 hover:-translate-y-0.5">
-                            <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-{{ $info['color'] }}-500/20 flex items-center justify-center shrink-0">
-                                    <x-ui::icon name="{{ $info['icon'] }}" size="md" class="text-{{ $info['color'] }}-400" />
-                                </div>
-                                <div>
-                                    <div class="text-xs font-semibold text-white mb-0.5">{{ $info['title'] }}</div>
-                                    <p class="text-xs text-zinc-400">{{ $info['value'] }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                        <div class="bg-white/5 backdrop-blur-xl rounded-xl p-5 border border-white/10">
-                            <div class="flex items-center gap-2 mb-3">
-                                <x-ui::icon name="clock" size="md" class="text-amber-400" />
-                                <span class="text-xs font-semibold text-white">Hours</span>
-                            </div>
-                            <div class="space-y-2 text-xs">
-                                <div class="flex justify-between"><span class="text-zinc-500">Mon-Fri</span><span class="text-zinc-300">9AM-6PM</span></div>
-                                <div class="flex justify-between"><span class="text-zinc-500">Sat</span><span class="text-zinc-300">10AM-2PM</span></div>
-                                <div class="flex justify-between"><span class="text-zinc-500">Sun</span><span class="text-red-400">Closed</span></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </section>
