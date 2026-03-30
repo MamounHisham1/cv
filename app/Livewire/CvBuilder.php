@@ -7,6 +7,8 @@ use App\Models\Cv;
 use App\Models\CvCertification;
 use App\Models\CvEducation;
 use App\Models\CvExperience;
+use App\Models\CvLanguage;
+use App\Models\CvProject;
 use App\Models\CvSkill;
 use App\Services\CvTextExtractor;
 use Illuminate\Support\Facades\Auth;
@@ -178,7 +180,7 @@ class CvBuilder extends Component
             }
 
             $agent = new CvParser;
-            $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications). Return ONLY valid JSON with these exact keys:\n\n{$text}");
+            $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications, projects, languages). Return ONLY valid JSON with these exact keys:\n\n{$text}");
 
             Log::info('CvBuilder: AI raw response', [
                 'response_class' => get_class($response),
@@ -214,6 +216,8 @@ class CvBuilder extends Component
             $this->importSkills($cv, $data['skills'] ?? []);
             $this->importEducations($cv, $data['educations'] ?? []);
             $this->importCertifications($cv, $data['certifications'] ?? []);
+            $this->importProjects($cv, $data['projects'] ?? []);
+            $this->importLanguages($cv, $data['languages'] ?? []);
 
             Log::info('CvBuilder: Import completed', [
                 'cv_id' => $cv->id,
@@ -229,6 +233,10 @@ class CvBuilder extends Component
                 'educations' => $cv->educations->map->only(['institution', 'degree', 'field_of_study', 'start_date', 'end_date'])->toArray(),
                 'certifications_count' => $cv->certifications->count(),
                 'certifications' => $cv->certifications->map->only(['name', 'issuing_organization', 'issue_date'])->toArray(),
+                'projects_count' => $cv->projects->count(),
+                'projects' => $cv->projects->map->only(['name', 'description', 'start_date', 'end_date'])->toArray(),
+                'languages_count' => $cv->languages->count(),
+                'languages' => $cv->languages->map->only(['language', 'proficiency'])->toArray(),
             ]);
 
             $this->cv = $cv;
@@ -236,6 +244,8 @@ class CvBuilder extends Component
             $this->showOnboardingModal = false;
             $this->stage = 'builder';
             $this->activeSection = 'personal';
+            $this->dispatch('cv-saved', cvId: $cv->id);
+            $this->dispatch('cv-updated', cvId: $cv->id);
         } catch (\Throwable $e) {
             Log::error('CvBuilder: Import failed', [
                 'message' => $e->getMessage(),
@@ -510,6 +520,12 @@ class CvBuilder extends Component
         // Certifications
         $normalized['certifications'] = $data['certifications'] ?? [];
 
+        // Projects
+        $normalized['projects'] = $data['projects'] ?? $data['project'] ?? [];
+
+        // Languages
+        $normalized['languages'] = $data['languages'] ?? $data['language'] ?? [];
+
         return $normalized;
     }
 
@@ -595,6 +611,47 @@ class CvBuilder extends Component
                 'issue_date' => $cert['issue_date'] ?? null,
                 'expiration_date' => $cert['expiration_date'] ?? null,
                 'credential_id' => $cert['credential_id'] ?? '',
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function importProjects(Cv $cv, array|string $data): void
+    {
+        $projects = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($projects)) {
+            return;
+        }
+
+        foreach ($projects as $index => $proj) {
+            CvProject::create([
+                'cv_id' => $cv->id,
+                'name' => $proj['name'] ?? '',
+                'description' => $proj['description'] ?? '',
+                'key_achievements' => $proj['key_achievements'] ?? [],
+                'project_url' => $proj['project_url'] ?? '',
+                'github_url' => $proj['github_url'] ?? '',
+                'start_date' => $proj['start_date'] ?? null,
+                'end_date' => $proj['end_date'] ?? null,
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function importLanguages(Cv $cv, array|string $data): void
+    {
+        $languages = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($languages)) {
+            return;
+        }
+
+        foreach ($languages as $index => $lang) {
+            CvLanguage::create([
+                'cv_id' => $cv->id,
+                'language' => $lang['language'] ?? '',
+                'proficiency' => $lang['proficiency'] ?? 'intermediate',
                 'sort_order' => $index,
             ]);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\CvFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cv extends Model
 {
-    /** @use HasFactory<\Database\Factories\CvFactory> */
+    /** @use HasFactory<CvFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -59,9 +60,14 @@ class Cv extends Model
         return $this->hasMany(CvProject::class)->orderBy('sort_order');
     }
 
+    public function languages(): HasMany
+    {
+        return $this->hasMany(CvLanguage::class)->orderBy('sort_order');
+    }
+
     public function getFullNameAttribute(): string
     {
-        return $this->personal_info['first_name'] . ' ' . $this->personal_info['last_name'];
+        return $this->personal_info['first_name'].' '.$this->personal_info['last_name'];
     }
 
     public function getAwsCertificationsAttribute()

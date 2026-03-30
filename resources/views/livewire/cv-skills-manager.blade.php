@@ -9,7 +9,16 @@
         'software' => 'layout-grid',
         'industry' => 'briefcase',
         'soft' => 'users',
+        'frontend' => 'monitor',
+        'backend' => 'server',
+        'tools' => 'wrench',
+        'Frontend' => 'monitor',
+        'Backend' => 'server',
+        'Tools' => 'wrench',
     ];
+    $allCategoryKeys = array_unique(array_merge(array_keys($categories), array_keys($skills)));
+    $categoryLabels = array_merge($categories, array_combine($allCategoryKeys, $allCategoryKeys));
+    $categoryLabels = array_map(fn ($k) => ucfirst($k), $categoryLabels);
     $levelWidths = [
         'beginner' => 25,
         'intermediate' => 50,
@@ -80,12 +89,12 @@
         </div>
 
         <div class="space-y-6">
-            @foreach($categories as $categoryKey => $categoryLabel)
+            @foreach($allCategoryKeys as $categoryKey)
                 @if(isset($skills[$categoryKey]) && count($skills[$categoryKey]) > 0)
                     <div>
                         <h4 class="mb-4 flex items-center gap-2 text-sm font-bold text-white">
                             <x-ui::icon name="{{ $categoryIcons[$categoryKey] ?? 'check' }}" class="w-4 h-4 text-emerald-500" />
-                            {{ $categoryLabel }}
+                            {{ $categoryLabels[$categoryKey] ?? ucfirst($categoryKey) }}
                             <span class="text-xs font-normal text-zinc-400">({{ count($skills[$categoryKey]) }})</span>
                         </h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">

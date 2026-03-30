@@ -37,6 +37,8 @@ For the "experiences" field: return a JSON array of objects, each with keys: com
 For the "skills" field: return a JSON array of objects, each with keys: name, category, level
 For the "educations" field: return a JSON array of objects, each with keys: institution, degree, field_of_study, location, start_date, end_date, is_current
 For the "certifications" field: return a JSON array of objects, each with keys: name, issuing_organization, issue_date, expiration_date, credential_id
+For the "languages" field: return a JSON array of objects, each with keys: language, proficiency (beginner|elementary|intermediate|upper_intermediate|advanced|fluent|native)
+For the "projects" field: return a JSON array of objects, each with keys: name, description, key_achievements (array of strings), project_url, github_url, start_date, end_date
 
 Respond ONLY with valid JSON matching the schema. No markdown, no commentary, no extra keys.
 INSTRUCTIONS;
@@ -59,6 +61,8 @@ INSTRUCTIONS;
             'skills' => $schema->string()->description('JSON array of skills. Each object: {"name":"...","category":"frontend|backend|tools|general","level":"beginner|intermediate|advanced"}'),
             'educations' => $schema->string()->description('JSON array of educations. Each object: {"institution":"...","degree":"...","field_of_study":"...","location":"...","start_date":"YYYY-MM-DD","end_date":"YYYY-MM-DD","is_current":false}'),
             'certifications' => $schema->string()->description('JSON array of certifications. Each object: {"name":"...","issuing_organization":"...","issue_date":"YYYY-MM-DD","expiration_date":"YYYY-MM-DD","credential_id":"..."}'),
+            'languages' => $schema->string()->description('JSON array of languages. Each object: {"language":"...","proficiency":"beginner|elementary|intermediate|upper_intermediate|advanced|fluent|native"}'),
+            'projects' => $schema->string()->description('JSON array of projects. Each object: {"name":"...","description":"...","key_achievements":["..."],"project_url":"...","github_url":"...","start_date":"YYYY-MM-DD","end_date":"YYYY-MM-DD"}'),
         ];
     }
 }

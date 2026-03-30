@@ -10,10 +10,12 @@ use Livewire\Component;
 class CvSkillsManager extends Component
 {
     public ?Cv $cv = null;
+
     public array $skills = [];
 
     // Form state
     public bool $showForm = false;
+
     public ?int $editingId = null;
 
     public array $form = [
@@ -57,6 +59,9 @@ class CvSkillsManager extends Component
         if ($this->cv && $this->cv->id === $cvId) {
             $this->cv->refresh();
             $this->loadSkills();
+        } elseif (! $this->cv || ! $this->cv->exists) {
+            $this->cv = Cv::find($cvId);
+            $this->loadSkills();
         }
     }
 
@@ -94,15 +99,16 @@ class CvSkillsManager extends Component
 
     public function saveSkill(): void
     {
-        if (!$this->cv || !$this->cv->exists) {
+        if (! $this->cv || ! $this->cv->exists) {
             $this->dispatch('notify', message: 'Please save your personal information first.', type: 'error');
+
             return;
         }
 
         $this->validate([
             'form.name' => 'required|string|max:255',
-            'form.category' => 'required|string|in:' . implode(',', array_keys($this->categories)),
-            'form.level' => 'nullable|string|in:' . implode(',', array_keys($this->levels)),
+            'form.category' => 'required|string|in:'.implode(',', array_keys($this->categories)),
+            'form.level' => 'nullable|string|in:'.implode(',', array_keys($this->levels)),
         ]);
 
         $data = array_merge($this->form, [
@@ -142,8 +148,9 @@ class CvSkillsManager extends Component
 
     public function quickAddSkill(string $skillName): void
     {
-        if (!$this->cv || !$this->cv->exists) {
+        if (! $this->cv || ! $this->cv->exists) {
             $this->dispatch('notify', message: 'Please save your personal information first.', type: 'error');
+
             return;
         }
 
@@ -178,9 +185,10 @@ class CvSkillsManager extends Component
 
     private function getNextSortOrder(): int
     {
-        if (!$this->cv) {
+        if (! $this->cv) {
             return 0;
         }
+
         return $this->cv->skills()->count();
     }
 

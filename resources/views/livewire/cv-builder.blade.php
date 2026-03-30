@@ -438,6 +438,7 @@
                         'certifications' => ['name' => 'Certifications', 'icon' => 'trophy'],
                         'education' => ['name' => 'Education', 'icon' => 'graduation-cap'],
                         'projects' => ['name' => 'Projects', 'icon' => 'folder'],
+                        'languages' => ['name' => 'Languages', 'icon' => 'globe'],
                     ];
                 @endphp
 
@@ -524,27 +525,15 @@
             @endif
 
             @if($activeSection === 'education')
-                <x-ui::card class="{{ $glassCardClasses }}">
-                    <div class="text-center py-12">
-                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                            <x-ui::icon name="graduation-cap" class="w-8 h-8 text-emerald-300" />
-                        </div>
-                        <x-ui::heading size="lg" class="mb-2 text-white">Education</x-ui::heading>
-                        <p class="text-zinc-400">Education management coming soon...</p>
-                    </div>
-                </x-ui::card>
+                <livewire:cv-education-manager :cv="$cv" />
             @endif
 
             @if($activeSection === 'projects')
-                <x-ui::card class="{{ $glassCardClasses }}">
-                    <div class="text-center py-12">
-                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                            <x-ui::icon name="folder" class="w-8 h-8 text-emerald-300" />
-                        </div>
-                        <x-ui::heading size="lg" class="mb-2 text-white">Projects</x-ui::heading>
-                        <p class="text-zinc-400">Projects management coming soon...</p>
-                    </div>
-                </x-ui::card>
+                <livewire:cv-project-manager :cv="$cv" />
+            @endif
+
+            @if($activeSection === 'languages')
+                <livewire:cv-language-manager :cv="$cv" />
             @endif
         </div>
     </div>
