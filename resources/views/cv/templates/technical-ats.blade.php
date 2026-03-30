@@ -77,4 +77,36 @@
             @endforeach
         </section>
     @endif
+
+    <!-- Projects -->
+    @if($cv->projects->count() > 0)
+        <section class="mb-6">
+            <h2 class="text-lg font-bold uppercase mb-2">Projects</h2>
+            @foreach($cv->projects as $project)
+                <div class="mb-3">
+                    <div class="font-bold text-sm">{{ $project->name }}</div>
+                    @if($project->description)
+                        <p class="text-sm">{{ $project->description }}</p>
+                    @endif
+                    @if($project->key_achievements && count($project->key_achievements) > 0)
+                        <ul class="text-sm list-disc list-inside">
+                            @foreach($project->key_achievements as $achievement)
+                                <li>{{ $achievement }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endforeach
+        </section>
+    @endif
+
+    <!-- Languages -->
+    @if($cv->languages->count() > 0)
+        <section>
+            <h2 class="text-lg font-bold uppercase mb-2">Languages</h2>
+            <p class="text-sm">
+                {{ $cv->languages->map(fn ($lang) => $lang->language . ' (' . ucfirst($lang->proficiency) . ')')->implode(' | ') }}
+            </p>
+        </section>
+    @endif
 </div>

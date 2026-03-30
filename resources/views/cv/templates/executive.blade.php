@@ -89,13 +89,50 @@
 
     <!-- Certifications & Professional Development -->
     @if($cv->certifications->count() > 0)
-        <section>
+        <section class="mb-8">
             <h2 class="text-lg font-bold uppercase text-center mb-4 tracking-wide border-b border-gray-300 pb-2">Certifications & Professional Development</h2>
             <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
                 @foreach($cv->certifications as $cert)
                     <span class="flex items-center gap-2">
                         <span class="w-1.5 h-1.5 bg-gray-800 rounded-full"></span>
                         {{ $cert->name }} ({{ $cert->issuing_organization }})
+                    </span>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    <!-- Projects -->
+    @if($cv->projects->count() > 0)
+        <section class="mb-8">
+            <h2 class="text-lg font-bold uppercase text-center mb-4 tracking-wide border-b border-gray-300 pb-2">Key Projects</h2>
+            @foreach($cv->projects as $project)
+                <div class="mb-4">
+                    <h3 class="font-bold">{{ $project->name }}</h3>
+                    @if($project->description)
+                        <p class="text-sm text-gray-700 mt-1">{{ $project->description }}</p>
+                    @endif
+                    @if($project->key_achievements && count($project->key_achievements) > 0)
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-1 ml-4">
+                            @foreach($project->key_achievements as $achievement)
+                                <li>{{ $achievement }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endforeach
+        </section>
+    @endif
+
+    <!-- Languages -->
+    @if($cv->languages->count() > 0)
+        <section>
+            <h2 class="text-lg font-bold uppercase text-center mb-4 tracking-wide border-b border-gray-300 pb-2">Languages</h2>
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm">
+                @foreach($cv->languages as $lang)
+                    <span class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-gray-800 rounded-full"></span>
+                        {{ $lang->language }} ({{ ucfirst($lang->proficiency) }})
                     </span>
                 @endforeach
             </div>

@@ -35,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             abort(403);
         }
 
-        $cv->load(['educations', 'experiences', 'skills', 'certifications', 'projects']);
+        $cv->load(['educations', 'experiences', 'skills', 'certifications', 'projects', 'languages']);
 
         return view('cv.preview', ['cv' => $cv]);
     })->name('cv.preview');

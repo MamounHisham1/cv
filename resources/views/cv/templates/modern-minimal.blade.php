@@ -76,7 +76,7 @@
 
     <!-- Certifications -->
     @if($cv->certifications->count() > 0)
-        <section>
+        <section class="mb-8">
             <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Certifications</h2>
             <div class="space-y-1">
                 @foreach($cv->certifications as $cert)
@@ -84,6 +84,40 @@
                         <span class="font-medium">{{ $cert->name }}</span>
                         <span class="text-gray-500">- {{ $cert->issuing_organization }}</span>
                     </div>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    <!-- Projects -->
+    @if($cv->projects->count() > 0)
+        <section class="mb-8">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Projects</h2>
+            @foreach($cv->projects as $project)
+                <div class="mb-4">
+                    <h3 class="font-semibold">{{ $project->name }}</h3>
+                    @if($project->description)
+                        <p class="text-sm text-gray-600 mt-1">{{ $project->description }}</p>
+                    @endif
+                    @if($project->key_achievements && count($project->key_achievements) > 0)
+                        <ul class="mt-1 text-sm text-gray-600 list-disc list-inside">
+                            @foreach($project->key_achievements as $achievement)
+                                <li>{{ $achievement }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            @endforeach
+        </section>
+    @endif
+
+    <!-- Languages -->
+    @if($cv->languages->count() > 0)
+        <section>
+            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Languages</h2>
+            <div class="flex flex-wrap gap-2">
+                @foreach($cv->languages as $lang)
+                    <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $lang->language }} <span class="text-gray-500">{{ ucfirst($lang->proficiency) }}</span></span>
                 @endforeach
             </div>
         </section>
