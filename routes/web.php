@@ -12,12 +12,29 @@ Route::view('/3', 'landing.design3')->name('landing.3');
 Route::view('/4', 'landing.design4')->name('landing.4');
 Route::view('/5', 'landing.design5')->name('landing.5');
 
+Route::get('/', function () {
+    if (auth()->check()) {
+        $user = auth()->user();
+        $cvs = $user->cvs()
+            ->with(['experiences', 'skills', 'certifications'])
+            ->latest()
+            ->get();
+
+        return view('welcome-cvs', ['cvs' => $cvs]);
+    }
+
+    return view('landing.design4');
+})->name('home');
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::get('/cv-builder', CvBuilder::class)->name('cv.builder');
     Route::get('/cv-builder/{cv}', CvBuilder::class)->name('cv.edit');
     Route::get('/cv-evaluator', CvEvaluator::class)->name('cv.evaluator');
     Route::get('/cv/{cv}/preview', function (Cv $cv) {
+        if ($cv->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $cv->load(['educations', 'experiences', 'skills', 'certifications', 'projects']);
 
         return view('cv.preview', ['cv' => $cv]);
