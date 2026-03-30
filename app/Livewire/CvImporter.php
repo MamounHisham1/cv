@@ -98,9 +98,9 @@ class CvImporter extends Component
             }
 
             $agent = new CvParser;
-            $response = $agent->prompt("Parse this CV and extract all information:\n\n{$text}");
+            $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications). Return ONLY valid JSON with these exact keys:\n\n{$text}");
 
-            $data = $response->toArray();
+            $data = $response->structured;
 
             $personalInfo = [
                 'first_name' => $data['first_name'] ?? '',

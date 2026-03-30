@@ -2,16 +2,26 @@
 
 namespace App\Livewire;
 
+use App\Ai\Agents\CvParser;
 use App\Models\Cv;
+use App\Models\CvCertification;
+use App\Models\CvEducation;
+use App\Models\CvExperience;
+use App\Models\CvSkill;
+use App\Services\CvTextExtractor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 #[Layout('layouts.app')]
 #[Title('CV Builder')]
 class CvBuilder extends Component
 {
+    use WithFileUploads;
+
     public ?Cv $cv = null;
 
     /** 'onboarding' | 'builder' */
@@ -44,6 +54,15 @@ class CvBuilder extends Component
 
     public bool $showPreview = true;
 
+    // Onboarding modal state
+    public bool $showOnboardingModal = false;
+
+    public $uploadedFile = null;
+
+    public bool $isImporting = false;
+
+    public ?string $importError = null;
+
     public function mount(?Cv $cv = null): void
     {
         if ($cv && $cv->exists) {
@@ -64,20 +83,167 @@ class CvBuilder extends Component
     }
 
     /**
-     * Select a template during onboarding and advance to the builder stage.
+     * Select a template during onboarding and show the action modal.
      */
     public function onboardingSelectTemplate(string $templateId): void
     {
         $this->selectedTemplate = $templateId;
-        $this->stage = 'builder';
+        $this->showOnboardingModal = true;
+        $this->uploadedFile = null;
+        $this->importError = null;
     }
 
     /**
-     * Skip onboarding and go directly to the builder stage.
+     * Close the onboarding modal.
      */
-    public function skipOnboarding(): void
+    public function closeOnboardingModal(): void
     {
+        $this->showOnboardingModal = false;
+        $this->uploadedFile = null;
+        $this->importError = null;
+    }
+
+    /**
+     * Switch back to the onboarding stage to create a new CV.
+     */
+    public function goToOnboarding(): void
+    {
+        $this->cv = new Cv;
+        $this->personalInfo = [
+            'first_name' => '',
+            'last_name' => '',
+            'email' => Auth::user()->email,
+            'phone' => '',
+            'location' => '',
+            'linkedin' => '',
+            'github' => '',
+            'website' => '',
+        ];
+        $this->title = '';
+        $this->summary = '';
+        $this->selectedTemplate = 'professional-classic';
+        $this->activeSection = 'personal';
+        $this->stage = 'onboarding';
+    }
+
+    /**
+     * Create a blank CV with the selected template and switch to the builder.
+     */
+    public function createFromScratch(): void
+    {
+        $this->showOnboardingModal = false;
+
+        $this->cv = Cv::create([
+            'user_id' => Auth::id(),
+            'title' => 'My CV',
+            'template_id' => $this->selectedTemplate,
+            'personal_info' => [
+                'first_name' => '',
+                'last_name' => '',
+                'email' => Auth::user()->email,
+                'phone' => '',
+                'location' => '',
+                'linkedin' => '',
+                'github' => '',
+                'website' => '',
+            ],
+            'status' => 'draft',
+        ]);
+
         $this->stage = 'builder';
+        $this->activeSection = 'personal';
+    }
+
+    /**
+     * Import an existing CV from an uploaded file.
+     */
+    public function importCv(): void
+    {
+        $this->validate([
+            'uploadedFile' => 'required|file|mimes:pdf,doc,docx,txt|max:5120',
+        ]);
+
+        $this->isImporting = true;
+        $this->importError = null;
+
+        try {
+            $extractor = new CvTextExtractor;
+            $text = $extractor->extract($this->uploadedFile);
+
+            if (empty(trim($text))) {
+                $this->importError = 'Could not extract text from the file. Try a different format or start from scratch.';
+                $this->isImporting = false;
+
+                return;
+            }
+
+            $agent = new CvParser;
+            $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications). Return ONLY valid JSON with these exact keys:\n\n{$text}");
+
+            Log::info('CvBuilder: AI raw response', [
+                'response_class' => get_class($response),
+                'text' => substr($response->text, 0, 500),
+                'has_structured' => isset($response->structured),
+                'structured' => isset($response->structured) ? $response->structured : null,
+            ]);
+
+            $data = $response->structured;
+            $data = $this->normalizeImportData($data);
+
+            $personalInfo = [
+                'first_name' => $data['first_name'] ?? '',
+                'last_name' => $data['last_name'] ?? '',
+                'email' => $data['email'] ?? Auth::user()->email,
+                'phone' => $data['phone'] ?? '',
+                'location' => $data['location'] ?? '',
+                'linkedin' => $data['linkedin'] ?? '',
+                'github' => $data['github'] ?? '',
+                'website' => $data['website'] ?? '',
+            ];
+
+            $cv = Cv::create([
+                'user_id' => Auth::id(),
+                'title' => $data['title'] ?? 'Imported CV',
+                'template_id' => $this->selectedTemplate,
+                'personal_info' => $personalInfo,
+                'summary' => $data['summary'] ?? '',
+                'status' => 'draft',
+            ]);
+
+            $this->importExperiences($cv, $data['experiences'] ?? []);
+            $this->importSkills($cv, $data['skills'] ?? []);
+            $this->importEducations($cv, $data['educations'] ?? []);
+            $this->importCertifications($cv, $data['certifications'] ?? []);
+
+            Log::info('CvBuilder: Import completed', [
+                'cv_id' => $cv->id,
+                'title' => $cv->title,
+                'template_id' => $cv->template_id,
+                'personal_info' => $cv->personal_info,
+                'summary' => $cv->summary,
+                'experiences_count' => $cv->experiences->count(),
+                'experiences' => $cv->experiences->map->only(['company', 'title', 'location', 'start_date', 'end_date', 'is_current'])->toArray(),
+                'skills_count' => $cv->skills->count(),
+                'skills' => $cv->skills->map->only(['name', 'category', 'level'])->toArray(),
+                'educations_count' => $cv->educations->count(),
+                'educations' => $cv->educations->map->only(['institution', 'degree', 'field_of_study', 'start_date', 'end_date'])->toArray(),
+                'certifications_count' => $cv->certifications->count(),
+                'certifications' => $cv->certifications->map->only(['name', 'issuing_organization', 'issue_date'])->toArray(),
+            ]);
+
+            $this->cv = $cv;
+            $this->loadCvData();
+            $this->showOnboardingModal = false;
+            $this->stage = 'builder';
+            $this->activeSection = 'personal';
+        } catch (\Throwable $e) {
+            Log::error('CvBuilder: Import failed', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $this->importError = 'Failed to process your CV. Please try again or start from scratch.';
+            $this->isImporting = false;
+        }
     }
 
     #[On('cv-updated')]
@@ -245,6 +411,193 @@ class CvBuilder extends Component
             'certifications' => $this->cv->certifications,
             'projects' => $this->cv->projects,
         ];
+    }
+
+    private function normalizeImportData(array $data): array
+    {
+        // If the AI returned the expected flat structure, return as-is
+        if (isset($data['first_name']) || isset($data['experiences'])) {
+            return $data;
+        }
+
+        $normalized = [];
+
+        // Handle nested personal_information object
+        $pi = $data['personal_information'] ?? $data['personal_info'] ?? [];
+        if (isset($pi['name']) && ! isset($pi['first_name'])) {
+            $nameParts = preg_split('/\s+/', trim($pi['name']), 2);
+            $pi['first_name'] = $nameParts[0] ?? '';
+            $pi['last_name'] = $nameParts[1] ?? '';
+        }
+        $normalized['first_name'] = $pi['first_name'] ?? $data['first_name'] ?? '';
+        $normalized['last_name'] = $pi['last_name'] ?? $data['last_name'] ?? '';
+        $normalized['email'] = $pi['email'] ?? $data['email'] ?? '';
+        $normalized['phone'] = $pi['phone'] ?? $data['phone'] ?? '';
+        $normalized['location'] = $pi['location'] ?? $data['location'] ?? '';
+        $normalized['linkedin'] = $pi['linkedin'] ?? $data['linkedin'] ?? '';
+        $normalized['github'] = $pi['github'] ?? $data['github'] ?? '';
+        $normalized['website'] = $pi['website'] ?? $data['website'] ?? '';
+        $normalized['title'] = $pi['title'] ?? $data['title'] ?? 'Imported CV';
+
+        // Summary could be under "profile", "summary", "about", "objective"
+        $normalized['summary'] = $data['profile'] ?? $data['summary'] ?? $data['about'] ?? $data['objective'] ?? '';
+
+        // Experiences could be under "work_experience", "experience", "projects"
+        $rawExperiences = $data['work_experience'] ?? $data['experience'] ?? $data['experiences'] ?? [];
+        if (is_array($rawExperiences)) {
+            $normalized['experiences'] = array_map(function ($exp) {
+                if (isset($exp['name']) && ! isset($exp['company'])) {
+                    // This is a project, not a work experience
+                    return [
+                        'company' => $exp['name'] ?? '',
+                        'title' => '',
+                        'location' => '',
+                        'start_date' => null,
+                        'end_date' => null,
+                        'is_current' => false,
+                        'description' => $exp['description'] ?? '',
+                        'achievements' => $exp['achievements'] ?? [],
+                    ];
+                }
+
+                return [
+                    'company' => $exp['company'] ?? '',
+                    'title' => $exp['title'] ?? $exp['role'] ?? '',
+                    'location' => $exp['location'] ?? '',
+                    'start_date' => $exp['start_date'] ?? null,
+                    'end_date' => $exp['end_date'] ?? null,
+                    'is_current' => $exp['is_current'] ?? false,
+                    'description' => $exp['description'] ?? '',
+                    'achievements' => $exp['achievements'] ?? [],
+                ];
+            }, $rawExperiences);
+        }
+
+        // Skills could be nested object {frontend: [...], backend: [...]} or flat array
+        $rawSkills = $data['skills'] ?? [];
+        if (isset($rawSkills['frontend']) || isset($rawSkills['backend']) || isset($rawSkills['tools'])) {
+            $normalized['skills'] = [];
+            foreach ($rawSkills as $category => $names) {
+                if (is_array($names)) {
+                    foreach ($names as $name) {
+                        if (is_string($name) && strlen(trim($name)) > 0) {
+                            $normalized['skills'][] = [
+                                'name' => $name,
+                                'category' => $category,
+                                'level' => 'intermediate',
+                            ];
+                        }
+                    }
+                }
+            }
+        } elseif (is_array($rawSkills)) {
+            $normalized['skills'] = array_map(function ($skill) {
+                if (is_string($skill)) {
+                    return ['name' => $skill, 'category' => 'general', 'level' => 'intermediate'];
+                }
+
+                return [
+                    'name' => $skill['name'] ?? '',
+                    'category' => $skill['category'] ?? 'general',
+                    'level' => $skill['level'] ?? 'intermediate',
+                ];
+            }, $rawSkills);
+        }
+
+        // Education
+        $normalized['educations'] = $data['education'] ?? $data['educations'] ?? [];
+
+        // Certifications
+        $normalized['certifications'] = $data['certifications'] ?? [];
+
+        return $normalized;
+    }
+
+    private function importExperiences(Cv $cv, array|string $data): void
+    {
+        $experiences = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($experiences)) {
+            return;
+        }
+
+        foreach ($experiences as $index => $exp) {
+            CvExperience::create([
+                'cv_id' => $cv->id,
+                'company' => $exp['company'] ?? '',
+                'title' => $exp['title'] ?? '',
+                'location' => $exp['location'] ?? '',
+                'start_date' => $exp['start_date'] ?? null,
+                'end_date' => $exp['end_date'] ?? null,
+                'is_current' => $exp['is_current'] ?? false,
+                'description' => $exp['description'] ?? '',
+                'achievements' => $exp['achievements'] ?? [],
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function importSkills(Cv $cv, array|string $data): void
+    {
+        $skills = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($skills)) {
+            return;
+        }
+
+        foreach ($skills as $index => $skill) {
+            CvSkill::create([
+                'cv_id' => $cv->id,
+                'name' => $skill['name'] ?? '',
+                'category' => $skill['category'] ?? 'general',
+                'level' => $skill['level'] ?? 'intermediate',
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function importEducations(Cv $cv, array|string $data): void
+    {
+        $educations = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($educations)) {
+            return;
+        }
+
+        foreach ($educations as $index => $edu) {
+            CvEducation::create([
+                'cv_id' => $cv->id,
+                'institution' => $edu['institution'] ?? '',
+                'degree' => $edu['degree'] ?? '',
+                'field_of_study' => $edu['field_of_study'] ?? '',
+                'location' => $edu['location'] ?? '',
+                'start_date' => $edu['start_date'] ?? null,
+                'end_date' => $edu['end_date'] ?? null,
+                'is_current' => $edu['is_current'] ?? false,
+                'sort_order' => $index,
+            ]);
+        }
+    }
+
+    private function importCertifications(Cv $cv, array|string $data): void
+    {
+        $certifications = is_array($data) ? $data : json_decode($data, true);
+
+        if (! is_array($certifications)) {
+            return;
+        }
+
+        foreach ($certifications as $index => $cert) {
+            CvCertification::create([
+                'cv_id' => $cv->id,
+                'name' => $cert['name'] ?? '',
+                'issuing_organization' => $cert['issuing_organization'] ?? '',
+                'issue_date' => $cert['issue_date'] ?? null,
+                'expiration_date' => $cert['expiration_date'] ?? null,
+                'credential_id' => $cert['credential_id'] ?? '',
+                'sort_order' => $index,
+            ]);
+        }
     }
 
     public function render()
