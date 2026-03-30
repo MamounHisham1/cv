@@ -528,6 +528,12 @@ class CvEvaluator extends Component
         ];
     }
 
+    public function clearSelection(): void
+    {
+        $this->selectedEvaluationIds = [];
+        $this->comparisonResult = null;
+    }
+
     public function refreshEvaluations(): void
     {
         $this->evaluations = auth()->check()

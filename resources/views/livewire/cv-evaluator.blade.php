@@ -224,5 +224,198 @@
             </div>
         @endif
 
+        {{-- ===== EVALUATION HISTORY ===== --}}
+        @if(auth()->check() && count($evaluations) > 0)
+        <div class="mt-10 {{ $glassCard }}">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Evaluation History</h3>
+                    <p class="text-sm text-zinc-500">Select two evaluations to compare scores</p>
+                </div>
+                @if(count($selectedEvaluationIds) > 0)
+                    <button wire:click="clearSelection"
+                        class="{{ $ghostBtn }} text-xs">
+                        <x-ui::icon name="x" class="h-3 w-3" /> Clear Selection
+                    </button>
+                @endif
+            </div>
+
+            {{-- Score progression sparkline --}}
+            <div class="mb-6 flex items-end gap-1 h-16">
+                @foreach($evaluations as $eval)
+                    @php
+                        $heightPct = max(15, ($eval['overall_score'] ?? 0));
+                        $isSelected = in_array($eval['id'], $selectedEvaluationIds);
+                        $barColor = $isSelected
+                            ? 'bg-emerald-400'
+                            : 'bg-zinc-600 hover:bg-zinc-500';
+                    @endphp
+                    <div class="flex-1 min-w-[4px] rounded-t {{ $barColor }} transition-all duration-300 cursor-pointer"
+                         style="height: {{ $heightPct }}%"
+                         wire:click="toggleEvaluationSelection({{ $eval['id'] }}">
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- History list --}}
+            <div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+                @foreach($evaluations as $index => $eval)
+                    @php
+                        $isSelected = in_array($eval['id'], $selectedEvaluationIds);
+                        $prevScore = isset($evaluations[$index + 1]) ? $evaluations[$index + 1]['overall_score'] : null;
+                        $scoreDiff = $prevScore !== null ? $eval['overall_score'] - $prevScore : null;
+                    @endphp
+                    <div wire:click="toggleEvaluationSelection({{ $eval['id'] }})"
+                        class="group flex items-center gap-4 rounded-2xl border {{ $isSelected ? 'border-emerald-400/30 bg-emerald-500/10' : 'border-white/5 bg-white/[0.02] hover:bg-white/5' }} p-4 transition-all duration-200 cursor-pointer">
+
+                        {{-- Selection checkbox --}}
+                        <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border {{ $isSelected ? 'border-emerald-400 bg-emerald-500/20' : 'border-white/20' }}">
+                            @if($isSelected)
+                                <x-ui::icon name="check" class="h-3 w-3 text-emerald-400" />
+                            @endif
+                        </div>
+
+                        {{-- Score badge --}}
+                        <div class="flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-xl border {{ $isSelected ? 'border-emerald-400/20 bg-emerald-500/10' : 'border-white/10 bg-white/5' }}">
+                            <span class="text-sm font-bold {{ $this->gradeColour($eval['grade'] ?? 'F') }}">{{ $eval['grade'] ?? '—' }}</span>
+                            <span class="text-[10px] text-zinc-500">{{ $eval['overall_score'] ?? 0 }}</span>
+                        </div>
+
+                        {{-- Info --}}
+                        <div class="flex-1 min-w-0">
+                            <p class="truncate text-sm font-medium text-zinc-200">
+                                {{ $eval['filename'] ?? 'Pasted Text' }}
+                            </p>
+                            <p class="text-xs text-zinc-500">
+                                {{ \Carbon\Carbon::parse($eval['created_at'])->format('M j, Y \a\t g:i A') }}
+                            </p>
+                        </div>
+
+                        {{-- Score diff indicator --}}
+                        @if($scoreDiff !== null)
+                            <div class="shrink-0 flex items-center gap-1 text-xs font-semibold {{ $scoreDiff > 0 ? 'text-emerald-400' : ($scoreDiff < 0 ? 'text-red-400' : 'text-zinc-500') }}">
+                                @if($scoreDiff > 0)
+                                    <x-ui::icon name="arrow-up" class="h-3 w-3" />
+                                    +{{ $scoreDiff }}
+                                @elseif($scoreDiff < 0)
+                                    <x-ui::icon name="arrow-down" class="h-3 w-3" />
+                                    {{ $scoreDiff }}
+                                @else
+                                    <x-ui::icon name="minus" class="h-3 w-3" />
+                                    0
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- ===== COMPARISON PANEL ===== --}}
+        @if($comparisonResult)
+        <div class="mt-6 {{ $glassCard }}" wire:key="comparison-{{ implode('-', $selectedEvaluationIds) }}">
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white">Comparison</h3>
+                    <p class="text-sm text-zinc-500">Score differences between the two selected evaluations</p>
+                </div>
+            </div>
+
+            {{-- Overall score comparison --}}
+            <div class="mb-6 grid grid-cols-3 items-center gap-4 rounded-2xl border border-white/5 bg-white/[0.02] p-4">
+                {{-- Eval A --}}
+                <div class="text-center">
+                    <p class="mb-1 text-xs text-zinc-500">{{ \Carbon\Carbon::parse($comparisonResult['eval_a']['created_at'])->format('M j') }}</p>
+                    <div class="inline-flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-white/10 bg-white/5">
+                        <span class="text-xl font-black {{ $this->gradeColour($comparisonResult['eval_a']['grade']) }}">{{ $comparisonResult['eval_a']['grade'] }}</span>
+                        <span class="text-[10px] text-zinc-400">{{ $comparisonResult['eval_a']['overall_score'] }}</span>
+                    </div>
+                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_a']['filename'] ?? 'Pasted' }}</p>
+                </div>
+
+                {{-- Diff indicator --}}
+                <div class="text-center">
+                    @php
+                        $overallDiff = $comparisonResult['overall_diff'];
+                        $diffColor = $overallDiff > 0 ? 'text-emerald-400' : ($overallDiff < 0 ? 'text-red-400' : 'text-zinc-400');
+                        $diffBg = $overallDiff > 0 ? 'bg-emerald-500/10 border-emerald-400/20' : ($overallDiff < 0 ? 'bg-red-500/10 border-red-400/20' : 'bg-white/5 border-white/10');
+                    @endphp
+                    <div class="inline-flex items-center gap-1 rounded-full border {{ $diffBg }} px-4 py-2">
+                        @if($overallDiff > 0)
+                            <x-ui::icon name="arrow-up" class="h-4 w-4 {{ $diffColor }}" />
+                        @elseif($overallDiff < 0)
+                            <x-ui::icon name="arrow-down" class="h-4 w-4 {{ $diffColor }}" />
+                        @else
+                            <x-ui::icon name="minus" class="h-4 w-4 {{ $diffColor }}" />
+                        @endif
+                        <span class="text-sm font-bold {{ $diffColor }}">
+                            @if($overallDiff > 0)+@endif{{ $overallDiff }}
+                        </span>
+                    </div>
+                    <p class="mt-1 text-xs text-zinc-500">overall change</p>
+                </div>
+
+                {{-- Eval B --}}
+                <div class="text-center">
+                    <p class="mb-1 text-xs text-zinc-500">{{ \Carbon\Carbon::parse($comparisonResult['eval_b']['created_at'])->format('M j') }}</p>
+                    <div class="inline-flex h-16 w-16 flex-col items-center justify-center rounded-full border-2 border-white/10 bg-white/5">
+                        <span class="text-xl font-black {{ $this->gradeColour($comparisonResult['eval_b']['grade']) }}">{{ $comparisonResult['eval_b']['grade'] }}</span>
+                        <span class="text-[10px] text-zinc-400">{{ $comparisonResult['eval_b']['overall_score'] }}</span>
+                    </div>
+                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_b']['filename'] ?? 'Pasted' }}</p>
+                </div>
+            </div>
+
+            {{-- Per-criteria comparison --}}
+            <div class="space-y-3">
+                @foreach([
+                    'contact_information' => 'Contact Information',
+                    'professional_summary' => 'Professional Summary',
+                    'work_experience' => 'Work Experience',
+                    'skills_section' => 'Skills Section',
+                    'education' => 'Education',
+                    'ats_compatibility' => 'ATS Compatibility',
+                    'formatting_readability' => 'Formatting & Readability',
+                    'achievements_impact' => 'Achievements & Impact',
+                    'keyword_optimisation' => 'Keyword Optimisation',
+                    'overall_completeness' => 'Overall Completeness',
+                ] as $key => $label)
+                    @php
+                        $scoreA = $comparisonResult['eval_a']['criteria'][$key]['score'] ?? 0;
+                        $scoreB = $comparisonResult['eval_b']['criteria'][$key]['score'] ?? 0;
+                        $diff = $comparisonResult['criteria_diffs'][$key] ?? 0;
+                        $pctA = $scoreA * 10;
+                        $pctB = $scoreB * 10;
+                        $diffColor = $diff > 0 ? 'text-emerald-400' : ($diff < 0 ? 'text-red-400' : 'text-zinc-500');
+                        $diffBg = $diff > 0 ? 'bg-emerald-500/10 border-emerald-400/20' : ($diff < 0 ? 'bg-red-500/10 border-red-400/20' : 'bg-white/5 border-white/10');
+                    @endphp
+                    <div class="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+                        <div class="mb-2 flex items-center justify-between">
+                            <span class="text-sm font-medium text-zinc-300">{{ $label }}</span>
+                            <span class="inline-flex items-center gap-1 rounded-full border {{ $diffBg }} px-2 py-0.5 text-xs font-semibold {{ $diffColor }}">
+                                @if($diff > 0)+@endif{{ $diff }}
+                            </span>
+                        </div>
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 text-right text-[10px] text-zinc-500">{{ $scoreA }}</span>
+                                <div class="flex-1 h-1.5 overflow-hidden rounded-full bg-white/5">
+                                    <div class="h-full rounded-full bg-zinc-500 transition-all duration-500" style="width: {{ $pctA }}%"></div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 text-right text-[10px] text-zinc-500">{{ $scoreB }}</span>
+                                <div class="flex-1 h-1.5 overflow-hidden rounded-full bg-white/5">
+                                    <div class="h-full rounded-full transition-all duration-500 {{ $diff > 0 ? 'bg-emerald-500' : ($diff < 0 ? 'bg-red-400' : 'bg-zinc-400') }}" style="width: {{ $pctB }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
     </div>
 </div>
