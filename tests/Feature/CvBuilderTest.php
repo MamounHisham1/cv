@@ -1,7 +1,5 @@
 <?php
 
-use App\Livewire\CvAiChat;
-use App\Livewire\CvCertificationsManager;
 use App\Livewire\CvExperienceManager;
 use App\Livewire\CvSkillsManager;
 use App\Models\Cv;
@@ -99,21 +97,104 @@ describe('CV Builder', function () {
             ->assertSee('Quick Add Common Skills')
             ->assertSee('bg-zinc-950/80', false)
             ->assertSee('form-field', false)
-            ->assertSee('border-white/10', false);
+            ->assertSee('border-white/10', false)
+            ->assertSee('Type to search or create new...');
+    });
+
+    it('allows adding a skill with a custom category', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
 
         Livewire::actingAs($this->user)
-            ->test(CvCertificationsManager::class, ['cv' => $cv])
-            ->call('addCertification')
-            ->assertSee('Certifications')
-            ->assertSee('bg-zinc-950/80', false)
-            ->assertSee('form-field', false)
-            ->assertSee('border-white/10', false);
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->set('form.name', 'Docker')
+            ->set('form.category', 'Cloud & DevOps')
+            ->set('form.level', 'advanced')
+            ->call('saveSkill')
+            ->assertDispatched('notify', message: 'Skill added successfully!')
+            ->assertSet('showForm', false);
+
+        expect($cv->refresh()->skills)->toHaveCount(1);
+        expect($cv->skills->first()->category)->toBe('cloud & devops');
+        expect($cv->skills->first()->name)->toBe('Docker');
+    });
+
+    it('persists custom categories per user', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
 
         Livewire::actingAs($this->user)
-            ->test(CvAiChat::class, ['cv' => $cv])
-            ->assertSee('AI Assistant')
-            ->assertSee('bg-white/5', false)
-            ->assertSee('backdrop-blur-sm', false);
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->set('form.name', 'Docker')
+            ->set('form.category', 'Cloud & DevOps')
+            ->call('saveSkill');
+
+        expect($this->user->refresh()->skillCategories)->toHaveCount(1);
+        expect($this->user->skillCategories->first()->name)->toBe('Cloud & devops');
+
+        $otherUser = User::factory()->create();
+        Livewire::actingAs($otherUser)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->assertSet('categories', function ($categories) {
+                return ! in_array('Cloud & devops', $categories, true);
+            });
+    });
+
+    it('loads saved custom categories on mount', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
+
+        $this->user->skillCategories()->create(['name' => 'My Custom Cat']);
+
+        Livewire::actingAs($this->user)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->assertSet('categories', function ($categories) {
+                return in_array('My Custom Cat', $categories, true);
+            });
+    });
+
+    it('allows adding a skill with a preset category', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
+
+        Livewire::actingAs($this->user)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->set('form.name', 'Python')
+            ->set('form.category', 'General')
+            ->set('form.level', 'advanced')
+            ->call('saveSkill')
+            ->assertDispatched('notify', message: 'Skill added successfully!')
+            ->assertSet('showForm', false);
+
+        expect($cv->refresh()->skills)->toHaveCount(1);
+        expect($cv->skills->first()->category)->toBe('general');
+        expect($this->user->refresh()->skillCategories)->toHaveCount(0);
+    });
+
+    it('shows category search input in the form', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
+
+        Livewire::actingAs($this->user)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->call('addSkill')
+            ->assertSee('Type to search or create new...');
+    });
+
+    it('has empty category by default when adding a skill', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
+
+        Livewire::actingAs($this->user)
+            ->test(CvSkillsManager::class, ['cv' => $cv])
+            ->call('addSkill')
+            ->assertSet('form.category', '');
     });
 });
 

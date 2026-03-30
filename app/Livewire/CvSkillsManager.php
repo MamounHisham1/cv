@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cv;
 use App\Models\CvSkill;
+use App\Models\UserSkillCategory;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -13,24 +14,17 @@ class CvSkillsManager extends Component
 
     public array $skills = [];
 
-    // Form state
     public bool $showForm = false;
 
     public ?int $editingId = null;
 
     public array $form = [
         'name' => '',
-        'category' => 'general',
+        'category' => '',
         'level' => 'intermediate',
     ];
 
-    public array $categories = [
-        'general' => 'General',
-        'technical' => 'Technical Skills',
-        'software' => 'Software & Tools',
-        'industry' => 'Industry Knowledge',
-        'soft' => 'Soft Skills',
-    ];
+    public array $categories = [];
 
     public array $levels = [
         'beginner' => 'Beginner',
@@ -47,9 +41,18 @@ class CvSkillsManager extends Component
         'Salesforce', 'HubSpot', 'SAP', 'Oracle',
     ];
 
+    private const PRESET_CATEGORIES = [
+        'general' => 'General',
+        'technical' => 'Technical Skills',
+        'software' => 'Software & Tools',
+        'industry' => 'Industry Knowledge',
+        'soft' => 'Soft Skills',
+    ];
+
     public function mount(?Cv $cv = null): void
     {
         $this->cv = $cv;
+        $this->loadCategories();
         $this->loadSkills();
     }
 
@@ -63,6 +66,20 @@ class CvSkillsManager extends Component
             $this->cv = Cv::find($cvId);
             $this->loadSkills();
         }
+    }
+
+    public function loadCategories(): void
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            $this->categories = self::PRESET_CATEGORIES;
+
+            return;
+        }
+
+        $custom = $user->skillCategories()->pluck('name', 'name')->toArray();
+        $this->categories = array_merge(self::PRESET_CATEGORIES, $custom);
     }
 
     public function loadSkills(): void
@@ -87,9 +104,11 @@ class CvSkillsManager extends Component
             return;
         }
 
+        $categoryLabel = $this->categories[$skill->category] ?? ucfirst($skill->category);
+
         $this->form = [
             'name' => $skill->name,
-            'category' => $skill->category,
+            'category' => $categoryLabel,
             'level' => $skill->level ?? 'intermediate',
         ];
 
@@ -107,14 +126,34 @@ class CvSkillsManager extends Component
 
         $this->validate([
             'form.name' => 'required|string|max:255',
-            'form.category' => 'required|string|in:'.implode(',', array_keys($this->categories)),
+            'form.category' => 'required|string|max:50',
             'form.level' => 'nullable|string|in:'.implode(',', array_keys($this->levels)),
         ]);
 
-        $data = array_merge($this->form, [
+        $input = trim($this->form['category']);
+        $categoryKey = null;
+
+        foreach ($this->categories as $key => $label) {
+            if (strtolower($label) === strtolower($input)) {
+                $categoryKey = $key;
+                break;
+            }
+        }
+
+        $categoryKey = $categoryKey ?? strtolower($input);
+        $categoryLabel = $this->categories[$categoryKey] ?? ucfirst($categoryKey);
+
+        if (! array_key_exists($categoryKey, self::PRESET_CATEGORIES)) {
+            $this->persistCustomCategory($categoryLabel);
+        }
+
+        $data = [
             'cv_id' => $this->cv->id,
+            'name' => $this->form['name'],
+            'category' => $categoryKey,
+            'level' => $this->form['level'],
             'sort_order' => $this->editingId ? null : $this->getNextSortOrder(),
-        ]);
+        ];
 
         if ($this->editingId) {
             CvSkill::find($this->editingId)->update($data);
@@ -124,6 +163,7 @@ class CvSkillsManager extends Component
             $this->dispatch('notify', message: 'Skill added successfully!', type: 'success');
         }
 
+        $this->loadCategories();
         $this->loadSkills();
         $this->showForm = false;
         $this->resetForm();
@@ -173,11 +213,25 @@ class CvSkillsManager extends Component
         $this->resetForm();
     }
 
+    private function persistCustomCategory(string $label): void
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return;
+        }
+
+        UserSkillCategory::firstOrCreate([
+            'user_id' => $user->id,
+            'name' => $label,
+        ]);
+    }
+
     private function resetForm(): void
     {
         $this->form = [
             'name' => '',
-            'category' => 'general',
+            'category' => '',
             'level' => 'intermediate',
         ];
         $this->editingId = null;

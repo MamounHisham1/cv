@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(CvEvaluation::class);
     }
+
+    public function skillCategories(): HasMany
+    {
+        return $this->hasMany(UserSkillCategory::class);
+    }
 }

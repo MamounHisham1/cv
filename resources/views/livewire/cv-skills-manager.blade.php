@@ -52,14 +52,107 @@
 
                 <x-ui::input wire:model="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />
 
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div class="form-field">
-                        <x-ui::select wire:model="form.category" label="Category" :options="$categories" class="{{ $fieldClasses }}" />
-                    </div>
+                <div
+                    x-data="{
+                        open: false,
+                        focused: false,
+                        query: @js($form['category']),
+                        presets: @js(array_values($categories)),
+                        highlighted: -1,
+                        get filtered() {
+                            const q = (this.query || '').toLowerCase();
+                            return (this.presets || []).filter(c => c && c.toLowerCase().includes(q));
+                        },
+                        get isExactMatch() {
+                            const q = (this.query || '').toLowerCase();
+                            return (this.presets || []).some(c => c && c.toLowerCase() === q);
+                        },
+                        get hasCreateOption() {
+                            return this.query && !this.isExactMatch;
+                        },
+                        get totalOptions() {
+                            return this.filtered.length + (this.hasCreateOption ? 1 : 0);
+                        },
+                        get highlightedOption() {
+                            if (this.highlighted < 0) {
+                                return this.filtered[0] || (this.hasCreateOption ? this.query : null);
+                            }
+                            if (this.highlighted < this.filtered.length) {
+                                return this.filtered[this.highlighted];
+                            }
+                            if (this.hasCreateOption && this.highlighted === this.filtered.length) {
+                                return this.query;
+                            }
+                            return null;
+                        },
+                        select(value) {
+                            this.query = value;
+                            this.open = false;
+                            $wire.set('form.category', value).then(() => this.$refs.input.blur());
+                        }
+                    }"
+                    @click.away="if (!focused) open = false"
+                    class="form-field"
+                >
+                    <label class="mb-1.5 block text-sm font-medium text-zinc-300">Category</label>
+                    <div class="relative">
+                        <div class="relative">
+                            <x-ui::icon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                            <input
+                                type="text"
+                                x-model="query"
+                                x-ref="input"
+                                @focus="focused = true; open = true"
+                                @blur="focused = false; $wire.set('form.category', query); $nextTick(() => { if (!focused) open = false; })"
+                                @keydown.escape="open = false"
+                                @keydown.enter.prevent="select(highlightedOption || query)"
+                                @keydown.down.prevent="highlighted = Math.min(highlighted + 1, totalOptions - 1)"
+                                @keydown.up.prevent="highlighted = Math.max(highlighted - 1, 0)"
+                                placeholder="Type to search or create new..."
+                                class="flex h-10 w-full rounded-lg border border-white/10 bg-zinc-900/50 pl-10 pr-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 shadow-inner shadow-black/10 backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:border-emerald-500/50 focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:ring-offset-0"
+                            />
+                        </div>
 
-                    <div class="form-field">
-                        <x-ui::select wire:model="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
+                        <template x-if="open">
+                            <div class="absolute z-50 mt-1 w-full max-h-48 overflow-y-auto rounded-xl border border-white/10 bg-zinc-900/95 py-1 shadow-xl shadow-black/30 backdrop-blur-xl">
+                                <template x-if="filtered.length > 0">
+                                    <div>
+                                        <template x-for="(option, index) in filtered" :key="option">
+                                            <button
+                                                type="button"
+                                                @mousedown.prevent="select(option)"
+                                                @mouseenter="highlighted = index"
+                                                :class="index === highlighted ? 'bg-emerald-500/15 text-emerald-300' : ((query || '').toLowerCase() === option.toLowerCase() ? 'bg-emerald-500/15 text-emerald-300' : 'text-zinc-200 hover:bg-white/10 hover:text-white')"
+                                                class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+                                            >
+                                                <x-ui::icon name="check" class="w-3.5 h-3.5 shrink-0" x-show="(query || '').toLowerCase() === option.toLowerCase() && index !== highlighted" />
+                                                <span class="flex-1" x-text="option"></span>
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+
+                                <template x-if="query && !isExactMatch">
+                                    <div class="border-t border-white/10 pt-1 mt-1">
+                                        <button
+                                            type="button"
+                                            @mousedown.prevent="select(query)"
+                                            @mouseenter="highlighted = filtered.length"
+                                            :class="highlighted === filtered.length ? 'bg-emerald-500/15 text-emerald-300' : 'text-emerald-400 hover:bg-emerald-500/10'"
+                                            class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
+                                        >
+                                            <x-ui::icon name="plus" class="w-3.5 h-3.5 shrink-0" />
+                                            <span>Create "<span x-text="query"></span>"</span>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
                     </div>
+                </div>
+
+                <div class="form-field">
+                    <x-ui::select wire:model="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-end gap-3 border-t border-white/10 pt-4">
