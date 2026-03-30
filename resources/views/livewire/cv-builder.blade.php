@@ -55,30 +55,78 @@
         </div>
 
         {{-- Template gallery --}}
-        <div class="mb-10 grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+        <div class="mb-10 grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-5">
             @foreach($templates as $id => $template)
                 <button
                     wire:click="onboardingSelectTemplate('{{ $id }}')"
-                    class="group card-hover relative flex flex-col rounded-3xl border p-5 text-left transition-all duration-300
+                    class="group card-hover relative flex flex-col items-center gap-3 rounded-2xl border p-6 text-center transition-all duration-300
                         {{ $selectedTemplate === $id
                             ? 'border-emerald-400/50 bg-emerald-500/10 shadow-xl shadow-emerald-500/20'
                             : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                 >
-                    <div class="relative mx-auto mb-4 h-[280px] w-full overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5">
-                        <div class="pointer-events-none mx-auto w-full flex h-full items-center justify-center" style="zoom: 0.4;">
-                            @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
-                        </div>
+                    <div class="h-32 w-32 shrink-0 rounded-xl bg-white shadow-lg ring-1 ring-black/5">
+                        @switch($id)
+                            @case('professional-classic')
+                                <div class="flex h-full flex-col font-serif text-zinc-800">
+                                    <div class="border-b border-zinc-700 pb-2 px-3">
+                                        <div class="h-1.5 w-12 rounded-full bg-zinc-900"></div>
+                                        <div class="mt-1 h-1 w-full rounded-full bg-zinc-300"></div>
+                                    </div>
+                                    <div class="mt-3 px-3 space-y-2">
+                                        <div><div class="h-1 w-10 rounded-full bg-zinc-700"></div></div>
+                                        <div><div class="h-1 w-8 rounded-full bg-zinc-200"></div></div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('technical-ats')
+                                <div class="flex h-full flex-col text-zinc-900">
+                                    <div class="h-1.5 w-14 rounded-full bg-zinc-900"></div>
+                                    <div class="mt-1 h-1 w-20 rounded-full bg-zinc-300"></div>
+                                    <div class="mt-3 px-3 space-y-2">
+                                        <div><div class="h-1 w-9 rounded-full bg-zinc-600"></div></div>
+                                        <div><div class="h-1 w-7 rounded-full bg-zinc-300"></div></div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('modern-minimal')
+                                <div class="flex h-full flex-col text-zinc-800">
+                                    <div class="h-1 w-full rounded-full bg-zinc-900"></div>
+                                    <div class="mt-2 px-3 space-y-2">
+                                        <div><div class="h-1 w-11 rounded-full bg-zinc-500"></div></div>
+                                        <div><div class="h-1 w-9 rounded-full bg-zinc-400"></div></div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('creative')
+                                <div class="flex h-full flex-col bg-slate-100">
+                                    <div class="bg-slate-600 p-2">
+                                        <div class="h-3 w-12 rounded-full bg-white/80"></div>
+                                    </div>
+                                    <div class="mt-3 px-2 space-y-1">
+                                        <div><div class="h-1 w-10 rounded-full bg-slate-400"></div></div>
+                                        <div><div class="h-1 w-8 rounded-full bg-slate-300"></div></div>
+                                        <div><div class="h-1 w-9 rounded-full bg-slate-300"></div></div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('executive')
+                                <div class="flex h-full flex-col items-center justify-center">
+                                    <div class="w-8 h-8 rounded-full bg-amber-500"></div>
+                                    <div class="mt-3 space-y-2">
+                                        <div><div class="h-1 w-10 rounded-full bg-amber-600"></div></div>
+                                        <div><div class="h-1 w-7 rounded-full bg-amber-700"></div></div>
+                                    </div>
+                                </div>
+                            @break
+                        @endswitch
                     </div>
-                    <div class="mb-1 text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
+                    <div class="text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
                         {{ $template['name'] }}
                     </div>
-                    <div class="line-clamp-2 text-xs leading-relaxed text-zinc-400">
-                        {{ $template['description'] }}
-                    </div>
                     @if($selectedTemplate === $id)
-                        <div class="absolute right-4 top-4 z-10">
-                            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
-                                <x-ui::icon name="check" class="h-4 w-4 text-white" />
+                        <div class="absolute right-3 top-3 z-10">
+                            <div class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
+                                <x-ui::icon name="check" class="h-3 w-3 text-white" />
                             </div>
                         </div>
                     @endif
