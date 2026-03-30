@@ -162,39 +162,6 @@
         <div class="space-y-6">
             @if($activeSection === 'personal')
                 <x-ui::card class="{{ $glassCardClasses }}">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
-                            <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-300" />
-                        </div>
-                        <x-ui::heading size="lg" class="text-white">Choose Template</x-ui::heading>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-8">
-                        @foreach($templates as $id => $template)
-                            <button
-                                wire:click="updateTemplate('{{ $id }}')"
-                                class="card-hover relative rounded-2xl border p-4 text-left transition-all duration-300 {{ $selectedTemplate === $id ? 'border-emerald-400/50 bg-emerald-500/10 shadow-lg shadow-emerald-500/10' : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
-                            >
-                                <div class="relative mx-auto mb-3 h-[220px] w-full overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-black/5">
-                                <div class="pointer-events-none mx-auto w-full flex h-full items-center justify-center" style="zoom: 0.38;">
-                                    @include('cv.templates.' . $id, ['cv' => $this->sampleCv])
-                                </div>
-                            </div>
-                                <div class="text-sm font-semibold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
-                                    {{ $template['name'] }}
-                                </div>
-                                @if($selectedTemplate === $id)
-                                    <div class="absolute top-3 right-3 z-10">
-                                        <div class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
-                                            <x-ui::icon name="check" class="h-3.5 w-3.5 text-white" />
-                                        </div>
-                                    </div>
-                                @endif
-                            </button>
-                        @endforeach
-                    </div>
-                </x-ui::card>
-
-                <x-ui::card class="{{ $glassCardClasses }}">
                     <div class="mb-6">
                         <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">Personal Information</h2>
                         <p class="text-sm text-zinc-400">Start with your basic contact details</p>
