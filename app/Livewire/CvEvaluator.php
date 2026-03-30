@@ -30,6 +30,9 @@ class CvEvaluator extends Component
     /** Raw CV text extracted from the uploaded file. */
     public string $cvText = '';
 
+    /** @var array<int, array<string, mixed>> */
+    public array $evaluations = [];
+
     /** Manual text-paste fallback. */
     public string $pastedText = '';
 
@@ -57,6 +60,10 @@ class CvEvaluator extends Component
             ];
             $this->evaluationState = 'complete';
         }
+
+        $this->evaluations = auth()->check()
+            ? auth()->user()->cvEvaluations()->latest()->get()->toArray()
+            : [];
     }
 
     public function updatedUploadedFile(): void
