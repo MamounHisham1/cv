@@ -10,6 +10,7 @@ use App\Models\CvExperience;
 use App\Models\CvLanguage;
 use App\Models\CvProject;
 use App\Models\CvSkill;
+use App\Services\CreditManager;
 use App\Services\CvTextExtractor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

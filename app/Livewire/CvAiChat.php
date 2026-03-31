@@ -4,7 +4,10 @@ namespace App\Livewire;
 
 use App\Ai\Agents\CvBuilderAgent;
 use App\Models\Cv;
+use App\Services\CreditManager;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Laravel\Ai\Contracts\ConversationStore;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -23,6 +26,34 @@ class CvAiChat extends Component
     public function mount(?Cv $cv = null): void
     {
         $this->cv = $cv;
+
+        // Restore the last conversation for this user from the AI SDK store
+        if (Auth::check()) {
+            $store = app(ConversationStore::class);
+            $lastId = $store->latestConversationId(Auth::id());
+
+            if ($lastId) {
+                $rows = DB::table('agent_conversation_messages')
+                    ->where('conversation_id', $lastId)
+                    ->orderBy('created_at')
+                    ->get();
+
+                if ($rows->isNotEmpty()) {
+                    $this->conversationId = $lastId;
+
+                    foreach ($rows as $row) {
+                        $this->messages[] = [
+                            'role' => $row->role,
+                            'content' => $row->content,
+                            'timestamp' => $row->created_at ?? now()->toISOString(),
+                        ];
+                    }
+
+                    return;
+                }
+            }
+        }
+
         $this->messages = [
             [
                 'role' => 'assistant',

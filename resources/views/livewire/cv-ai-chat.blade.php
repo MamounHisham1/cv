@@ -6,13 +6,39 @@
 @endphp
 
 <div class="flex h-full flex-col bg-transparent"
-    x-data="{ scrollToBottom() { this.$nextTick(() => { const el = this.$refs.chatMessages; if (el) el.scrollTop = el.scrollHeight; }); } }"
+    x-data="{
+        scrollTarget: null,
+        scrollToMessage() {
+            this.$nextTick(() => {
+                const container = this.$refs.chatMessages;
+                if (!container) return;
+                if (this.scrollTarget) {
+                    const el = document.getElementById(this.scrollTarget);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        this.scrollTarget = null;
+                        return;
+                    }
+                }
+                // Fallback: scroll to bottom
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+    }"
     x-init="
-        scrollToBottom();
-        $wire.on('message-added', () => scrollToBottom());
+        $nextTick(() => {
+            const el = this.$refs.chatMessages;
+            if (el) el.scrollTop = el.scrollHeight;
+        });
+        $wire.on('message-added', () => {
+            const msgs = $wire.messages;
+            const lastId = msgs.length - 1;
+            this.scrollTarget = 'msg-' + lastId;
+            this.scrollToMessage();
+        });
     "
 >
-    <div class="border-b border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+    <div class="border-b border-white/10 bg-white/5 p-3 backdrop-blur-sm">
         <div class="flex flex-wrap gap-2" x-bind:class="{ 'pointer-events-none opacity-50': $wire.isLoading }">
             <x-ui::badge wire:click="quickPrompt('improve_summary')" variant="outline" class="{{ $quickPromptClasses }}">
                 <x-ui::icon name="sparkles" class="w-3 h-3 mr-1" />
@@ -29,18 +55,18 @@
         </div>
     </div>
 
-    <div class="flex-1 space-y-4 overflow-y-auto overscroll-contain p-4" id="chat-messages" x-ref="chatMessages">
-        @forelse($messages as $message)
-            <div class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
+    <div class="flex-1 space-y-3 overflow-y-auto overscroll-contain p-3" id="chat-messages" x-ref="chatMessages">
+        @forelse($messages as $index => $message)
+            <div id="msg-{{ $index }}" class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
                 <div class="{{ $message['role'] === 'user' ? 'message-bubble user border border-emerald-400/20 shadow-lg shadow-emerald-500/10' : 'message-bubble assistant shadow-xl shadow-black/15' }}">
                     @if($message['role'] === 'assistant')
-                        <div class="mb-2 flex items-center gap-2 border-b border-white/10 pb-2">
-                            <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                        <div class="mb-1.5 flex items-center gap-2 border-b border-white/10 pb-1.5">
+                            <x-ui::icon name="sparkles" class="w-3.5 h-3.5 text-emerald-500" />
                             <span class="text-xs font-medium text-emerald-300">AI Assistant</span>
                         </div>
                     @endif
                     <div class="text-sm whitespace-pre-wrap leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown($message['content']) !!}</div>
-                    <div class="mt-2 border-t border-white/10 pt-2 text-xs {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
+                    <div class="mt-1.5 border-t border-white/10 pt-1.5 text-xs {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
                         {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
                     </div>
                 </div>
@@ -84,10 +110,12 @@
             if (!msg) return;
             input.value = '';
             $wire.sendMessage();
-            scrollToBottom();
+            const msgs = $wire.messages;
+            scrollTarget = 'msg-' + (msgs.length - 1);
+            scrollToMessage();
             setTimeout(() => $wire.fetchAiResponse(msg), 150);
         "
-        class="shrink-0 border-t border-white/10 bg-zinc-950/80 p-4 backdrop-blur-xl"
+        class="shrink-0 border-t border-white/10 bg-zinc-950/80 p-3 backdrop-blur-xl"
     >
         <div class="flex gap-2 items-end">
             <x-ui::textarea

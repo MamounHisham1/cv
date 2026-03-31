@@ -20,12 +20,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('welcome-cvs', ['cvs' => $cvs]);
     })->name('drafts');
 
-    Route::get('/cv-builder', CvBuilder::class)->name('cv.builder');
-    Route::get('/cv-builder/{cv}', CvBuilder::class)->name('cv.edit');
-    Route::get('/cv-evaluator', CvEvaluator::class)->name('cv.evaluator');
+    Route::get('/builder', CvBuilder::class)->name('cv.builder');
+    Route::get('/builder/{cv}', CvBuilder::class)->name('cv.edit');
+    Route::get('/evaluator', CvEvaluator::class)->name('cv.evaluator');
     Route::get('/referrals', ReferralDashboard::class)->name('referrals');
     Route::get('/credits', CreditHistory::class)->name('credits.history');
-    Route::get('/cv/{cv}/preview', function (Cv $cv) {
+    Route::get('/preview/{cv}', function (Cv $cv) {
         if ($cv->user_id !== auth()->id()) {
             abort(403);
         }
