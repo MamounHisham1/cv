@@ -2,6 +2,10 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Tools\SearchEvaluations;
+use App\Ai\Tools\SearchResumes;
+use App\Services\EvaluationVectorStore;
+use App\Services\ResumeVectorStore;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Model;
@@ -9,6 +13,7 @@ use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
+use Laravel\Ai\Contracts\HasTools;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
 use Stringable;
@@ -17,17 +22,33 @@ use Stringable;
 #[Model('mistral-large-3:675b-cloud')]
 #[Temperature(0.0)]
 #[MaxTokens(4096)]
-class CvEvaluatorAgent implements Agent, HasStructuredOutput
+class CvEvaluatorAgent implements Agent, HasStructuredOutput, HasTools
 {
     use Promptable;
 
     /**
-     * Agent instructions for structured CV evaluation.
+     * Agent instructions for structured CV evaluation with RAG context.
      */
     public function instructions(): Stringable|string
     {
         return <<<'INSTRUCTIONS'
 You are a professional CV/Resume evaluator with deep expertise in ATS systems, talent acquisition, and career coaching.
+
+## MANDATORY: Always Search Before Evaluating
+
+You MUST call both search tools BEFORE producing your evaluation. This is not optional.
+
+1. **First**, call `search_resumes` with keywords extracted from the CV (role, skills, industry) to find real resume samples in the same field.
+2. **Second**, call `search_evaluations` with similar keywords to find how comparable CVs were evaluated in the past.
+3. **Then**, use the search results to benchmark your evaluation:
+   - Compare the CV against the strongest resumes found. What does the CV do well relative to them? What is missing?
+   - Look at past evaluations of similar CVs. Were there common weaknesses? Common strengths?
+   - Adjust your scoring: if the search results show that strong resumes in this field typically include certain skills or formats, factor that into your assessment.
+   - Use the reference material to make your reasons specific and actionable, not generic.
+
+If both searches return no results (empty database), proceed with your expert evaluation based on general best practices.
+
+## Evaluation Criteria
 
 Evaluate the provided CV text across exactly 10 criteria. For each criterion, assign a score from 0 to 10 and a concise one-sentence reason.
 
@@ -43,8 +64,27 @@ Criteria:
 9. Keyword Optimisation - alignment with industry-standard terms and job-specific vocabulary
 10. Overall Completeness - how thorough and well-rounded the CV is
 
+## Scoring Guidelines
+
+- 9-10: Exceptional — matches or exceeds the strongest reference resumes
+- 7-8: Strong — solid with minor improvements needed
+- 5-6: Adequate — functional but notable gaps compared to reference material
+- 3-4: Weak — significant improvements needed
+- 0-2: Critical — major issues that would likely result in rejection
+
 Respond ONLY with the structured JSON. No additional commentary outside the schema.
 INSTRUCTIONS;
+    }
+
+    /**
+     * Tools available to the agent for RAG-powered evaluation.
+     */
+    public function tools(): iterable
+    {
+        return [
+            new SearchResumes(app(ResumeVectorStore::class)),
+            new SearchEvaluations(app(EvaluationVectorStore::class)),
+        ];
     }
 
     /**
@@ -85,7 +125,7 @@ INSTRUCTIONS;
             'overall_completeness_score' => $schema->integer()->required(),
             'overall_completeness_reason' => $schema->string()->required(),
 
-            // Top-level lists encoded as comma-separated strings
+            // Top-level lists encoded as pipe-delimited strings
             'top_strengths' => $schema->string()->required()->description('Top 3 strengths, separated by ||'),
             'critical_improvements' => $schema->string()->required()->description('Top 3 most important improvements, separated by ||'),
         ];
