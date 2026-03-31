@@ -13,10 +13,8 @@
 
             <div class="relative z-10 flex w-full max-w-md flex-col gap-4">
                 <a href="{{ route('home') }}" class="mx-auto inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-200 backdrop-blur-xl transition hover:bg-white/10 hover:text-white" wire:navigate>
-                    <span class="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-zinc-950/80 shadow-lg shadow-black/30">
-                        <x-app-logo-icon class="size-5 fill-current text-white" />
-                    </span>
-                    <span>{{ config('app.name', 'Laravel') }}</span>
+                    <img src="{{ asset('storage/images/logo.png') }}" alt="{{ config('app.name') }}" class="h-9 w-9 rounded-full object-contain border border-white/10 shadow-lg shadow-black/30">
+                    <span>{{ config('app.name') }}</span>
                 </a>
 
                 <div class="rounded-3xl border border-white/10 bg-zinc-950/80 px-6 py-7 shadow-2xl shadow-black/40 backdrop-blur-xl sm:px-8 sm:py-8">

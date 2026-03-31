@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
 use App\Livewire\CvEvaluator;
@@ -8,8 +9,21 @@ use App\Models\Cv;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing.design4')->name('home');
+Route::redirect('/dashboard', '/builder');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+// Google OAuth routes
+Route::get('/auth/google/redirect', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
+Route::get('/otp/verify', function () {
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    return view('auth.otp-verify');
+})->name('otp.verify');
+
+Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::get('/drafts', function () {
         $user = auth()->user();
         $cvs = $user->cvs()

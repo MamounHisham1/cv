@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CaptureReferralCode;
+use App\Http\Middleware\EnsureOtpIsVerified;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,10 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'referral' => CaptureReferralCode::class,
-        ]);
-
-        $middleware->web(append: [
-            CaptureReferralCode::class,
+            'otp.verified' => EnsureOtpIsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
