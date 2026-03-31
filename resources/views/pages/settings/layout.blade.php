@@ -1,8 +1,8 @@
 <div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.12),_transparent_50%)]"></div>
 
-    <div class="relative flex items-start max-md:flex-col">
-        <div class="me-10 w-full pb-4 md:w-[220px]">
+    <div class="relative flex items-start gap-6 p-6 md:p-10 max-md:flex-col">
+        <div class="w-full shrink-0 pb-4 md:w-[220px]">
             <nav class="overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/80 p-2 shadow-2xl shadow-black/20 backdrop-blur-xl" aria-label="{{ __('Settings') }}">
                 <div class="space-y-1">
                     <x-ui::navlist.item :href="route('profile.edit')" wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/5 hover:text-white">{{ __('Profile') }}</x-ui::navlist.item>
