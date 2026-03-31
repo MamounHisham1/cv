@@ -1,7 +1,7 @@
 <x-layouts::landing>
     <main class="relative bg-zinc-950">
         {{-- Hero: Gradient mesh with glassmorphism --}}
-        <section id="home" class="scroll-mt-16 relative min-h-screen flex items-center overflow-hidden">
+        <section class="scroll-mt-16 relative min-h-screen flex items-center overflow-hidden">
             <div class="absolute inset-0">
                 <div class="absolute top-0 left-0 w-[600px] h-[600px] bg-emerald-600/30 rounded-full blur-[150px] animate-pulse-glow"></div>
                 <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/20 rounded-full blur-[130px] animate-pulse-glow" style="animation-delay: 2s;"></div>
@@ -13,7 +13,7 @@
             <div class="absolute top-1/3 right-16 w-2 h-2 bg-purple-400 rounded-full animate-float-slow opacity-30" style="animation-delay: 2s;"></div>
             <div class="absolute bottom-1/4 left-16 w-1.5 h-1.5 bg-emerald-300 rounded-full animate-float opacity-50" style="animation-delay: 3s;"></div>
 
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
+            <div id="home" class="relative mx-auto max-w-7xl px-6 lg:px-8 py-24 w-full">
                 <div class="text-center max-w-4xl mx-auto">
                     <div class="animate-slide-up inline-flex items-center gap-2 bg-white/5 backdrop-blur-xl text-emerald-300 text-sm font-medium px-5 py-2.5 rounded-full mb-10 border border-white/10">
                         <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
@@ -329,11 +329,11 @@
         </section>
 
         {{-- Features: Glass cards --}}
-        <section id="features" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
+        <section class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
             <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-600/10 rounded-full blur-[100px]"></div>
 
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+            <div class="relative mx-auto max-w-7xl px-6 lg:px-8" id="features" >
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
                         <x-ui::icon name="sparkles" size="sm" />
@@ -427,9 +427,9 @@
         </section>
 
         {{-- About: Glass section --}}
-        <section id="about" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
+        <section class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+            <div id="about" class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                     <div>
                         <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
@@ -623,9 +623,9 @@
         </section>
 
         {{-- Pricing: Glass tiers --}}
-        <section id="pricing" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
+        <section class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-600/5 rounded-full blur-[150px]"></div>
-            <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
+            <div id="pricing" class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-purple-500/10 text-purple-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-purple-500/20">
                         <x-ui::icon name="briefcase" size="sm" />
@@ -688,9 +688,9 @@
         </section>
 
         {{-- FAQ: Glass accordion --}}
-        <section id="faq" class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
+        <section class="scroll-mt-16 relative py-20 lg:py-28 overflow-hidden">
             <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-emerald-600/10 rounded-full blur-[120px]"></div>
-            <div class="relative mx-auto max-w-3xl px-6 lg:px-8">
+            <div id="faq" class="relative mx-auto max-w-3xl px-6 lg:px-8">
                 <div class="text-center mb-16">
                     <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
                         <x-ui::icon name="help" size="sm" />

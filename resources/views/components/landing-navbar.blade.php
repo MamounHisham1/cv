@@ -10,7 +10,11 @@
                 scrollToSection(id) {
                     this.activeSection = '#' + id;
                     this.ignoreScroll = true;
-                    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+                    const el = document.getElementById(id);
+                    // scroll-mt-16 = 64px (4rem), add small buffer for visual comfort
+                    const offset = 80;
+                    const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
                     setTimeout(() => this.ignoreScroll = false, 1000);
                 }
             }"
