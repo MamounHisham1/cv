@@ -6,6 +6,7 @@ use App\Ai\Agents\CvEvaluatorAgent;
 use App\Models\CvEvaluation;
 use App\Services\CreditManager;
 use App\Services\EvaluationVectorStore;
+use Laravel\Ai\Contracts\HasTools;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -120,7 +121,19 @@ class CvEvaluator extends Component
         }
 
         try {
+            \Log::info('CvEvaluator: Creating RAG-powered agent with search tools', [
+                'cv_text_length' => strlen($this->cvText),
+                'cv_preview' => mb_substr($this->cvText, 0, 200),
+            ]);
+
             $agent = new CvEvaluatorAgent;
+
+            \Log::info('CvEvaluator: Agent created, checking tools', [
+                'implements_has_tools' => in_array(HasTools::class, class_implements($agent)),
+                'tools_count' => count(iterator_to_array($agent->tools())),
+            ]);
+
+            \Log::info('CvEvaluator: Sending CV to agent (agent will call search tools before evaluating)');
             $response = $agent->prompt("Evaluate this CV:\n\n{$this->cvText}");
 
             \Log::info('CvEvaluator: Response type', [

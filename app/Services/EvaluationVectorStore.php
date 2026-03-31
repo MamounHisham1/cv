@@ -38,12 +38,18 @@ class EvaluationVectorStore
             $data = $response->__toArray();
 
             if (! ($data['result']['exists'] ?? false)) {
+                Log::info('EvaluationVectorStore: Creating collection', ['collection' => self::COLLECTION]);
+
                 $createCollection = new CreateCollection;
                 $createCollection->addVector(
                     new VectorParams(self::VECTOR_SIZE, VectorParams::DISTANCE_COSINE)
                 );
 
                 $this->client()->collections(self::COLLECTION)->create($createCollection);
+
+                Log::info('EvaluationVectorStore: Collection created successfully', ['collection' => self::COLLECTION]);
+            } else {
+                Log::info('EvaluationVectorStore: Collection already exists', ['collection' => self::COLLECTION]);
             }
         } catch (\Throwable $e) {
             Log::warning('EvaluationVectorStore: Failed to ensure collection exists', [
@@ -55,6 +61,15 @@ class EvaluationVectorStore
     public function store(string $id, int $userId, string $grade, int $overallScore, string $cvText, array $embedding): void
     {
         try {
+            Log::info('EvaluationVectorStore: Storing evaluation embedding', [
+                'id' => $id,
+                'user_id' => $userId,
+                'grade' => $grade,
+                'overall_score' => $overallScore,
+                'cv_text_length' => strlen($cvText),
+                'embedding_dimensions' => count($embedding),
+            ]);
+
             $point = new PointStruct(
                 $this->hashId($id),
                 new VectorStruct($embedding),
@@ -70,6 +85,11 @@ class EvaluationVectorStore
             $pointsStruct->addPoint($point);
 
             $this->client()->collections(self::COLLECTION)->points()->upsert($pointsStruct);
+
+            Log::info('EvaluationVectorStore: Successfully stored evaluation embedding in Qdrant', [
+                'id' => $id,
+                'point_hash' => $this->hashId($id),
+            ]);
         } catch (\Throwable $e) {
             Log::warning('EvaluationVectorStore: Failed to store evaluation', [
                 'id' => $id,
@@ -84,9 +104,19 @@ class EvaluationVectorStore
     public function search(string $query, int $limit = 3): array
     {
         try {
+            Log::info('EvaluationVectorStore: Generating query embedding for search', [
+                'query' => mb_substr($query, 0, 200),
+                'limit' => $limit,
+                'model' => self::EMBEDDING_MODEL,
+            ]);
+
             $queryEmbedding = Embeddings::for([$query])
                 ->generate(Lab::Ollama, self::EMBEDDING_MODEL)
                 ->embeddings[0];
+
+            Log::info('EvaluationVectorStore: Query embedding generated, searching Qdrant', [
+                'embedding_dimensions' => count($queryEmbedding),
+            ]);
 
             $searchRequest = new SearchRequest(new VectorStruct($queryEmbedding));
             $searchRequest->setLimit($limit);
@@ -100,15 +130,26 @@ class EvaluationVectorStore
             $data = $response->__toArray();
             $results = $data['result'] ?? [];
 
-            return collect($results)->map(fn (array $result): array => [
+            $mapped = collect($results)->map(fn (array $result): array => [
                 'user_id' => $result['payload']['user_id'] ?? 0,
                 'grade' => $result['payload']['grade'] ?? '',
                 'overall_score' => $result['payload']['overall_score'] ?? 0,
                 'content' => $result['payload']['content'] ?? '',
                 'score' => round($result['score'], 4),
             ])->values()->toArray();
+
+            Log::info('EvaluationVectorStore: Search complete', [
+                'query' => mb_substr($query, 0, 100),
+                'raw_result_count' => count($results),
+                'mapped_result_count' => count($mapped),
+                'scores' => array_column($mapped, 'score'),
+                'grades' => array_column($mapped, 'grade'),
+            ]);
+
+            return $mapped;
         } catch (\Throwable $e) {
             Log::warning('EvaluationVectorStore: Search failed', [
+                'query' => mb_substr($query, 0, 100),
                 'message' => $e->getMessage(),
             ]);
 
@@ -118,9 +159,24 @@ class EvaluationVectorStore
 
     public function generateEmbedding(string $text): array
     {
-        return Embeddings::for([mb_substr($text, 0, 1500)])
+        $truncated = mb_substr($text, 0, 1500);
+
+        Log::info('EvaluationVectorStore: Generating embedding', [
+            'original_length' => strlen($text),
+            'truncated_length' => strlen($truncated),
+            'model' => self::EMBEDDING_MODEL,
+        ]);
+
+        $embedding = Embeddings::for([$truncated])
             ->generate(Lab::Ollama, self::EMBEDDING_MODEL)
             ->embeddings[0];
+
+        Log::info('EvaluationVectorStore: Embedding generated', [
+            'dimensions' => count($embedding),
+            'first_5' => array_slice($embedding, 0, 5),
+        ]);
+
+        return $embedding;
     }
 
     private function client(): Qdrant
