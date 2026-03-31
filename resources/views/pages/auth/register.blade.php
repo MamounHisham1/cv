@@ -71,16 +71,6 @@
                 />
             </div>
 
-            {{-- Terms and Conditions --}}
-            <div class="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                <label class="flex items-start gap-3 cursor-pointer">
-                    <input type="checkbox" name="terms" required class="mt-0.5 h-4 w-4 rounded border-white/15 bg-white/5 text-emerald-500 accent-emerald-500 focus:ring-emerald-500/20">
-                    <span class="text-sm text-zinc-400">
-                        I agree to the <x-ui::link href="#" class="font-medium text-emerald-300 hover:text-emerald-200 hover:underline">Terms of Service</x-ui::link> and <x-ui::link href="#" class="font-medium text-emerald-300 hover:text-emerald-200 hover:underline">Privacy Policy</x-ui::link>
-                    </span>
-                </label>
-            </div>
-
             <x-ui::button variant="primary" type="submit" class="w-full border border-white/10 bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl hover:shadow-emerald-500/40" data-test="register-user-button">
                 {{ __('Create Account') }}
             </x-ui::button>
