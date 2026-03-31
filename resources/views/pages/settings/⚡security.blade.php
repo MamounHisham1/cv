@@ -130,7 +130,7 @@ new #[Title('Security settings')] class extends Component
                 <div class="overflow-hidden rounded-3xl border border-white/10 bg-zinc-950/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
                     <div class="mb-5 flex items-center gap-3">
                         <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
-                            <x-ui::icon name="shield" class="h-5 w-5 text-emerald-300" />
+                            <x-ui::icon name="shield-check" class="h-5 w-5 text-emerald-300" />
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-white">{{ __('Two-factor authentication') }}</h3>
