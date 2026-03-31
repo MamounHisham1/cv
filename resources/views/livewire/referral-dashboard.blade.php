@@ -12,7 +12,7 @@
             </div>
             <button
                 type="button"
-                x-data
+                x-data="{ copied: false }"
                 x-on:click="
                     const link = '{{ $this->referralLink }}';
                     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -27,12 +27,15 @@
                         document.execCommand('copy');
                         document.body.removeChild(ta);
                     }
+                    copied = true;
+                    setTimeout(() => copied = false, 3000);
                     $wire.copyReferralLink();
                 "
                 class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 cursor-pointer"
             >
-                <x-ui::icon name="copy" class="w-4 h-4" />
-                Copy
+                <x-ui::icon x-show="!copied" name="copy" class="w-4 h-4" />
+                <x-ui::icon x-show="copied" name="check" class="w-4 h-4" />
+                <span x-text="copied ? 'Copied!' : 'Copy'"></span>
             </button>
         </div>
     </div>
