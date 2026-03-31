@@ -7,7 +7,7 @@
     $emptyStateClasses = 'rounded-3xl border border-dashed border-white/10 bg-white/5 p-10 text-center shadow-xl shadow-black/10 backdrop-blur-xl';
 @endphp
 
-<div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100" x-data>
+<div class="relative min-h-screen bg-zinc-950 text-zinc-100">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.18),_transparent_45%)]"></div>
     <div class="pointer-events-none absolute right-0 top-24 h-80 w-80 rounded-full bg-emerald-500/10 blur-3xl"></div>
 
@@ -58,13 +58,16 @@
         <div class="mb-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             @foreach($templates as $id => $template)
                 <button
+                    type="button"
                     wire:click="onboardingSelectTemplate('{{ $id }}')"
-                    class="group card-hover relative flex flex-col items-center gap-4 rounded-2xl border p-5 text-center transition-all duration-300
+                    wire:loading.attr="disabled"
+                    wire:target="onboardingSelectTemplate"
+                    class="group card-hover relative flex cursor-pointer flex-col items-center gap-4 rounded-2xl border p-5 text-center transition-all duration-300
                         {{ $selectedTemplate === $id
                             ? 'border-emerald-400/50 bg-emerald-500/10 shadow-xl shadow-emerald-500/20'
                             : 'border-white/10 bg-white/5 hover:border-emerald-400/30 hover:bg-white/10' }}"
                 >
-                    <div class="w-full shrink-0 rounded-lg bg-white shadow-lg ring-1 ring-black/5 overflow-hidden" style="aspect-ratio: 210/297;">
+                    <div class="pointer-events-none w-full shrink-0 rounded-lg bg-white shadow-lg ring-1 ring-black/5 overflow-hidden" style="aspect-ratio: 210/297;">
                         @switch($id)
                             @case('professional-classic')
                                 {{-- Single column, serif, header with bottom border, underlined section headings --}}
@@ -238,14 +241,14 @@
                             @break
                         @endswitch
                     </div>
-                    <div class="text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
+                    <div class="pointer-events-none text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">
                         {{ $template['name'] }}
                     </div>
-                    <div class="text-xs {{ $selectedTemplate === $id ? 'text-emerald-200/70' : 'text-zinc-500' }}">
+                    <div class="pointer-events-none text-xs {{ $selectedTemplate === $id ? 'text-emerald-200/70' : 'text-zinc-500' }}">
                         {{ $template['description'] }}
                     </div>
                     @if($selectedTemplate === $id)
-                        <div class="absolute right-3 top-3 z-10">
+                        <div class="pointer-events-none absolute right-3 top-3 z-10">
                             <div class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30">
                                 <x-ui::icon name="check" class="h-3 w-3 text-white" />
                             </div>
@@ -438,8 +441,9 @@
                 <div class="flex flex-wrap gap-2">
                     @foreach($templates as $id => $template)
                         <button
+                            type="button"
                             wire:click="updateTemplate('{{ $id }}')"
-                            class="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200
+                            class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200
                                 {{ $selectedTemplate === $id
                                     ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
                                     : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200' }}"
