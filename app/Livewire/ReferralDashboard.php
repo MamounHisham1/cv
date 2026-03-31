@@ -65,9 +65,9 @@ class ReferralDashboard extends Component
         return app(CreditManager::class)->getBalance(Auth::user());
     }
 
-    public function copyLink(): void
+    public function copyReferralLink(): void
     {
-        $this->copied = true;
+        $this->dispatch('notify', message: 'Referral link copied to clipboard!', type: 'success');
     }
 
     public function render()
