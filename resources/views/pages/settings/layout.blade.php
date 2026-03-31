@@ -7,7 +7,6 @@
                 <div class="space-y-1">
                     <x-ui::navlist.item :href="route('profile.edit')" wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/5 hover:text-white">{{ __('Profile') }}</x-ui::navlist.item>
                     <x-ui::navlist.item :href="route('security.edit')" wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/5 hover:text-white">{{ __('Security') }}</x-ui::navlist.item>
-                    <x-ui::navlist.item :href="route('appearance.edit')" wire:navigate class="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/5 hover:text-white">{{ __('Appearance') }}</x-ui::navlist.item>
                 </div>
             </nav>
         </div>
