@@ -1,15 +1,15 @@
 <div class="flex min-h-full">
     <!-- Sidebar -->
-    <aside class="w-1/3 bg-slate-800 text-white p-8">
+    <aside class="w-1/3 bg-slate-800 text-white p-6">
         <!-- Profile Image Placeholder -->
-        <div class="w-32 h-32 bg-slate-600 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl font-bold">
+        <div class="w-24 h-24 bg-slate-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold">
             {{ substr($cv->personal_info['first_name'] ?? '', 0, 1) }}{{ substr($cv->personal_info['last_name'] ?? '', 0, 1) }}
         </div>
 
         <!-- Contact -->
-        <div class="mb-8">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Contact</h3>
-            <div class="space-y-2 text-sm">
+        <div class="mb-5">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">Contact</h3>
+            <div class="space-y-1 text-sm">
                 @if($cv->personal_info['email'] ?? false)
                     <div>{{ $cv->personal_info['email'] }}</div>
                 @endif
@@ -27,15 +27,13 @@
 
         <!-- Skills with Bars -->
         @if($cv->skills->count() > 0)
-            <div class="mb-8">
-                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Skills</h3>
-                <div class="space-y-3">
-                    @foreach($cv->skills->take(8) as $skill)
+            <div class="mb-5">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">Skills</h3>
+                <div class="space-y-1.5">
+                    @foreach($cv->skills as $skill)
                         <div>
-                            <div class="flex justify-between text-sm mb-1">
-                                <span>{{ $skill->name }}</span>
-                            </div>
-                            <div class="h-2 bg-slate-600 rounded-full overflow-hidden">
+                            <div class="text-xs mb-0.5">{{ $skill->name }}</div>
+                            <div class="h-1.5 bg-slate-600 rounded-full overflow-hidden">
                                 <div class="h-full bg-teal-400 rounded-full" style="width: {{ (match($skill->level) { 'beginner' => 1, 'intermediate' => 2, 'advanced' => 3, 'expert' => 4, default => 3 }) * 25 }}%"></div>
                             </div>
                         </div>
@@ -46,8 +44,8 @@
 
         <!-- Certifications -->
         @if($cv->certifications->count() > 0)
-            <div class="mb-8">
-                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Certifications</h3>
+            <div class="mb-5">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">Certifications</h3>
                 <div class="space-y-2 text-sm">
                     @foreach($cv->certifications as $cert)
                         <div>

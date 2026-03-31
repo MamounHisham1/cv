@@ -425,6 +425,9 @@
                         <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link" class="{{ $secondaryButtonClasses }}">
                             Open Preview
                         </x-ui::button>
+                        <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}?download=1" target="_blank" icon="download" class="{{ $secondaryButtonClasses }}">
+                            Download PDF
+                        </x-ui:button>
                     @endif
                 </div>
             </div>
