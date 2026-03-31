@@ -6,7 +6,7 @@ use App\Ai\Agents\CvEvaluatorAgent;
 use App\Models\CvEvaluation;
 use App\Services\CreditManager;
 use App\Services\EvaluationVectorStore;
-use Laravel\Ai\Contracts\HasTools;
+use App\Services\ResumeVectorStore;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -121,20 +121,27 @@ class CvEvaluator extends Component
         }
 
         try {
-            \Log::info('CvEvaluator: Creating RAG-powered agent with search tools', [
+            \Log::info('CvEvaluator: Starting RAG-powered evaluation', [
                 'cv_text_length' => strlen($this->cvText),
                 'cv_preview' => mb_substr($this->cvText, 0, 200),
             ]);
 
-            $agent = new CvEvaluatorAgent;
+            // Step 1: Search for reference resumes and past evaluations (RAG context)
+            $ragContext = $this->gatherRagContext($this->cvText);
 
-            \Log::info('CvEvaluator: Agent created, checking tools', [
-                'implements_has_tools' => in_array(HasTools::class, class_implements($agent)),
-                'tools_count' => count(iterator_to_array($agent->tools())),
+            // Step 2: Build the prompt with injected RAG context
+            $prompt = $this->buildEvaluationPrompt($this->cvText, $ragContext);
+
+            \Log::info('CvEvaluator: Sending enriched prompt to agent', [
+                'prompt_length' => strlen($prompt),
+                'has_resume_samples' => ! empty($ragContext['resumes']),
+                'has_past_evaluations' => ! empty($ragContext['evaluations']),
+                'resume_sample_count' => count($ragContext['resumes'] ?? []),
+                'past_evaluation_count' => count($ragContext['evaluations'] ?? []),
             ]);
 
-            \Log::info('CvEvaluator: Sending CV to agent (agent will call search tools before evaluating)');
-            $response = $agent->prompt("Evaluate this CV:\n\n{$this->cvText}");
+            $agent = new CvEvaluatorAgent;
+            $response = $agent->prompt($prompt);
 
             \Log::info('CvEvaluator: Response type', [
                 'class' => get_class($response),
@@ -602,6 +609,94 @@ class CvEvaluator extends Component
         $this->evaluations = auth()->check()
             ? auth()->user()->cvEvaluations()->latest()->get()->toArray()
             : [];
+    }
+
+    /**
+     * Gather RAG context from Qdrant: similar resumes + past evaluations.
+     *
+     * @return array{resumes: array, evaluations: array}
+     */
+    private function gatherRagContext(string $cvText): array
+    {
+        $resumes = [];
+        $evaluations = [];
+
+        // Truncate to avoid exceeding embedding model context length
+        $searchQuery = mb_substr($cvText, 0, 1500);
+
+        try {
+            $resumeStore = app(ResumeVectorStore::class);
+            $resumes = $resumeStore->search($searchQuery, 3);
+
+            \Log::info('CvEvaluator: RAG — resume samples found', [
+                'count' => count($resumes),
+                'scores' => array_column($resumes, 'score'),
+                'roles' => array_column($resumes, 'role'),
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('CvEvaluator: RAG — resume search failed', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $evaluationStore = app(EvaluationVectorStore::class);
+            $evaluations = $evaluationStore->search($searchQuery, 3);
+
+            \Log::info('CvEvaluator: RAG — past evaluations found', [
+                'count' => count($evaluations),
+                'scores' => array_column($evaluations, 'score'),
+                'grades' => array_column($evaluations, 'grade'),
+                'overall_scores' => array_column($evaluations, 'overall_score'),
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('CvEvaluator: RAG — evaluation search failed', [
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        return compact('resumes', 'evaluations');
+    }
+
+    /**
+     * Build the evaluation prompt with injected RAG context.
+     */
+    private function buildEvaluationPrompt(string $cvText, array $ragContext): string
+    {
+        $prompt = '';
+
+        // Inject resume samples
+        if (! empty($ragContext['resumes'])) {
+            $prompt .= '=== REFERENCE RESUME SAMPLES ('.count($ragContext['resumes'])." results from 17,000+ database) ===\n\n";
+
+            foreach ($ragContext['resumes'] as $i => $resume) {
+                $prompt .= '--- Sample '.($i + 1)." (Role: {$resume['role']}, Source: {$resume['source']}, Relevance: {$resume['score']}) ---\n";
+                $prompt .= mb_substr($resume['content'], 0, 2000)."\n\n";
+            }
+
+            $prompt .= "Use these real-world resume samples as benchmarks. Compare the CV against the strongest samples found.\n\n";
+        } else {
+            \Log::info('CvEvaluator: RAG — no resume samples available, proceeding without reference data');
+        }
+
+        // Inject past evaluations
+        if (! empty($ragContext['evaluations'])) {
+            $prompt .= '=== PAST CV EVALUATIONS ('.count($ragContext['evaluations'])." results) ===\n\n";
+
+            foreach ($ragContext['evaluations'] as $i => $eval) {
+                $prompt .= '--- Evaluation '.($i + 1)." (Grade: {$eval['grade']}, Overall Score: {$eval['overall_score']}/100, Similarity: {$eval['score']}) ---\n";
+                $prompt .= mb_substr($eval['content'], 0, 2000)."\n\n";
+            }
+
+            $prompt .= "Use these past evaluations as benchmarks. Pay attention to common weaknesses found in similar CVs and strengths that earned high scores. Adjust your scoring accordingly.\n\n";
+        } else {
+            \Log::info('CvEvaluator: RAG — no past evaluations available, proceeding without benchmark data');
+        }
+
+        // Finally, the actual CV to evaluate
+        $prompt .= "=== CV TO EVALUATE ===\n\n{$cvText}";
+
+        return $prompt;
     }
 
     public function render()

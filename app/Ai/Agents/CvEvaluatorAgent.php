@@ -2,10 +2,6 @@
 
 namespace App\Ai\Agents;
 
-use App\Ai\Tools\SearchEvaluations;
-use App\Ai\Tools\SearchResumes;
-use App\Services\EvaluationVectorStore;
-use App\Services\ResumeVectorStore;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Model;
@@ -13,7 +9,6 @@ use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\HasStructuredOutput;
-use Laravel\Ai\Contracts\HasTools;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
 use Stringable;
@@ -22,31 +17,36 @@ use Stringable;
 #[Model('mistral-large-3:675b-cloud')]
 #[Temperature(0.0)]
 #[MaxTokens(4096)]
-class CvEvaluatorAgent implements Agent, HasStructuredOutput, HasTools
+class CvEvaluatorAgent implements Agent, HasStructuredOutput
 {
     use Promptable;
 
     /**
      * Agent instructions for structured CV evaluation with RAG context.
+     *
+     * The prompt sent to this agent will include search results from Qdrant
+     * (similar resumes and past evaluations) injected by the Livewire component.
+     * The agent uses that context to produce a benchmarked evaluation.
      */
     public function instructions(): Stringable|string
     {
         return <<<'INSTRUCTIONS'
 You are a professional CV/Resume evaluator with deep expertise in ATS systems, talent acquisition, and career coaching.
 
-## MANDATORY: Always Search Before Evaluating
+## How to Use the Reference Context
 
-You MUST call both search tools BEFORE producing your evaluation. This is not optional.
+The prompt you receive will include two sections of reference material gathered from real data:
 
-1. **First**, call `search_resumes` with keywords extracted from the CV (role, skills, industry) to find real resume samples in the same field.
-2. **Second**, call `search_evaluations` with similar keywords to find how comparable CVs were evaluated in the past.
-3. **Then**, use the search results to benchmark your evaluation:
-   - Compare the CV against the strongest resumes found. What does the CV do well relative to them? What is missing?
-   - Look at past evaluations of similar CVs. Were there common weaknesses? Common strengths?
-   - Adjust your scoring: if the search results show that strong resumes in this field typically include certain skills or formats, factor that into your assessment.
-   - Use the reference material to make your reasons specific and actionable, not generic.
+1. **Resume Samples** — real resumes from the same field, sourced from a database of 17,000+ samples
+2. **Past Evaluations** — how similar CVs were previously scored and graded
 
-If both searches return no results (empty database), proceed with your expert evaluation based on general best practices.
+Use this reference material to benchmark your evaluation:
+- Compare the CV against the strongest resumes found. What does the CV do well relative to them? What is missing?
+- Look at past evaluations of similar CVs. Were there common weaknesses? Common strengths?
+- Adjust your scoring: if the reference material shows that strong resumes in this field typically include certain skills or formats, factor that into your assessment.
+- Use the reference material to make your reasons specific and actionable, not generic.
+
+If no reference material is provided (empty database), evaluate based on your expert knowledge of general best practices.
 
 ## Evaluation Criteria
 
@@ -74,17 +74,6 @@ Criteria:
 
 Respond ONLY with the structured JSON. No additional commentary outside the schema.
 INSTRUCTIONS;
-    }
-
-    /**
-     * Tools available to the agent for RAG-powered evaluation.
-     */
-    public function tools(): iterable
-    {
-        return [
-            new SearchResumes(app(ResumeVectorStore::class)),
-            new SearchEvaluations(app(EvaluationVectorStore::class)),
-        ];
     }
 
     /**
