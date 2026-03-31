@@ -2,23 +2,62 @@
     <div class="mx-auto flex min-h-16 max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <x-app-logo href="/" class="shrink-0" />
 
-        <x-ui::navbar class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl lg:flex" x-data="{ activeSection: window.location.hash || '#home', scrolling: false }" x-init="$nextTick(() => { if (!window.location.hash && window.location.pathname === '/') activeSection = '#home'; }); window.addEventListener('hashchange', () => activeSection = window.location.hash || '#home'); window.addEventListener('scroll', () => { if (scrolling) return; const sections = ['home', 'features', 'about', 'pricing', 'faq']; for (const id of sections) { const el = document.getElementById(id); if (el) { const rect = el.getBoundingClientRect(); if (rect.top <= 100 && rect.bottom >= 100) { activeSection = '#' + id; break; } } } })">
-            <x-ui::navbar.item href="/" @click.prevent="activeSection = '#home'; window.location.hash = 'home'; scrolling = true; setTimeout(() => scrolling = false, 1000)" class="!rounded-full !px-4 !py-2" x-bind:class="activeSection === '#home' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
+        {{-- Alpine scope wrapper to ensure x-data is on the correct element --}}
+        <div
+            x-data="{
+                activeSection: '#home',
+                ignoreScroll: false,
+                scrollToSection(id) {
+                    this.activeSection = '#' + id;
+                    this.ignoreScroll = true;
+                    document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => this.ignoreScroll = false, 1000);
+                }
+            }"
+            @scroll.window="
+                if (ignoreScroll) return;
+                const sections = ['home', 'features', 'about', 'pricing', 'faq'];
+                let current = 'home';
+                for (const id of sections) {
+                    const el = document.getElementById(id);
+                    if (el && el.getBoundingClientRect().top <= 120) current = id;
+                }
+                activeSection = '#' + current;
+            "
+            x-init="activeSection = window.location.hash || '#home'"
+            class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl lg:flex"
+        >
+            <a href="#home"
+                @click.prevent="scrollToSection('home')"
+                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
+                :class="activeSection === '#home' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
                 Home
-            </x-ui::navbar.item>
-            <x-ui::navbar.item href="{{ route('home') }}#features" @click="activeSection = '#features'; scrolling = true; setTimeout(() => scrolling = false, 1000)" class="!rounded-full !px-4 !py-2" x-bind:class="activeSection === '#features' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
+            </a>
+            <a href="#features"
+                @click.prevent="scrollToSection('features')"
+                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
+                :class="activeSection === '#features' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
                 Features
-            </x-ui::navbar.item>
-            <x-ui::navbar.item href="{{ route('home') }}#about" @click="activeSection = '#about'; scrolling = true; setTimeout(() => scrolling = false, 1000)" class="!rounded-full !px-4 !py-2" x-bind:class="activeSection === '#about' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
+            </a>
+            <a href="#about"
+                @click.prevent="scrollToSection('about')"
+                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
+                :class="activeSection === '#about' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
                 About
-            </x-ui::navbar.item>
-            <x-ui::navbar.item href="{{ route('home') }}#pricing" @click="activeSection = '#pricing'; scrolling = true; setTimeout(() => scrolling = false, 1000)" class="!rounded-full !px-4 !py-2" x-bind:class="activeSection === '#pricing' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
+            </a>
+            <a href="#pricing"
+                @click.prevent="scrollToSection('pricing')"
+                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
+                :class="activeSection === '#pricing' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
                 Pricing
-            </x-ui::navbar.item>
-            <x-ui::navbar.item href="{{ route('home') }}#faq" @click="activeSection = '#faq'; scrolling = true; setTimeout(() => scrolling = false, 1000)" class="!rounded-full !px-4 !py-2" x-bind:class="activeSection === '#faq' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
+            </a>
+            <a href="#faq"
+                @click.prevent="scrollToSection('faq')"
+                class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
+                :class="activeSection === '#faq' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
                 FAQ
-            </x-ui::navbar.item>
-        </x-ui::navbar>
+            </a>
+        </div>
 
         <div class="flex-1"></div>
 

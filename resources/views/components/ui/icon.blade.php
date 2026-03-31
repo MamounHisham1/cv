@@ -77,6 +77,8 @@ $heroiconMap = [
     'upload-cloud' => 'arrow-up-tray',
     'github' => 'link',
     'link' => 'link',
+    'database' => 'circle-stack',
+    'arrow-right-left' => 'arrows-right-left',
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;

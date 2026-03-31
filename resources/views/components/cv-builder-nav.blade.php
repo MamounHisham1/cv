@@ -41,7 +41,7 @@
         <livewire:credit-balance-indicator />
 
         <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
-            <x-ui::navbar.item :href="route('home')" icon="arrow-left" wire:navigate class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
+            <x-ui::navbar.item :href="route('home')" icon="arrow-left" class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
                 {{ __('Back to site') }}
             </x-ui::navbar.item>
 
