@@ -152,7 +152,6 @@ class CvSkillsManager extends Component
             'name' => $this->form['name'],
             'category' => $categoryKey,
             'level' => $this->form['level'],
-            'sort_order' => $this->editingId ? null : $this->getNextSortOrder(),
         ];
 
         if ($this->editingId) {

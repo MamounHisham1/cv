@@ -1,0 +1,1125 @@
+ ▐▛███▜▌   Claude Code v2.1.86
+▝▜█████▛▘  glm-5-turbo · API Usage Billing
+  ▘▘ ▝▝    ~/sites/cv
+
+❯ /clear                                                                        
+  ⎿  (no content)
+
+❯ I want to implment a new feature, it is AI used credits, in every ai uses i   
+want to have credits used, and the thing is i do not know how to calculate      
+that, in order to have a way that no side lose (client and me)                  
+
+● I'll use the brainstorming skill first to explore this feature properly before
+   jumping into implementation.
+
+● Skill(superpowers:brainstorming)
+  ⎿  Successfully loaded skill
+
+● Let me start by exploring the project context to understand the current AI
+  usage and architecture.
+
+● Explore(Explore CV evaluator codebase)
+  ⎿  Done (0 tool uses · 0 tokens · 3m 33s)
+  (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)
+
+● laravel-boost - database-schema (MCP)(summary: true)
+  ⎿  {
+       "engine": "sqlite",
+       "tables": {
+     … +82 lines (ctrl+o to expand)
+
+● laravel-boost - application-info (MCP)
+  ⎿  {
+       "php_version": "8.5",
+       "laravel_version": "13.2.0",
+     … +36 lines (ctrl+o to expand)
+
+● Now let me check the AI agent to understand the model and token usage.
+
+  Searched for 2 patterns, read 4 files (ctrl+o to expand)
+
+● Now let me check how the AI provider response exposes token usage.
+
+  Searched for 2 patterns, read 3 files (ctrl+o to expand)
+
+● Good, I now have a clear picture of the project. Here's what I found:
+
+  Your app uses AI in 3 places:
+  1. CvEvaluatorAgent - evaluates CVs (Mistral Large 3, 675B via Ollama, 4096
+  max tokens)
+  2. CvParser - parses CV text into structured data (Mistral Large 3, 8192 max
+  tokens)
+  3. CvBuilderAgent - conversational CV builder with tools (Mistral Large 3,
+  temperature 0.7)
+
+  The Laravel AI SDK gives you a Usage object on every response with
+  promptTokens, completionTokens, cacheWriteInputTokens, cacheReadInputTokens,
+  and reasoningTokens.
+
+  Now, the key question to designing a fair credit system:
+
+● User answered Claude's questions:
+  ⎿  · Which AI operations should consume credits? All of them, or just the CV 
+     evaluation? → All AI operations
+
+● All AI operations. Good choice for consistency. Next question:
+  ⎿  Tool use rejected
+● What would you like to clarify about the billing model? Do you have a specific
+   idea in mind, or are you unsure about which approach works best for your
+  situation?
+
+✻ Brewed for 6m 1s
+
+❯ tell me more about how the plans will look like in each one                   
+
+● Sure, let me break down what each model looks like in practice:
+
+  ---
+  1. Prepaid Credits
+
+  Users buy credit packs upfront. Credits are deducted per AI call based on
+  actual token cost.
+
+  Plans could look like:
+
+  ┌──────────┬─────────┬───────┬─────────────────────────────────┐
+  │   Pack   │ Credits │ Price │            Best for             │
+  ├──────────┼─────────┼───────┼─────────────────────────────────┤
+  │ Starter  │ 50      │ ~$5   │ Trying it out (~15 evaluations) │
+  ├──────────┼─────────┼───────┼─────────────────────────────────┤
+  │ Standard │ 200     │ ~$15  │ Regular use (~60 evaluations)   │
+  ├──────────┼─────────┼───────┼─────────────────────────────────┤
+  │ Pro      │ 500     │ ~$30  │ Heavy use (~150 evaluations)    │
+  └──────────┴─────────┴───────┴─────────────────────────────────┘
+
+  How credits are deducted: Each AI call costs credits proportional to tokens
+  used. You set a markup (e.g., 2-3x the raw API cost) to cover your margin. For
+   example, if an evaluation costs you $0.02 in API tokens, you charge the user
+  ~4-6 credits (where 1 credit ≈ $0.01).
+
+  Pros: No surprise bills for users. You get paid upfront. Easy to understand.
+  Cons: Users might hesitate to buy before trying. Hard to price credits
+  accurately without usage data.
+
+  ---
+  2. Post-Pay (Metered Billing)
+
+  Users use the AI freely, then get charged for what they actually used.
+
+  Plans could look like:
+
+  ┌───────────────┬────────────┬────────────────────────┬───────────────────┐
+  │     Tier      │  Monthly   │        Includes        │      Overage      │
+  │               │    fee     │                        │                   │
+  ├───────────────┼────────────┼────────────────────────┼───────────────────┤
+  │ Pay-as-you-go │ $0/month   │ Nothing — pay per call │ ~$0.10/evaluation │
+  ├───────────────┼────────────┼────────────────────────┼───────────────────┤
+  │ Pro           │ $20/month  │ 50 evaluations         │ ~$0.08/evaluation │
+  │               │            │ included               │                   │
+  ├───────────────┼────────────┼────────────────────────┼───────────────────┤
+  │ Enterprise    │ $50/month  │ 200 evaluations        │ ~$0.05/evaluation │
+  │               │            │ included               │                   │
+  └───────────────┴────────────┴────────────────────────┴───────────────────┘
+
+  How billing works: Track token usage per user. At month-end, charge their card
+   based on actual consumption.
+
+  Pros: Users feel less friction — try before paying. Fair since they only pay
+  for what they use.
+  Cons: Requires Stripe Billing with metered usage. Users might get surprise
+  bills. You risk non-payment. More complex to build.
+
+  ---
+  3. Freemium + Credits
+
+  Free tier to hook users, then credits for heavier use.
+
+  Plans could look like:
+
+  ┌────────────┬───────────┬─────────────────────────────────────────────────┐
+  │    Tier    │   Price   │                  What you get                   │
+  ├────────────┼───────────┼─────────────────────────────────────────────────┤
+  │ Free       │ $0        │ 3 evaluations/day, 1 CV parse/day, 10 builder   │
+  │            │           │ messages/day                                    │
+  ├────────────┼───────────┼─────────────────────────────────────────────────┤
+  │ Basic      │ $10/month │ 100 credits/month (resets monthly)              │
+  ├────────────┼───────────┼─────────────────────────────────────────────────┤
+  │ Pro        │ $25/month │ 300 credits/month + priority                    │
+  ├────────────┼───────────┼─────────────────────────────────────────────────┤
+  │ Enterprise │ $50/month │ 1000 credits/month                              │
+  └────────────┴───────────┴─────────────────────────────────────────────────┘
+
+  How it works: Free users hit daily limits. Paid users get monthly credits that
+   reset. Credits are deducted per AI call based on token cost.
+
+  Pros: Low barrier to entry. Users can try before buying. Good for growth.
+  Credit renewal gives recurring revenue.
+  Cons: Free users cost you money. Credit reset means users who don't use them
+  feel they "lost" value.
+
+  ---
+  Now, your core concern was "no side loses" — meaning you don't overcharge
+  users but also don't lose money. The key to that is how you calculate credits 
+  from tokens, which is the same across all three models. The plan structure is
+  just how you package and sell it.
+
+● User answered Claude's questions:
+  ⎿  · Which model resonates most with how you want to run this? → Prepaid 
+     credits
+
+● Prepaid credits. Next question — this gets to the heart of "no side loses":
+
+● User answered Claude's questions:
+  ⎿  · Right now you're using Mistral Large 3 via Ollama. Is this staying 
+     self-hosted, or do you plan to move to cloud APIs? This affects how we 
+     calculate credit costs. → i am using ollama but cloud ollama
+
+● Got it — cloud Ollama. So you are paying per token, just through Ollama's
+  cloud pricing rather than OpenAI/Anthropic directly. That's important because
+  it means we can tie credits directly to actual token costs.
+  ⎿  Tool use rejected
+
+● What would you like to clarify about the credit calculation approach? Are you
+  unsure about the trade-offs, or do you have a specific concern about how
+  tokens map to costs?
+
+✻ Baked for 1m 19s
+
+❯ do we know how much tokens it costed with ollama?                             
+
+● Good question. Let me check what the Laravel AI SDK's Ollama driver returns in
+   terms of token usage.
+
+  Searched for 2 patterns, read 3 files (ctrl+o to expand)
+
+● Yes — the Laravel AI SDK already tracks token usage for you. Here's how it
+  works:
+
+  Every AI response object has a ->usage property with:
+
+  ┌───────────────────────┬──────────────────────────────────────────────────┐
+  │         Field         │                  What it means                   │
+  ├───────────────────────┼──────────────────────────────────────────────────┤
+  │ promptTokens          │ Tokens sent to the model (your instructions + CV │
+  │                       │  text)                                           │
+  ├───────────────────────┼──────────────────────────────────────────────────┤
+  │ completionTokens      │ Tokens the model generated back                  │
+  ├───────────────────────┼──────────────────────────────────────────────────┤
+  │ cacheWriteInputTokens │ Tokens written to cache (if supported)           │
+  ├───────────────────────┼──────────────────────────────────────────────────┤
+  │ cacheReadInputTokens  │ Tokens read from cache (cheaper)                 │
+  ├───────────────────────┼──────────────────────────────────────────────────┤
+  │ reasoningTokens       │ Tokens used for "thinking" (if model supports    │
+  │                       │ it)                                              │
+  └───────────────────────┴──────────────────────────────────────────────────┘
+
+  You're already seeing this in your code — when you do $response = 
+  $agent->prompt(...), the $response object has $response->usage->promptTokens
+  and $response->usage->completionTokens.
+
+  Now, the key question about Ollama cloud: does Ollama's cloud API actually 
+  return token counts? Some Ollama setups report 0 for usage. Let me check what
+  your app is actually logging.
+
+  Looking at your CvEvaluator.php, you're already logging response details but
+  not logging token usage. That's actually step one of this feature — we'd need
+  to log $response->usage to see real numbers.
+
+  But the good news is: yes, the SDK supports it. The Usage object is populated
+  from Prism's integration with Ollama. Whether Ollama cloud returns real token
+  counts is something we'd verify by adding a quick log.
+
+  So to answer your question directly: we can know the token cost — the SDK
+  gives it to us on every call via $response->usage. We just need to start
+  capturing it.
+
+  Want me to continue with the credit calculation approach question now that you
+   know we have access to real token data?
+
+✻ Cooked for 51s
+
+❯ yes                                                                           
+
+● User answered Claude's questions:
+  ⎿  · How should credits be calculated per AI call? This is the core of making 
+     sure neither side loses. → Token-based (Recommended)
+
+● Token-based. Now let me understand your margin strategy:
+  ⎿  Tool use rejected
+
+● What would you like to clarify? Do you not know the Ollama cloud pricing, or
+  is there something else on your mind?
+
+✻ Sautéed for 56s
+
+❯ i like option 1, but like what can 1k tokens does? give me examples from my   
+codebase so i can understand                                                    
+
+● Great question. Let me give you concrete examples using your actual AI agents.
+
+  What does 1,000 tokens look like in your app?
+
+  Rough rule: ~750 English words ≈ 1,000 tokens. Or ~4 characters per token.
+
+  ---
+  Your CvEvaluatorAgent instructions (system prompt):
+
+  Read 1 file (ctrl+o to expand)
+
+● Here are real estimates for your three AI operations:
+
+  ---
+  1. CV Evaluation (CvEvaluatorAgent)
+
+  ┌───────────────────────────────────────────────────┬─────────────────────┐
+  │                       Part                        │  Estimated Tokens   │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ System prompt (instructions above)                │ ~180 tokens         │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ "Evaluate this CV:\n\n" + CV text                 │ varies wildly       │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ - Short CV (1 page)                               │ ~500-800 tokens     │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ - Medium CV (2 pages)                             │ ~1,000-1,500 tokens │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ - Long CV (3-4 pages)                             │ ~2,000-3,000 tokens │
+  ├───────────────────────────────────────────────────┼─────────────────────┤
+  │ Output (10 criteria + scores + reasons + summary) │ ~800-1,200 tokens   │
+  └───────────────────────────────────────────────────┴─────────────────────┘
+
+  Total per evaluation:
+  - Short CV: ~1,500-2,200 tokens
+  - Medium CV: ~2,000-2,900 tokens
+  - Long CV: ~3,000-4,400 tokens
+
+  ---
+  2. CV Parsing (CvParser)
+
+  ┌──────────────────────────────────────────┬───────────────────────────┐
+  │                   Part                   │     Estimated Tokens      │
+  ├──────────────────────────────────────────┼───────────────────────────┤
+  │ System prompt                            │ ~250 tokens               │
+  ├──────────────────────────────────────────┼───────────────────────────┤
+  │ CV text input                            │ same as above (500-3,000) │
+  ├──────────────────────────────────────────┼───────────────────────────┤
+  │ Output (structured JSON with all fields) │ ~1,000-2,000 tokens       │
+  └──────────────────────────────────────────┴───────────────────────────┘
+
+  Total per parse: ~1,750-5,250 tokens
+
+  ---
+  3. CV Builder Chat (CvBuilderAgent)
+
+  This one is the most variable because it includes the entire CV context in the
+   prompt:
+
+  ┌────────────────────────────────┬────────────────────┐
+  │              Part              │  Estimated Tokens  │
+  ├────────────────────────────────┼────────────────────┤
+  │ System prompt + CV context     │ ~500-2,000 tokens  │
+  ├────────────────────────────────┼────────────────────┤
+  │ Chat history (grows over time) │ ~200-5,000+ tokens │
+  ├────────────────────────────────┼────────────────────┤
+  │ User message                   │ ~50-500 tokens     │
+  ├────────────────────────────────┼────────────────────┤
+  │ Output (AI reply)              │ ~100-1,000 tokens  │
+  └────────────────────────────────┴────────────────────┘
+
+  Total per message: ~850-8,500 tokens (depends heavily on conversation length)
+
+  ---
+  So at 1 credit = 1,000 tokens:
+
+  ┌───────────────────┬────────────────────┬───────────────────┐
+  │     Operation     │ Credits (short CV) │ Credits (long CV) │
+  ├───────────────────┼────────────────────┼───────────────────┤
+  │ 1 Evaluation      │ ~2                 │ ~4.5              │
+  ├───────────────────┼────────────────────┼───────────────────┤
+  │ 1 Parse           │ ~2                 │ ~5                │
+  ├───────────────────┼────────────────────┼───────────────────┤
+  │ 1 Builder message │ ~1-3               │ ~4-8              │
+  └───────────────────┴────────────────────┴───────────────────┘
+
+  A user with 100 credits could do roughly 25-50 evaluations depending on CV
+  length. That's the range we'd be working with.
+
+  Does that help you visualize the numbers? Want to continue with the markup
+  question — do you know what Ollama cloud charges you per token for Mistral
+  Large 3?
+
+✻ Cooked for 40s
+
+❯ i like this, so yeah continue with your questions                             
+
+● User answered Claude's questions:
+  ⎿  · Do you know what Ollama cloud charges you per token (or per 1K tokens) 
+     for Mistral Large 3? This determines the markup we build into the credit 
+     price. → use the option 1 u showed me eariler
+
+● Got it — cost-plus markup with configurable rates. Two more questions:
+  ⎿  Tool use rejected
+
+● What would you like to clarify about the credit packs?
+
+❯ i want to have 3 plans, free/pro/enterprise, and i have a marketing strategy  
+that people can generate invitation links, and they can earn credits when they  
+invite people and those people registers                                        
+● Good, that's a clear picture. So the credit system has two sides: spending (AI
+   usage) and earning (invites). Let me ask about the free tier limits:
+
+● User answered Claude's questions:
+  ⎿  · How should the Free plan work? You mentioned 3 plans 
+     (Free/Pro/Enterprise). What does a free user get to start with? → Monthly 
+     renewal
+
+● User answered Claude's questions:
+  ⎿  · For the referral system — when does the referrer earn credits? → Credits 
+     on signup + bonus on first purchase
+
+● User answered Claude's questions:
+  ⎿  · What payment provider do you want to use for selling credit packs and 
+     subscriptions? → actully for now i have nothing, so i will work for now 
+     with free + referral
+
+● Good call — start lean. So phase 1 is just Free plan + referral credits, no
+  payment provider yet. You can add Stripe later when you're ready to monetize.
+
+  Last question before I propose the design:
+
+● User answered Claude's questions:
+  ⎿  · The CvBuilderAgent is a conversational chat — it can rack up tokens fast 
+     with long conversations. Should the builder chat also consume credits? → 
+     Free messages cap
+
+● I now have everything I need. Let me propose the approaches for the overall
+  architecture.
+
+  ---
+  Approach 1: Middleware + Service Class (Recommended)
+
+  A centralized CreditManager service that wraps every AI call. A middleware
+  checks credit balance before allowing AI operations. Tokens are deducted after
+   each call using the response's Usage object.
+
+  How it works:
+  - CreditManager service: hasCredits(), deduct(), add(), getBalance()
+  - A ConsumesCredits attribute/middleware on Livewire methods that call AI
+  - After each AI call, read $response->usage and deduct based on configurable
+  rate
+  - Referral system: ReferralCode model + ReferralEarning model
+  - Plans stored in config, user's plan tracked on users table
+
+  Pros: Clean separation, reusable across all AI operations, easy to test
+  Cons: Slightly more files, needs discipline to route all AI calls through it
+
+  ---
+  Approach 2: Observer on AI Responses
+
+  Listen for AI response events and automatically deduct credits. Less code but
+  harder to control (what if you want to check balance before the call?).
+
+  Pros: Automatic, no manual integration
+  Cons: Can't block calls when credits are empty. Harder to customize
+  per-operation rules. Observer runs after the expensive API call already
+  happened.
+
+  ---
+  Approach 3: Decorator Pattern on Agents
+
+  Wrap each AI agent in a CreditTrackingAgent that checks balance before
+  forwarding the call and deducts after. Clean but requires modifying every
+  place agents are instantiated.
+
+  Pros: Transparent to the calling code
+  Cons: Every new Agent() call needs wrapping. Easy to forget. Doesn't work well
+   with the builder agent's conversational nature.
+
+  ---
+  My recommendation: Approach 1 — it gives you control (check before calling),
+  flexibility (different rules per operation), and works uniformly across all
+  three AI agents. The free builder messages cap is easy to implement as a
+  special case in the middleware.
+
+  Does Approach 1 sound right to you, or do you have concerns?
+
+✻ Worked for 1m 26s
+
+❯ yeah approach 1 is fantastic                                                  
+
+● Let me present the design in sections. First up — the data model:
+
+  ---
+  Section 1: Database Schema
+
+  New tables:
+
+  credit_balances
+
+  Tracks each user's current credit balance. Single row per user.
+
+  ┌──────────────────────────┬───────────┬───────────────────────────────────┐
+  │          Column          │   Type    │               Notes               │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ id                       │ int       │ PK                                │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ user_id                  │ int       │ FK → users, unique                │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ balance                  │ int       │ Current credits (default: 0)      │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ plan                     │ string    │ free, pro, enterprise (default:   │
+  │                          │           │ free)                             │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ monthly_credits_reset_at │ timestamp │ When monthly credits were last    │
+  │                          │           │ reset                             │
+  ├──────────────────────────┼───────────┼───────────────────────────────────┤
+  │ timestamps               │           │                                   │
+  └──────────────────────────┴───────────┴───────────────────────────────────┘
+
+  credit_transactions
+
+  Every credit movement is logged here for auditability.
+
+  ┌────────────────┬───────────┬────────────────────────────────────────────┐
+  │     Column     │   Type    │                   Notes                    │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ id             │ int       │ PK                                         │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ user_id        │ int       │ FK → users                                 │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ amount         │ int       │ Positive = credit added, negative = credit │
+  │                │           │  spent                                     │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │                │           │ purchase, monthly_grant, referral_signup,  │
+  │ type           │ string    │ referral_purchase_bonus, ai_evaluation,    │
+  │                │           │ ai_parse, ai_builder_message,              │
+  │                │           │ admin_adjustment                           │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ reference_type │ string    │ Polymorphic — e.g., CvEvaluation::class    │
+  │                │ nullable  │                                            │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ reference_id   │ int       │ e.g., the cv_evaluation ID                 │
+  │                │ nullable  │                                            │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ metadata       │ json      │ Token counts, model used, referral code,   │
+  │                │ nullable  │ etc.                                       │
+  ├────────────────┼───────────┼────────────────────────────────────────────┤
+  │ timestamps     │           │                                            │
+  └────────────────┴───────────┴────────────────────────────────────────────┘
+
+  referral_codes
+
+  Each user gets one shareable referral code.
+
+  ┌────────────┬────────┬──────────────────────────────────────┐
+  │   Column   │  Type  │                Notes                 │
+  ├────────────┼────────┼──────────────────────────────────────┤
+  │ id         │ int    │ PK                                   │
+  ├────────────┼────────┼──────────────────────────────────────┤
+  │ user_id    │ int    │ FK → users, unique                   │
+  ├────────────┼────────┼──────────────────────────────────────┤
+  │ code       │ string │ Unique shareable code (e.g., ABC123) │
+  ├────────────┼────────┼──────────────────────────────────────┤
+  │ timestamps │        │                                      │
+  └────────────┴────────┴──────────────────────────────────────┘
+
+  referrals
+
+  Tracks who invited whom and whether the reward was paid.
+
+  ┌───────────────────┬─────────┬─────────────────────────────────────┐
+  │      Column       │  Type   │                Notes                │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ id                │ int     │ PK                                  │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ referrer_id       │ int     │ FK → users (the inviter)            │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ referred_id       │ int     │ FK → users (the invitee)            │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ signup_rewarded   │ boolean │ Whether referrer got signup credits │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ purchase_rewarded │ boolean │ Whether referrer got purchase bonus │
+  ├───────────────────┼─────────┼─────────────────────────────────────┤
+  │ timestamps        │         │                                     │
+  └───────────────────┴─────────┴─────────────────────────────────────┘
+
+  No changes to existing tables — credit_balances links to users via user_id.
+
+  Does this data model look right so far?
+
+✻ Baked for 39s
+
+❯ yeah i like it, but for referral will it be code or link?                     
+
+● It can be both — they're not mutually exclusive. The code is what's stored in
+  the database (ABC123), and the link is just your app's URL with the code
+  appended, like:
+
+  https://yourapp.com/register?ref=ABC123
+
+  When someone visits that link, the code is captured from the URL parameter and
+   stored in the session. When they register, it creates the referrals record
+  linking them to the referrer.
+
+  So users share the link, but the system works with the code under the hood.
+  Does that work for you?
+
+❯ yes this is good                                                              
+
+● Great. Next section:
+
+  ---
+  Section 2: Credit Calculation Engine
+
+  This is the core logic that determines how many credits to deduct per AI call.
+
+  Credit Rate (configurable in config/credits.php)
+
+  'token_rate' => 1,        // 1 credit per 1000 tokens
+  'token_unit' => 1000,     // token divisor
+  'markup' => 3,            // 3x markup on actual cost
+
+  How it works per AI call:
+
+  1. Before the call — check if user has credits. If balance = 0, block the call
+   with a message.
+  2. After the call — read $response->usage:
+  credits_used = ceil((promptTokens + completionTokens) / token_unit) *
+  token_rate
+  3. Deduct from balance and create a credit_transactions record with full
+  metadata.
+
+  Operation-specific rules (also in config):
+
+  ┌────────────┬──────────────────────┬────────────────────────────────────┐
+  │ Operation  │         Rule         │              Details               │
+  ├────────────┼──────────────────────┼────────────────────────────────────┤
+  │ CV         │ Normal token         │ Always costs credits               │
+  │ Evaluation │ deduction            │                                    │
+  ├────────────┼──────────────────────┼────────────────────────────────────┤
+  │ CV Parse   │ Normal token         │ Always costs credits               │
+  │            │ deduction            │                                    │
+  ├────────────┼──────────────────────┼────────────────────────────────────┤
+  │ Builder    │ First N messages     │ free_builder_messages: 5 — after   │
+  │ Chat       │ free per             │ that, normal token deduction       │
+  │            │ conversation         │                                    │
+  └────────────┴──────────────────────┴────────────────────────────────────┘
+
+  Monthly renewal (Free plan):
+
+  A scheduled Artisan command runs daily. For users whose
+  monthly_credits_reset_at is older than 30 days:
+  - Reset monthly_credits_reset_at to now
+  - Add configured monthly credits (e.g., 5 for free plan)
+  - Log as monthly_grant transaction
+
+  Plan config in config/credits.php:
+
+  'plans' => [
+      'free' => [
+          'monthly_credits' => 5,
+          'free_builder_messages' => 5,
+      ],
+      'pro' => [
+          'monthly_credits' => 100,
+          'free_builder_messages' => 50,
+      ],
+      'enterprise' => [
+          'monthly_credits' => 500,
+          'free_builder_messages' => null, // unlimited
+      ],
+  ],
+
+  Referral rewards:
+
+  'referrals' => [
+      'signup_reward' => 3,          // referrer gets 3 credits when invitee 
+  signs up
+      'purchase_bonus' => 10,        // referrer gets 10 credits when invitee 
+  first purchases
+  ],
+
+  Does this calculation logic look solid?
+
+❯ referrals get and the invited also get credits!                               
+
+● Good catch — both parties should benefit. Updated:
+
+  'referrals' => [
+      'signup_reward' => 3,          // referrer gets 3 credits when invitee 
+  signs up
+      'invitee_signup_bonus' => 2,   // invitee also gets 2 credits on signup
+      'purchase_bonus' => 10,        // referrer gets 10 credits when invitee 
+  first purchases
+      'invitee_purchase_bonus' => 5, // invitee gets 5 bonus credits on their 
+  first purchase
+  ],
+
+  So when someone signs up via a referral link:
+  - Referrer gets 3 credits
+  - Invitee gets 2 credits on top of their free plan monthly credits
+
+  And when the invitee makes their first purchase:
+  - Referrer gets 10 credits
+  - Invitee gets 5 bonus credits
+
+  This way there's incentive for both sides — the referrer wants to share, and
+  the invitee has a reason to use the link instead of signing up directly.
+
+  Does that feel right?
+
+❯ also the free plan have 30 credits, and referrer gets 10, invited 8, on       
+purhcahse both 15                                                               
+
+● Updated:
+
+  'plans' => [
+      'free' => [
+          'monthly_credits' => 30,
+          'free_builder_messages' => 5,
+      ],
+      'pro' => [
+          'monthly_credits' => 100,
+          'free_builder_messages' => 50,
+      ],
+      'enterprise' => [
+          'monthly_credits' => 500,
+          'free_builder_messages' => null, // unlimited
+      ],
+  ],
+
+  'referrals' => [
+      'signup_reward' => 10,             // referrer gets 10 credits
+      'invitee_signup_bonus' => 8,       // invitee gets 8 credits
+      'purchase_bonus' => 15,            // referrer gets 15 credits on 
+  invitee's first purchase
+      'invitee_purchase_bonus' => 15,    // invitee gets 15 bonus credits on 
+  their first purchase
+  ],
+
+  With 30 free credits/month, a free user can do roughly 7-15 evaluations per
+  month depending on CV length. And each referral gives both sides a nice chunk.
+   Does that work?
+
+❯ yeah it does                                                                  
+
+● Next section:
+
+  ---
+  Section 3: CreditManager Service & Integration Points
+
+  App\Services\CreditManager
+
+  The single class that handles all credit operations:
+
+  ┌────────────────────────────────────────┬────────────────────────────────┐
+  │                 Method                 │          What it does          │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ getBalance(User $user)                 │ Returns current credit balance │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ hasCredits(User $user)                 │ Check if balance > 0           │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ deduct(User $user, int $credits,       │ Deduct credits, log            │
+  │ string $type, ?Model $reference, array │ transaction                    │
+  │  $metadata)                            │                                │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ add(User $user, int $credits, string   │ Add credits, log transaction   │
+  │ $type, array $metadata)                │                                │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ calculateFromUsage(Usage $usage)       │ Convert token counts to credit │
+  │                                        │  amount using config rate      │
+  ├────────────────────────────────────────┼────────────────────────────────┤
+  │ canPerformOperation(User $user, string │ Check balance +                │
+  │  $operation)                           │ operation-specific rules       │
+  │                                        │ (e.g., free builder messages)  │
+  └────────────────────────────────────────┴────────────────────────────────┘
+
+  Integration into your existing code:
+
+  CvEvaluator.php — the evaluate() method:
+  1. Check hasCredits() before calling AI
+  2. Call AI as normal
+  3. $credits = CreditManager::calculateFromUsage($response->usage)
+  4. CreditManager::deduct(user, credits, 'ai_evaluation', $cvEvaluation,
+  [...tokens...])
+
+  CvBuilderAgent chat — wherever builder messages are handled:
+  1. Check canPerformOperation(user, 'builder_message') — respects free message
+  cap
+  2. Call AI as normal
+  3. If beyond free cap, deduct from usage
+  4. Log transaction
+
+  CvParser — wherever parsing is triggered:
+  Same pattern as evaluator
+
+  Referral flow:
+
+  On registration:
+  1. Check session for ref code
+  2. If found, look up ReferralCode → get referrer
+  3. Create referrals record
+  4. CreditManager::add(referrer, 10, 'referral_signup')
+  5. CreditManager::add(newUser, 8, 'invitee_signup_bonus')
+  6. Grant monthly plan credits for new user
+
+  On first purchase (future, when Stripe is added):
+  1. Check if user has an unredeemed referral (referred_id = user,
+  purchase_rewarded = false)
+  2. CreditManager::add(referrer, 15, 'referral_purchase_bonus')
+  3. CreditManager::add(user, 15, 'invitee_purchase_bonus')
+  4. Mark purchase_rewarded = true
+
+  UI elements:
+
+  - Credit balance shown in navbar (Livewire component, updates in real-time)
+  - Insufficient credits message when balance is 0 (with link to invite friends)
+  - Referral page — shows user's referral link, copy button, referral stats
+  - Credit history — list of transactions (earned/spent)
+
+  Does this architecture make sense?
+
+❯ Credit balance shown in navbar (Livewire component, updates in real-time),    
+and also in the chat!                                                           
+
+● Good — credit balance visible in both the navbar and the builder chat so users
+   always know where they stand. The chat can show a small indicator like "28
+  credits" that updates after each message.
+
+  Does the rest of the architecture look good, or any concerns?
+
+❯ now ok next                                                                   
+
+● ---
+  Section 4: Error Handling & Edge Cases
+
+  When credits are insufficient:
+
+  - Show a friendly message: "You're out of credits. Invite friends to earn
+  more, or upgrade your plan."
+  - Include a link to the referral page
+  - The AI call is blocked before it happens — no wasted API cost
+
+  Race conditions:
+
+  - A user could trigger two AI calls simultaneously (e.g., double-click
+  evaluate)
+  - Use database-level row locking (lockForUpdate() on credit_balances) inside a
+   DB transaction
+  - If balance goes negative due to race, the transaction fails and the user
+  sees an error
+
+  Token usage reporting 0:
+
+  - Some Ollama configurations may return 0 for token counts
+  - Fallback: charge a minimum credit cost per operation type (configurable)
+  - Log a warning so you know when the fallback is triggered
+
+  Monthly reset edge cases:
+
+  - User registers on Jan 15 → first reset on Feb 15, then Mar 15, etc.
+  - If user didn't use last month's credits, they don't stack — balance resets
+  to the plan's monthly amount
+  - This prevents hoarding
+
+  Referral abuse prevention:
+
+  - One referral code per user, one referral per invitee (can't be referred
+  twice)
+  - Rate limit registration from same IP
+  - Referral code must be used during registration, not after
+  - Purchase bonus only triggers once (tracked via purchase_rewarded boolean)
+
+  Builder chat free message tracking:
+
+  - Count messages per conversation (using agent_conversations table that
+  already exists in your DB)
+  - When free_builder_messages is exceeded, normal credit deduction kicks in
+  - Counter resets with each new conversation
+
+  ---
+  That's the last design section. Does the error handling and edge cases look
+  solid?
+
+❯ ok i have edge case, what if i have 2 credits left, and i wanted to send a    
+message and that message took 3 credits!, what will happens?                    
+
+● Great edge case. Two options:
+
+  Option A: Block it (safe for you)
+  - Check balance before the call: 2 < minimum possible cost → block with
+  "insufficient credits" message
+  - Problem: you don't know the cost before the AI runs, so what's the minimum?
+
+  Option B: Allow it, balance goes to -1 (safe for user)
+  - Let the call go through, deduct 3, balance becomes -1
+  - Next call is blocked because balance is negative
+  - The user gets their response but can't make another call until they earn/buy
+   credits
+  - This is a one-time small debt — at most 1-2 credits per user
+
+  I'd recommend Option B. Here's why:
+  - You never block a call the user already paid credits for
+  - The maximum loss is small (1-2 credits per user, and only on their very last
+   call)
+  - It feels fair — the user didn't waste their last 2 credits on nothing
+  - The negative balance naturally prevents further calls until they top up
+
+  The config would have:
+  'allow_negative_balance' => true,   // let balance go to -N on the last call
+  'max_negative_balance' => -5,       // hard floor, anything below this is 
+  blocked
+
+  And hasCredits() checks balance > -5 (or whatever you configure), not just > 
+  0.
+
+  Does that approach work for you?
+
+❯ actully i want to be freindly and let them have thier last credits, but if    
+the credits exceeded 150% then show them an error and retrive the ai response,  
+like the user have 10 credits and the ai took 16 immedietaly stop the ai and    
+retrive the response and give the user his credits back with insiffcuint        
+balance                                                                         
+● I like that — very user-friendly. But there's a technical problem: you can't 
+  know the token cost until the AI finishes responding. The tokens are counted
+  after the full response comes back.
+
+  So we can't stop mid-response. What we can do:
+
+  Post-call check (what actually works):
+  1. AI call completes, you get $response->usage
+  2. Calculate credits needed (e.g., 16)
+  3. Compare to balance (e.g., 10)
+  4. If credits needed > balance × 1.5 (e.g., 10 × 1.5 = 15, and 16 > 15):
+    - Don't deduct anything — return full balance
+    - Show error: "This operation required 16 credits but you only have 10.
+  Please top up."
+    - The AI response is discarded (not saved, not shown)
+  5. If credits needed ≤ balance × 1.5:
+    - Allow it, balance goes to 0 or slightly negative
+    - Show the response normally
+
+  This way:
+  - Small overages (within 150%) are forgiven — user gets the response
+  - Large overages (>150%) are caught — user keeps credits but loses the
+  response
+
+  The trade-off is you eat the API cost when you discard a response. But this
+  only happens when a user with very few credits sends something unexpectedly
+  expensive.
+
+● User answered Claude's questions:
+  ⎿  · Does this post-call 150% threshold approach work for you? → I have a 
+     different idea
+
+● What's your idea?
+
+❯ actully for their last usage then do it anyway, just make sure u set thier    
+balance to 0 if it exceeded                                                     
+
+● Even simpler and more user-friendly. So the rule is:
+
+  - Always let the AI call complete — never block or discard
+  - After the call: if credits needed > balance, just set balance to 0 (cap the
+  deduction at their current balance)
+  - User always gets their response
+  - Maximum you can lose per user is their last balance worth of credits (which
+  is small)
+
+  Example: User has 2 credits, AI call costs 5
+  → Deduct 2, balance = 0
+  → User gets the response
+  → Next call is blocked ("insufficient credits")
+
+  Example: User has 10 credits, AI call costs 8
+  → Deduct 8, balance = 2
+  → Normal behavior
+
+  The only risk is a user with 1 credit making a huge call that costs 50. But
+  since you control the MaxTokens on your agents (4096, 8192), the maximum
+  tokens per call is bounded, so the worst case is predictable.
+
+  Should I update the design with this rule and move on to writing the spec?
+
+❯ yeah i like it, but sorry weird resquest, i need an ai prompt to make the     
+icon image, or u can make it svg? i need a unique icon no just hericon or       
+somrthing                                                                       
+
+● I can make you a custom SVG credit icon — something unique. What style are you
+   going for?
+
+● User answered Claude's questions:
+  ⎿  · Which style fits your app's look? The icon will be used next to the 
+     credit balance in the navbar and chat. → Coin with spark
+
+● Let me check your app's color scheme so the icon matches.
+
+  Searched for 1 pattern, read 1 file (ctrl+o to expand)
+
+● Dark theme with emerald accents. Here's your custom SVG credit coin icon:
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" 
+  width="24" height="24">
+    <!-- Outer coin ring -->
+    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5" 
+  opacity="0.3"/>
+    <!-- Inner coin face -->
+    <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/>
+    <!-- Spark/lightning bolt -->
+    <path d="M13 2L9 12h3l-1 10 5-12h-3l1-8z" fill="currentColor" 
+  opacity="0.9"/>
+  </svg>
+
+  This gives you a circular coin with a lightning bolt spark through the center.
+   It uses currentColor so it inherits the text color — on your dark theme it'll
+   be light, on emerald accents it'll match.
+
+  Want me to save this as a Blade component so you can use it as
+  <x-icons.credit-coin/> anywhere? Or should we save it as a file and move on to
+   writing the full design spec?
+
+❯ yes, and make it gold                                                         
+
+  Searched for 2 patterns, read 1 file (ctrl+o to expand)
+
+● Your app uses Heroicons via a dynamic component. I'll create a standalone
+  Blade component for the custom icon since it's not a Heroicon.
+
+  Read 1 file (ctrl+o to expand)
+
+● Write(resources/views/components/credit-coin.blade.php)
+  ⎿  Wrote 61 lines to resources/views/components/credit-coin.blade.php
+       1 @props([
+       2     'size' => 'md',
+       3 ])
+       4 
+       5 @php
+       6 $sizeClass = match ($size) {
+       7     'xs' => 'w-3.5 h-3.5',
+       8     'sm' => 'w-4 h-4',
+       9     'md' => 'w-5 h-5',
+      10     'lg' => 'w-6 h-6',
+     … +51 lines (ctrl+o to expand)
+
+● Done. You can use it anywhere with:
+
+  <x-credit-coin size="sm" />    <!-- 4x4, good for inline -->
+  <x-credit-coin size="md" />    <!-- 5x5, navbar -->
+  <x-credit-coin size="lg" />    <!-- 6x6, bigger -->
+
+  The icon is a gold coin with:
+  - Gradient from bright gold (#F6D365) to deep gold (#D4A017)
+  - Notched edge detail for a real coin feel
+  - Lightning bolt spark in the center
+  - Subtle glow effect on the spark
+
+  It should look great against your dark zinc background. Want me to move on to
+  writing the full design spec now?
+
+✻ Cogitated for 1m 8s
+
+❯ now continue                                                                  
+
+● Let me write the full design spec.
+
+● Bash(mkdir -p /home/mamoun/sites/cv/docs/superpowers/specs)
+  ⎿  Done
+
+● Write(docs/superpowers/specs/2026-03-30-ai-credits-system-design.md)
+  ⎿  Wrote 282 lines to
+     docs/superpowers/specs/2026-03-30-ai-credits-system-design.md
+       1 # AI Credits System Design
+       2 
+       3 ## Overview
+       4 
+       5 A prepaid credit system for AI operations (CV evaluation, CV par
+         sing, CV builder chat). Users spend credits proportional to actu
+         al token usage. Credits can be earned through referrals or purch
+         ased (future).
+       6 
+       7 ## Plans
+       8 
+       9 | Plan | Monthly Credits | Free Builder Messages | Price |
+      10 |------|----------------|----------------------|-------|
+     … +272 lines (ctrl+o to expand)
+
+● Now let me do the spec self-review.
+
+  Read 1 file (ctrl+o to expand)
+
+● Spec looks clean — no placeholders, no contradictions, scope is focused. Let
+  me commit it.
+
+● Bash(git add docs/superpowers/specs/2026-03-30-ai-credits-system-design.md &&
+      git commit -m "$(cat <<'EOF'
+      docs: add AI credits system design spec…)
+  ⎿  [master d91f03f] docs: add AI credits system design spec
+      1 file changed, 282 insertions(+)
+      create mode 100644 docs/superpowers/specs/2026-03-30-ai-credits-syste
+     m-design.md
+
+● Spec written and committed to
+  docs/superpowers/specs/2026-03-30-ai-credits-system-design.md. Please review
+  it and let me know if you want to make any changes before we start writing out
+   the implementation plan.
+
+✻ Churned for 1m 55s
+❯ go ahead                                                                      
+
+● Skill(superpowers:writing-plans)
+  ⎿  Successfully loaded skill
+
+● I'm using the writing-plans skill to create the implementation plan.
+
+  Let me first read the spec and explore the codebase to understand the existing
+   patterns.
+
+  Read 1 file (ctrl+o to expand)
+
+● Let me explore the existing codebase patterns I need to match.
+
+  Read 3 files (ctrl+o to expand)
+
+● Now let me check existing model patterns, migrations, the registration flow,
+  and how the builder chat is wired up.
+
+  Searched for 7 patterns, read 7 files (ctrl+o to expand)
+
+● Now let me check the existing test patterns and the CvImporter (which uses
+  CvParser).
+
+  Read 2 files (ctrl+o to expand)
+
+● Let me check the Fortify registration routes and the Laravel AI SDK's Usage
+  class one more time.
+
+  Searched for 2 patterns, read 4 files (ctrl+o to expand)
+
+● Now let me check the agent_conversations table schema and the Laravel AI SDK's
+   StructuredAgentResponse to understand the response shape.
+
+● laravel-boost - database-schema (MCP)(filter: "agent_conversations",
+                                       include_column_details: true)
+  ⎿  {
+       "engine": "sqlite",
+       "tables": {
+     … +33 lines (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)
+
+● Now I have full context. Let me check the app/Console/Kernel.php or
+  routes/console.php for scheduling patterns.
+
+  Read 1 file (ctrl+o to expand)
+
+● Good. Now I have complete context. Let me write the implementation plan.
+
+● Bash(mkdir -p /home/mamoun/sites/cv/docs/superpowers/plans)
+  ⎿  Done
+
+● Bash(mkdir -p /home/mamoun/sites/cv/docs/superpowers/plans)
+  ⎿  Done
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ continue                                                                      

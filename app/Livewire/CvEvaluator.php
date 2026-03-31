@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Ai\Agents\CvEvaluatorAgent;
 use App\Models\CvEvaluation;
+use App\Services\CreditManager;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -108,6 +109,14 @@ class CvEvaluator extends Component
         }
 
         $this->evaluationState = 'evaluating';
+
+        if (auth()->check() && ! app(CreditManager::class)->hasCredits(auth()->user())) {
+            $this->errorMessage = "You're out of credits. Invite friends to earn more!";
+            $this->evaluationState = 'error';
+            $this->dispatch('insufficient-credits');
+
+            return;
+        }
 
         try {
             $agent = new CvEvaluatorAgent;
@@ -321,8 +330,9 @@ class CvEvaluator extends Component
             ]);
 
             // Save evaluation to database for authenticated users
+            $savedEvaluation = null;
             if (auth()->check()) {
-                CvEvaluation::create([
+                $savedEvaluation = CvEvaluation::create([
                     'user_id' => auth()->id(),
                     'filename' => $this->uploadedFile?->getClientOriginalName(),
                     'overall_score' => $this->result['overall_score'],
@@ -337,6 +347,23 @@ class CvEvaluator extends Component
                 \Log::info('CvEvaluator: Saved evaluation to database', ['user_id' => auth()->id()]);
 
                 $this->refreshEvaluations();
+            }
+
+            if (auth()->check() && $savedEvaluation) {
+                $creditManager = app(CreditManager::class);
+                $credits = $creditManager->calculateFromUsage($response->usage, 'ai_evaluation');
+                $creditManager->deduct(
+                    auth()->user(),
+                    $credits,
+                    'ai_evaluation',
+                    $savedEvaluation,
+                    [
+                        'prompt_tokens' => $response->usage->promptTokens,
+                        'completion_tokens' => $response->usage->completionTokens,
+                        'model' => 'mistral-large-3',
+                    ]
+                );
+                $this->dispatch('credits-updated');
             }
 
             $this->evaluationState = 'complete';

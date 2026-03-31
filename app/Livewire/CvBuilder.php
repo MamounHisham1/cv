@@ -169,6 +169,15 @@ class CvBuilder extends Component
         $this->importError = null;
 
         try {
+            $creditManager = app(CreditManager::class);
+            if (! $creditManager->hasCredits(Auth::user())) {
+                $this->importError = "You're out of credits. Invite friends to earn more!";
+                $this->isImporting = false;
+                $this->dispatch('insufficient-credits');
+
+                return;
+            }
+
             $extractor = new CvTextExtractor;
             $text = $extractor->extract($this->uploadedFile);
 
@@ -246,6 +255,13 @@ class CvBuilder extends Component
             $this->activeSection = 'personal';
             $this->dispatch('cv-saved', cvId: $cv->id);
             $this->dispatch('cv-updated', cvId: $cv->id);
+
+            $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
+            $creditManager->deduct(Auth::user(), $credits, 'ai_parse', $cv, [
+                'prompt_tokens' => $response->usage->promptTokens,
+                'completion_tokens' => $response->usage->completionTokens,
+            ]);
+            $this->dispatch('credits-updated');
         } catch (\Throwable $e) {
             Log::error('CvBuilder: Import failed', [
                 'message' => $e->getMessage(),

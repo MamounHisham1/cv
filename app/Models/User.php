@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -64,5 +65,25 @@ class User extends Authenticatable
     public function skillCategories(): HasMany
     {
         return $this->hasMany(UserSkillCategory::class);
+    }
+
+    public function creditBalance(): HasOne
+    {
+        return $this->hasOne(CreditBalance::class);
+    }
+
+    public function creditTransactions(): HasMany
+    {
+        return $this->hasMany(CreditTransaction::class);
+    }
+
+    public function referralCode(): HasOne
+    {
+        return $this->hasOne(ReferralCode::class);
+    }
+
+    public function hasCredits(): bool
+    {
+        return ($this->creditBalance?->balance ?? 0) > 0;
     }
 }

@@ -21,6 +21,10 @@
             <x-heroicon-c-cog-6-tooth class="size-4" />
             {{ __('Settings') }}
         </a>
+        <a href="{{ route('credits.history') }}" wire:navigate class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300 outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white">
+            <x-heroicon-c-clock class="size-4" />
+            {{ __('Credit History') }}
+        </a>
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
             <button

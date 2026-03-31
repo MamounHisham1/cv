@@ -86,6 +86,15 @@ class CvImporter extends Component
         $this->errorMessage = null;
 
         try {
+            $creditManager = app(CreditManager::class);
+            if (! $creditManager->hasCredits(Auth::user())) {
+                $this->errorMessage = "You're out of credits. Invite friends to earn more!";
+                $this->isProcessing = false;
+                $this->dispatch('insufficient-credits');
+
+                return;
+            }
+
             $extractor = new CvTextExtractor;
             $text = $extractor->extract($this->uploadedFile);
 
@@ -129,6 +138,13 @@ class CvImporter extends Component
             $this->importSkills($cv, $data['skills'] ?? '[]');
             $this->importEducations($cv, $data['educations'] ?? '[]');
             $this->importCertifications($cv, $data['certifications'] ?? '[]');
+
+            $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
+            $creditManager->deduct(Auth::user(), $credits, 'ai_parse', $cv, [
+                'prompt_tokens' => $response->usage->promptTokens,
+                'completion_tokens' => $response->usage->completionTokens,
+            ]);
+            $this->dispatch('credits-updated');
 
             $this->redirect(route('cv.edit', $cv));
         } catch (\Throwable $e) {

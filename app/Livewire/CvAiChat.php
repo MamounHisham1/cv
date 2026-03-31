@@ -77,6 +77,25 @@ class CvAiChat extends Component
     private function getAiResponse(string $message): void
     {
         try {
+            $creditManager = app(CreditManager::class);
+            $user = Auth::user();
+
+            $freeMessagesRemaining = $creditManager->getFreeBuilderMessagesRemaining($user, $this->conversationId);
+            $isFreeMessage = $freeMessagesRemaining > 0;
+
+            if (! $isFreeMessage && ! $creditManager->hasCredits($user)) {
+                $this->messages[] = [
+                    'role' => 'assistant',
+                    'content' => "You're out of credits. Invite friends to earn more, or upgrade your plan to continue building your CV.",
+                    'timestamp' => now()->toISOString(),
+                    'is_error' => true,
+                ];
+
+                $this->dispatch('insufficient-credits');
+
+                return;
+            }
+
             $agent = new CvBuilderAgent($this->cv);
 
             if ($this->conversationId) {
@@ -98,6 +117,16 @@ class CvAiChat extends Component
                 'content' => $content,
                 'timestamp' => now()->toISOString(),
             ];
+
+            if (! $isFreeMessage && $response->usage) {
+                $credits = $creditManager->calculateFromUsage($response->usage, 'ai_builder_message');
+                $creditManager->deduct($user, $credits, 'ai_builder_message', null, [
+                    'prompt_tokens' => $response->usage->promptTokens,
+                    'completion_tokens' => $response->usage->completionTokens,
+                    'conversation_id' => $this->conversationId,
+                ]);
+                $this->dispatch('credits-updated');
+            }
 
             if ($this->cv && $this->cv->exists) {
                 $this->cv->refresh();

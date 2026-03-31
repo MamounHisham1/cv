@@ -2,6 +2,7 @@
     $navItems = [
         ['route' => 'drafts', 'label' => 'My CVs', 'icon' => 'file-text', 'routeIs' => ['cv.builder', 'cv.edit', 'drafts']],
         ['route' => 'cv.evaluator', 'label' => 'AI Evaluator', 'icon' => 'sparkles', 'routeIs' => ['cv.evaluator']],
+        ['route' => 'referrals', 'label' => 'Referrals', 'icon' => 'gift', 'routeIs' => ['referrals']],
     ];
 @endphp
 
@@ -36,6 +37,8 @@
         </div>
 
         <div class="flex-1"></div>
+
+        <livewire:credit-balance-indicator />
 
         <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
             <x-ui::navbar.item :href="route('home')" icon="arrow-left" wire:navigate class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">

@@ -75,6 +75,8 @@ $heroiconMap = [
     'help' => 'question-mark-circle',
     'upload' => 'arrow-up-tray',
     'upload-cloud' => 'arrow-up-tray',
+    'github' => 'link',
+    'link' => 'link',
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;
