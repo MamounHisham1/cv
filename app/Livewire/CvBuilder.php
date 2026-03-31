@@ -77,9 +77,9 @@ class CvBuilder extends Component
             $this->cv = new Cv;
             $this->personalInfo['email'] = Auth::user()->email;
 
-            // Show onboarding when the user has no CVs yet
+            // Show onboarding when the user has no CVs yet or explicitly requested
             $hasCvs = Auth::user()->cvs()->exists();
-            $this->stage = $hasCvs ? 'builder' : 'onboarding';
+            $this->stage = (! $hasCvs || request()->has('onboarding')) ? 'onboarding' : 'builder';
         }
 
         $this->templates = $this->getAvailableTemplates();

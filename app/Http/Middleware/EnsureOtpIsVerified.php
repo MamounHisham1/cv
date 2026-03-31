@@ -26,8 +26,17 @@ class EnsureOtpIsVerified
             return $next($request);
         }
 
+        // Check if OTP is verified in session
         if (! session()->get('otp_verified')) {
-            return redirect()->route('otp.verify');
+            // Log out the user if they haven't verified OTP
+            // This handles edge case where user exists but didn't complete verification
+            auth()->logout();
+            session()->invalidate();
+            session()->regenerateToken();
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Please complete email verification before accessing the site.',
+            ]);
         }
 
         return $next($request);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\ReferralService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -50,6 +51,9 @@ class SocialiteController extends Controller
                     'email_verified_at' => now(),
                     'otp_verified_at' => now(),
                 ]);
+
+                // Grant credits for new Google OAuth users
+                app(ReferralService::class)->processReferralOnRegistration($user, null);
             }
 
             // Ensure existing Google users also have OTP verified

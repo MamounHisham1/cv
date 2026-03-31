@@ -3,7 +3,11 @@
 namespace App\Livewire;
 
 use App\Mail\OtpMail;
+use App\Models\User;
+use App\Services\ReferralService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
@@ -18,41 +22,51 @@ class OtpVerification extends Component
 
     public int $resendCooldown = 0;
 
-    public function mount(string $email): void
+    public function mount(): void
     {
-        $this->email = $email;
+        // Check for pending registration in session
+        $pendingRegistration = Session::get('pending_registration');
 
-        $user = auth()->user();
-        if ($user && $user->otp_sent_at) {
-            $secondsSinceSent = now()->diffInSeconds($user->otp_sent_at);
+        if (! $pendingRegistration) {
+            // No pending registration - redirect to login
+            $this->redirectRoute('login');
+
+            return;
+        }
+
+        $this->email = $pendingRegistration['email'];
+
+        // Get OTP cooldown from session
+        $otpSentAt = Session::get('otp_sent_at');
+        if ($otpSentAt) {
+            $secondsSinceSent = now()->diffInSeconds($otpSentAt);
             if ($secondsSinceSent < 60) {
                 $this->resendCooldown = 60 - (int) $secondsSinceSent;
             }
         }
 
-        // Only send OTP if user doesn't have a valid one already
-        if ($this->resendCooldown === 0 && (!$user || !$user->otp_code || $user->otp_expires_at?->isPast())) {
+        // Only send OTP if we don't have a valid one already
+        if ($this->resendCooldown === 0 && ! Session::get('otp_code')) {
             $this->sendOtp();
         }
     }
 
     public function sendOtp(): void
     {
-        $user = auth()->user();
+        $pendingRegistration = Session::get('pending_registration');
 
-        if (! $user) {
+        if (! $pendingRegistration) {
             return;
         }
 
         $otpCode = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
 
-        $user->update([
-            'otp_code' => $otpCode,
-            'otp_expires_at' => now()->addMinutes(10),
-            'otp_sent_at' => now(),
-        ]);
+        // Store OTP in session
+        Session::put('otp_code', $otpCode);
+        Session::put('otp_expires_at', now()->addMinutes(10)->toIso8601String());
+        Session::put('otp_sent_at', now());
 
-        Mail::to($user->email)->send(new OtpMail(
+        Mail::to($pendingRegistration['email'])->send(new OtpMail(
             otp: $otpCode,
             expiresInMinutes: 10
         ));
@@ -67,32 +81,50 @@ class OtpVerification extends Component
             'otp' => ['required', 'string', 'size:6'],
         ]);
 
-        $user = auth()->user();
+        $pendingRegistration = Session::get('pending_registration');
 
-        if (! $user) {
+        if (! $pendingRegistration) {
             $this->redirectRoute('login');
 
             return;
         }
 
-        if ($user->otp_code !== $this->otp) {
+        $storedOtp = Session::get('otp_code');
+        $otpExpiresAt = Session::get('otp_expires_at');
+
+        if ($storedOtp !== $this->otp) {
             $this->addError('otp', 'Invalid verification code.');
 
             return;
         }
 
-        if ($user->otp_expires_at?->isPast()) {
+        if ($otpExpiresAt && now()->isAfter($otpExpiresAt)) {
             $this->addError('otp', 'Verification code has expired. Please request a new one.');
 
             return;
         }
 
-        $user->update([
-            'otp_code' => null,
-            'otp_expires_at' => null,
+        // Create the user now that OTP is verified
+        $user = User::create([
+            'name' => $pendingRegistration['name'],
+            'email' => $pendingRegistration['email'],
+            'password' => $pendingRegistration['password'],
             'otp_verified_at' => now(),
         ]);
 
+        // Process referral and grant credits
+        app(ReferralService::class)->processReferralOnRegistration(
+            $user,
+            $pendingRegistration['ref_code']
+        );
+
+        // Clear pending registration data from session
+        Session::forget(['pending_registration', 'otp_code', 'otp_expires_at', 'otp_sent_at']);
+
+        // Log the user in
+        Auth::login($user);
+
+        // Mark OTP as verified in session
         session()->put('otp_verified', true);
 
         $this->redirectIntended(route('drafts', absolute: false));

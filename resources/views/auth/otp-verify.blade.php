@@ -1,3 +1,3 @@
 <x-layouts::auth :title="__('Verify Email')">
-    <livewire:otp-verification :email="auth()->user()->email" />
+    <livewire:otp-verification />
 </x-layouts::auth>

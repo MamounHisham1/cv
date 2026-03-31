@@ -402,9 +402,9 @@
     @endif
     @else
     {{-- ===================== BUILDER STAGE ===================== --}}
-    <div class="relative mx-auto max-w-[1800px] p-4 md:p-6 lg:p-8">
-        <div class="mb-6 rounded-3xl border border-white/10 bg-zinc-950/80 p-5 shadow-2xl shadow-black/20 backdrop-blur-xl md:p-6">
-            <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div class="relative mx-auto max-w-[1800px] p-3 md:p-6 lg:p-8">
+        <div class="mb-4 rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl md:mb-6 md:rounded-3xl md:p-6">
+            <div class="mb-4 flex flex-col gap-4 sm:mb-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <div class="mb-3 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
                         Design 4 Builder
@@ -416,21 +416,23 @@
                         Build your ATS-optimized CV with AI assistance
                     </p>
                 </div>
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2">
                     <button
                         wire:click="goToOnboarding"
-                        class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white"
+                        class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white sm:px-4"
                     >
                         <x-ui::icon name="plus" class="h-4 w-4" />
-                        New CV
+                        <span class="hidden sm:inline">New CV</span>
                     </button>
                     @if($cv->exists)
                         <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link" class="{{ $secondaryButtonClasses }}">
-                            Open Preview
+                            <span class="hidden sm:inline">Open Preview</span>
+                            <span class="sm:hidden">Preview</span>
                         </x-ui::button>
                         <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}?download=1" target="_blank" icon="download" class="{{ $secondaryButtonClasses }}">
-                            Download PDF
-                        </x-ui:button>
+                            <span class="hidden sm:inline">Download PDF</span>
+                            <span class="sm:hidden">PDF</span>
+                        </x-ui::button>
                     @endif
                 </div>
             </div>

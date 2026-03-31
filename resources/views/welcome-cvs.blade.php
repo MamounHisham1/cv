@@ -39,7 +39,7 @@
                     </a>
 
                     {{-- Secondary: Create New --}}
-                    <a href="{{ route('cv.builder') }}" wire:navigate
+                    <a href="{{ route('cv.builder', ['onboarding' => 1]) }}" wire:navigate
                        class="card-hover group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/50 p-8 text-left transition-all duration-300 hover:border-white/20 hover:bg-zinc-900/70">
                         <div class="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                             <x-ui::icon name="plus" class="h-7 w-7 text-zinc-400" />
@@ -67,7 +67,7 @@
                         <h1 class="mb-2 text-3xl font-bold text-white md:text-4xl">My CVs</h1>
                         <p class="text-sm text-zinc-400">You have {{ $cvs->count() }} CV{{ $cvs->count() > 1 ? 's' : '' }}</p>
                     </div>
-                    <a href="{{ route('cv.builder') }}" wire:navigate
+                    <a href="{{ route('cv.builder', ['onboarding' => 1]) }}" wire:navigate
                        class="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl hover:shadow-emerald-500/30">
                         <x-ui::icon name="plus" class="h-4 w-4" />
                         Create New CV

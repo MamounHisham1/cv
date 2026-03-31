@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
@@ -11,12 +12,18 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'landing.design4')->name('home');
 Route::redirect('/dashboard', '/builder');
 
+// Override Fortify's registration store route to not log user in
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->middleware(['guest:'.config('fortify.guard')])
+    ->name('register.store');
+
 // Google OAuth routes
 Route::get('/auth/google/redirect', [SocialiteController::class, 'redirectToGoogle'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [SocialiteController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 Route::get('/otp/verify', function () {
-    if (! auth()->check()) {
+    // Only allow access if there's a pending registration in session
+    if (! session()->has('pending_registration')) {
         return redirect()->route('login');
     }
 

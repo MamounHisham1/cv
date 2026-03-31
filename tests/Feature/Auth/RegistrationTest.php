@@ -19,7 +19,7 @@ test('registration screen can be rendered', function () {
         ->assertDontSee('show = !show', false);
 });
 
-test('new users can register', function () {
+test('new users can register and are redirected to otp verification', function () {
     $response = $this->post(route('register.store'), [
         'name' => 'John Doe',
         'email' => 'test@example.com',
@@ -28,7 +28,13 @@ test('new users can register', function () {
     ]);
 
     $response->assertSessionHasNoErrors()
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('otp.verify', absolute: false));
 
-    $this->assertAuthenticated();
+    // User should NOT be authenticated yet - they need to verify OTP first
+    $this->assertGuest();
+
+    // Pending registration should be stored in session
+    $this->assertNotNull(session('pending_registration'));
+    expect(session('pending_registration')['email'])->toBe('test@example.com');
+    expect(session('pending_registration')['name'])->toBe('John Doe');
 });
