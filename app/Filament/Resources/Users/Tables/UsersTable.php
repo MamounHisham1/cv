@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Services\CreditManager;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
@@ -35,6 +38,12 @@ class UsersTable
                     ->label('CVs')
                     ->counts('cvs')
                     ->sortable(),
+                TextColumn::make('credit_balance')
+                    ->label('Credits')
+                    ->state(fn ($record) => $record->creditBalance?->balance ?? 0)
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y')
                     ->sortable()
@@ -51,6 +60,29 @@ class UsersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('add_credits')
+                    ->label('Add Credits')
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('success')
+                    ->schema([
+                        TextInput::make('amount')
+                            ->label('Credits to add')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1)
+                            ->maxValue(10000),
+                        TextInput::make('reason')
+                            ->label('Reason')
+                            ->placeholder('Admin grant — promotional bonus')
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        app(CreditManager::class)->add($record, $data['amount'], 'admin_grant', [
+                            'reason' => $data['reason'],
+                            'granted_by' => auth()->id(),
+                        ]);
+                    })
+                    ->successNotificationTitle('Credits added successfully'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
