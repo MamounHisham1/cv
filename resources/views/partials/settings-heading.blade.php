@@ -1,4 +1,4 @@
-<div class="relative mb-8 w-full">
+<div class="relative mb-8 w-full px-6 pt-6 md:px-10 md:pt-10">
     <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
         {{ __('Account') }}
     </div>
