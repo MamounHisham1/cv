@@ -12,8 +12,21 @@
             </div>
             <button
                 type="button"
+                x-data
                 x-on:click="
-                    navigator.clipboard.writeText('{{ $this->referralLink }}');
+                    const link = '{{ $this->referralLink }}';
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(link);
+                    } else {
+                        const ta = document.createElement('textarea');
+                        ta.value = link;
+                        ta.style.position = 'fixed';
+                        ta.style.opacity = '0';
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(ta);
+                    }
                     $wire.copyReferralLink();
                 "
                 class="shrink-0 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
