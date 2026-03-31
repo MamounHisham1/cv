@@ -210,7 +210,11 @@
 }
 
 .message-bubble {
-    @apply max-w-[85%] px-4 py-3 rounded-2xl;
+    @apply max-w-[85%] px-3.5 py-2.5 rounded-2xl;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .message-bubble.user {
@@ -223,6 +227,61 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     background-color: rgba(24, 24, 27, 0.74);
     backdrop-filter: blur(20px);
+}
+
+.message-bubble .prose {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.message-bubble .prose pre {
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.message-bubble .prose code {
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.message-bubble .prose a {
+    word-break: break-all;
+}
+
+.message-bubble .prose p {
+    margin-bottom: 0.375rem;
+}
+
+.message-bubble .prose p:last-child {
+    margin-bottom: 0;
+}
+
+.message-bubble .prose ul,
+.message-bubble .prose ol {
+    margin-top: 0.25rem;
+    margin-bottom: 0.375rem;
+}
+
+.message-bubble .prose li {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.message-bubble .prose h1,
+.message-bubble .prose h2,
+.message-bubble .prose h3,
+.message-bubble .prose h4 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.message-bubble .prose h1:first-child,
+.message-bubble .prose h2:first-child,
+.message-bubble .prose h3:first-child,
+.message-bubble .prose h4:first-child {
+    margin-top: 0;
 }
 
 .bottom-sheet {

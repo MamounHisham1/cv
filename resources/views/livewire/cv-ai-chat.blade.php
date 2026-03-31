@@ -7,36 +7,39 @@
 
 <div class="flex h-full flex-col bg-transparent"
     x-data="{
-        scrollTarget: null,
-        scrollToMessage() {
-            this.$nextTick(() => {
-                const container = this.$refs.chatMessages;
-                if (!container) return;
-                if (this.scrollTarget) {
-                    const el = document.getElementById(this.scrollTarget);
-                    if (el) {
-                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        this.scrollTarget = null;
-                        return;
+        isNearBottom: true,
+        showScrollBtn: false,
+        _observer: null,
+
+        init() {
+            const c = this.$refs.chatMessages;
+            if (!c) return;
+
+            this._observer = new MutationObserver(() => {
+                this.$nextTick(() => {
+                    if (this.isNearBottom) {
+                        this.scrollToBottom(false);
                     }
-                }
-                // Fallback: scroll to bottom
-                container.scrollTop = container.scrollHeight;
+                });
             });
+            this._observer.observe(c, { childList: true, subtree: true });
+            this.$nextTick(() => this.scrollToBottom(false));
+        },
+
+        checkScroll() {
+            const c = this.$refs.chatMessages;
+            if (!c) return;
+            this.isNearBottom = c.scrollHeight - c.scrollTop - c.clientHeight < 120;
+            this.showScrollBtn = !this.isNearBottom;
+        },
+
+        scrollToBottom(smooth) {
+            const c = this.$refs.chatMessages;
+            if (!c) return;
+            c.scrollTo({ top: c.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
+            this.showScrollBtn = false;
         }
     }"
-    x-init="
-        $nextTick(() => {
-            const el = this.$refs.chatMessages;
-            if (el) el.scrollTop = el.scrollHeight;
-        });
-        $wire.on('message-added', () => {
-            const msgs = $wire.messages;
-            const lastId = msgs.length - 1;
-            this.scrollTarget = 'msg-' + lastId;
-            this.scrollToMessage();
-        });
-    "
 >
     <div class="border-b border-white/10 bg-white/5 p-3 backdrop-blur-sm">
         <div class="flex flex-wrap gap-2" x-bind:class="{ 'pointer-events-none opacity-50': $wire.isLoading }">
@@ -55,50 +58,67 @@
         </div>
     </div>
 
-    <div class="flex-1 space-y-3 overflow-y-auto overscroll-contain p-3" id="chat-messages" x-ref="chatMessages">
-        @forelse($messages as $index => $message)
-            <div id="msg-{{ $index }}" class="flex {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
-                <div class="{{ $message['role'] === 'user' ? 'message-bubble user border border-emerald-400/20 shadow-lg shadow-emerald-500/10' : 'message-bubble assistant shadow-xl shadow-black/15' }}">
-                    @if($message['role'] === 'assistant')
-                        <div class="mb-1.5 flex items-center gap-2 border-b border-white/10 pb-1.5">
-                            <x-ui::icon name="sparkles" class="w-3.5 h-3.5 text-emerald-500" />
-                            <span class="text-xs font-medium text-emerald-300">AI Assistant</span>
+    <div class="relative min-h-0 flex-1">
+        <div class="h-full space-y-2 overflow-y-auto overscroll-contain p-3" id="chat-messages" x-ref="chatMessages" x-on:scroll.throttle="checkScroll()">
+            @forelse($messages as $index => $message)
+                <div class="flex min-w-0 {{ $message['role'] === 'user' ? 'justify-end' : 'justify-start' }}">
+                    <div class="min-w-0 {{ $message['role'] === 'user' ? 'message-bubble user border border-emerald-400/20 shadow-lg shadow-emerald-500/10' : 'message-bubble assistant shadow-xl shadow-black/15' }}">
+                        @if($message['role'] === 'assistant')
+                            <div class="mb-1 flex items-center gap-1.5 border-b border-white/10 pb-1">
+                                <x-ui::icon name="sparkles" class="w-3 h-3 text-emerald-500" />
+                                <span class="text-[11px] font-medium text-emerald-300">AI Assistant</span>
+                            </div>
+                        @endif
+                        <div class="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown($message['content']) !!}</div>
+                        <div class="mt-1 border-t border-white/10 pt-1 text-[11px] {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
+                            {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
                         </div>
-                    @endif
-                    <div class="text-sm whitespace-pre-wrap leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown($message['content']) !!}</div>
-                    <div class="mt-1.5 border-t border-white/10 pt-1.5 text-xs {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
-                        {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
                     </div>
                 </div>
-            </div>
-        @empty
-            <div class="flex items-center justify-center h-full">
-                <div class="text-center">
-                    <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
-                        <x-ui::icon name="sparkles" class="w-8 h-8 text-emerald-300" />
+            @empty
+                <div class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
+                            <x-ui::icon name="sparkles" class="w-8 h-8 text-emerald-300" />
+                        </div>
+                        <x-ui::heading size="md" class="mb-2 text-white">How can I help?</x-ui::heading>
+                        <p class="mb-4 max-w-xs text-sm text-zinc-400">
+                            Ask me anything about your CV, ATS optimization, or get suggestions to improve your content.
+                        </p>
                     </div>
-                    <x-ui::heading size="md" class="mb-2 text-white">How can I help?</x-ui::heading>
-                    <p class="mb-4 max-w-xs text-sm text-zinc-400">
-                        Ask me anything about your CV, ATS optimization, or get suggestions to improve your content.
-                    </p>
                 </div>
-            </div>
-        @endforelse
+            @endforelse
 
-        @if($isLoading)
-            <div class="flex justify-start">
-                <div class="message-bubble assistant">
-                    <div class="flex items-center gap-2">
-                        <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
-                        <div class="flex gap-1">
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></span>
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
-                            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+            @if($isLoading)
+                <div class="flex justify-start">
+                    <div class="message-bubble assistant">
+                        <div class="flex items-center gap-2">
+                            <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
+                            <div class="flex gap-1">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce"></span>
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        @endif
+            @endif
+        </div>
+
+        <button
+            x-show="showScrollBtn"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-2"
+            x-on:click="scrollToBottom(true)"
+            class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-zinc-800/90 px-3 py-1.5 text-xs font-medium text-emerald-400 shadow-lg ring-1 ring-white/10 backdrop-blur-sm hover:bg-zinc-700/90 cursor-pointer transition-colors"
+        >
+            <x-ui::icon name="chevron-down" class="w-3 h-3" />
+            New messages
+        </button>
     </div>
 
     <form
@@ -110,9 +130,6 @@
             if (!msg) return;
             input.value = '';
             $wire.sendMessage();
-            const msgs = $wire.messages;
-            scrollTarget = 'msg-' + (msgs.length - 1);
-            scrollToMessage();
             setTimeout(() => $wire.fetchAiResponse(msg), 150);
         "
         class="shrink-0 border-t border-white/10 bg-zinc-950/80 p-3 backdrop-blur-xl"
