@@ -29,7 +29,7 @@
                     }
                     $wire.copyReferralLink();
                 "
-                class="shrink-0 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-emerald-700 cursor-pointer"
             >
                 <x-ui::icon name="copy" class="w-4 h-4" />
                 Copy
