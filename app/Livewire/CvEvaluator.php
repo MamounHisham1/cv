@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Ai\Agents\CvEvaluatorAgent;
 use App\Models\CvEvaluation;
 use App\Services\CreditManager;
+use App\Services\EvaluationVectorStore;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -345,6 +346,28 @@ class CvEvaluator extends Component
                 ]);
 
                 \Log::info('CvEvaluator: Saved evaluation to database', ['user_id' => auth()->id()]);
+
+                // Store evaluation embedding in Qdrant for future RAG
+                try {
+                    $vectorStore = app(EvaluationVectorStore::class);
+                    $vectorStore->ensureCollectionExists();
+                    $embedding = $vectorStore->generateEmbedding($this->cvText);
+                    $vectorStore->store(
+                        "eval_{$savedEvaluation->id}",
+                        auth()->id(),
+                        $this->result['grade'],
+                        $this->result['overall_score'],
+                        $this->cvText,
+                        $embedding,
+                    );
+                    \Log::info('CvEvaluator: Stored evaluation embedding in Qdrant', [
+                        'evaluation_id' => $savedEvaluation->id,
+                    ]);
+                } catch (\Throwable $e) {
+                    \Log::warning('CvEvaluator: Failed to store evaluation in Qdrant', [
+                        'message' => $e->getMessage(),
+                    ]);
+                }
 
                 $this->refreshEvaluations();
             }
