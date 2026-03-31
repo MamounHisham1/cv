@@ -99,6 +99,52 @@ class EvaluationVectorStore
     }
 
     /**
+     * Search using a pre-computed embedding (avoids redundant embedding generation).
+     *
+     * @param  array<int, float>  $embedding
+     * @return array<int, array{user_id: int, grade: string, overall_score: int, content: string, score: float}>
+     */
+    public function searchByEmbedding(array $embedding, int $limit = 3): array
+    {
+        try {
+            $searchRequest = new SearchRequest(new VectorStruct($embedding));
+            $searchRequest->setLimit($limit);
+            $searchRequest->setWithPayload(true);
+
+            $response = $this->client()
+                ->collections(self::COLLECTION)
+                ->points()
+                ->search($searchRequest);
+
+            $data = $response->__toArray();
+            $results = $data['result'] ?? [];
+
+            $mapped = collect($results)->map(fn (array $result): array => [
+                'user_id' => $result['payload']['user_id'] ?? 0,
+                'grade' => $result['payload']['grade'] ?? '',
+                'overall_score' => $result['payload']['overall_score'] ?? 0,
+                'content' => $result['payload']['content'] ?? '',
+                'score' => round($result['score'], 4),
+            ])->values()->toArray();
+
+            Log::info('EvaluationVectorStore: Search by embedding complete', [
+                'raw_result_count' => count($results),
+                'mapped_result_count' => count($mapped),
+                'scores' => array_column($mapped, 'score'),
+                'grades' => array_column($mapped, 'grade'),
+            ]);
+
+            return $mapped;
+        } catch (\Throwable $e) {
+            Log::warning('EvaluationVectorStore: Search by embedding failed', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
      * @return array<int, array{user_id: int, grade: string, overall_score: int, content: string, score: float}>
      */
     public function search(string $query, int $limit = 3): array

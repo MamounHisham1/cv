@@ -621,12 +621,26 @@ class CvEvaluator extends Component
         $resumes = [];
         $evaluations = [];
 
-        // Truncate to avoid exceeding embedding model context length
+        // Generate embedding once, reuse for both searches
         $searchQuery = mb_substr($cvText, 0, 1500);
 
         try {
+            $embedding = app(EvaluationVectorStore::class)->generateEmbedding($searchQuery);
+
+            \Log::info('CvEvaluator: RAG — shared embedding generated', [
+                'dimensions' => count($embedding),
+            ]);
+        } catch (\Throwable $e) {
+            \Log::warning('CvEvaluator: RAG — embedding generation failed, skipping all searches', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return compact('resumes', 'evaluations');
+        }
+
+        try {
             $resumeStore = app(ResumeVectorStore::class);
-            $resumes = $resumeStore->search($searchQuery, 3);
+            $resumes = $resumeStore->searchByEmbedding($embedding, 3);
 
             \Log::info('CvEvaluator: RAG — resume samples found', [
                 'count' => count($resumes),
@@ -641,7 +655,7 @@ class CvEvaluator extends Component
 
         try {
             $evaluationStore = app(EvaluationVectorStore::class);
-            $evaluations = $evaluationStore->search($searchQuery, 3);
+            $evaluations = $evaluationStore->searchByEmbedding($embedding, 3);
 
             \Log::info('CvEvaluator: RAG — past evaluations found', [
                 'count' => count($evaluations),

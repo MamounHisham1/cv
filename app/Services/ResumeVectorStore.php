@@ -94,6 +94,53 @@ class ResumeVectorStore
         $this->client()->collections(self::COLLECTION)->points()->upsert($pointsStruct);
     }
 
+    /**
+     * Search using a pre-computed embedding (avoids redundant embedding generation).
+     *
+     * @param  array<int, float>  $embedding
+     * @return array<int, array{role: string, source: string, content: string, score: float}>
+     */
+    public function searchByEmbedding(array $embedding, int $limit = 5, ?string $role = null, ?string $source = null): array
+    {
+        try {
+            $searchRequest = new SearchRequest(new VectorStruct($embedding));
+            $searchRequest->setLimit($limit);
+            $searchRequest->setWithPayload(true);
+
+            $filter = new Filter;
+            if ($role) {
+                $filter->addMust(new MatchString('role', $role));
+            }
+            if ($source) {
+                $filter->addMust(new MatchString('source', $source));
+            }
+            if ($role || $source) {
+                $searchRequest->setFilter($filter);
+            }
+
+            $response = $this->client()
+                ->collections(self::COLLECTION)
+                ->points()
+                ->search($searchRequest);
+
+            $data = $response->__toArray();
+            $results = $data['result'] ?? [];
+
+            return collect($results)->map(fn (array $result): array => [
+                'role' => $result['payload']['role'] ?? '',
+                'source' => $result['payload']['source'] ?? '',
+                'content' => $result['payload']['content'] ?? '',
+                'score' => round($result['score'], 4),
+            ])->values()->toArray();
+        } catch (\Throwable $e) {
+            Log::warning('ResumeVectorStore: Search by embedding failed', [
+                'message' => $e->getMessage(),
+            ]);
+
+            return [];
+        }
+    }
+
     public function search(string $query, int $limit = 5, ?string $role = null, ?string $source = null): array
     {
         $queryEmbedding = Embeddings::for([$query])
