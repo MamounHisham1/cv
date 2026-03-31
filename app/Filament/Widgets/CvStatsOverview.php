@@ -7,6 +7,8 @@ use App\Models\CvCertification;
 use App\Models\CvEducation;
 use App\Models\CvEvaluation;
 use App\Models\CvExperience;
+use App\Models\CvProject;
+use App\Models\CvSkill;
 use App\Models\ResumeSample;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget;
