@@ -504,9 +504,12 @@ class CvBuilder extends Component
         $this->sections = $this->getSections();
     }
 
-    public function handleSectionSort(array $orderedKeys): void
+    public function handleSectionSort(string $sectionKey, int $position): void
     {
-        $this->updateSectionOrder($orderedKeys);
+        $currentKeys = array_keys($this->sections);
+        $currentKeys = array_values(array_diff($currentKeys, [$sectionKey]));
+        array_splice($currentKeys, $position, 0, $sectionKey);
+        $this->updateSectionOrder($currentKeys);
     }
 
     public function moveSectionUp(string $sectionKey): void

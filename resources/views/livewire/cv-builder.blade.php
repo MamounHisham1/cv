@@ -740,7 +740,7 @@
                                          :class="activeTab === '{{ $key }}' ? 'bg-emerald-500/15' : 'bg-white/5 group-hover:bg-white/10'">
                                         <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
                                     </div>
-                                     <span class="truncate group-hover:overflow-visible group-hover:whitespace-normal">{{ $section['name'] }}</span>
+                                     <span class="group-hover:truncate">{{ $section['name'] }}</span>
                                 </button>
 
                                 <div class="flex shrink-0 items-center gap-0.5 pr-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

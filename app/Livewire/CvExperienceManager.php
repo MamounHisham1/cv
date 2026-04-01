@@ -177,10 +177,17 @@ class CvExperienceManager extends Component
         }
     }
 
-    public function handleSort(array $orderedIds): void
+    public function handleSort(string $id, int $position): void
     {
-        foreach ($orderedIds as $index => $id) {
-            CvExperience::where('id', $id)->where('cv_id', $this->cv->id)->update(['sort_order' => $index]);
+        $item = CvExperience::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->experiences()->orderBy('sort_order')->get()->values();
+        $items = $items->reject(fn ($i) => $i->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $i) {
+            $i->update(['sort_order' => $index]);
         }
 
         $this->loadExperiences();

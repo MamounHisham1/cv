@@ -163,10 +163,17 @@ class CvLanguageManager extends Component
         }
     }
 
-    public function handleSort(array $orderedIds): void
+    public function handleSort(string $id, int $position): void
     {
-        foreach ($orderedIds as $index => $id) {
-            CvLanguage::where('id', $id)->where('cv_id', $this->cv->id)->update(['sort_order' => $index]);
+        $item = CvLanguage::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->languages()->orderBy('sort_order')->get()->values();
+        $items = $items->reject(fn ($i) => $i->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $i) {
+            $i->update(['sort_order' => $index]);
         }
 
         $this->loadLanguages();
