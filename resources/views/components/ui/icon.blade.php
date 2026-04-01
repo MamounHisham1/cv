@@ -61,6 +61,7 @@ $heroiconMap = [
     'book-open-text' => 'book-open',
     'settings' => 'cog-6-tooth',
     'layout-grid' => 'squares-2x2',
+    'grid' => 'squares-2x2',
     'external-link' => 'arrow-top-right-on-square',
     'x-circle' => 'x-circle',
     'eye-off' => 'eye-slash',
@@ -82,7 +83,7 @@ $heroiconMap = [
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;
-$prefix = $variant === 'solid' ? 's' : 'c';
+$prefix = $variant === 'solid' ? 's' : 'o';
 $component = "heroicon-{$prefix}-{$heroiconName}";
 @endphp
 

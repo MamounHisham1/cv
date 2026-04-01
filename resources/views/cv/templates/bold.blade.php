@@ -1,6 +1,6 @@
-<div class="p-8 font-sans text-gray-900 bg-white">
+<div class="font-sans text-gray-900 bg-white">
     <!-- Bold Header Band -->
-    <header class="bg-indigo-700 text-white px-8 py-7 -mx-8 -mt-8 mb-6" style="print-color-adjust: exact;">
+    <header class="bg-indigo-700 text-white px-8 py-7" style="print-color-adjust: exact;">
         <h1 class="text-3xl font-bold mb-1">
             {{ $cv->personal_info['first_name'] ?? '' }} {{ $cv->personal_info['last_name'] ?? '' }}
         </h1>
