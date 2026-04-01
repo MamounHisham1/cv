@@ -9,7 +9,6 @@ use App\Models\CvEducation;
 use App\Models\CvExperience;
 use App\Models\CvSkill;
 use App\Services\CreditManager;
-use App\Services\CvTextExtractor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Computed;
@@ -29,6 +28,13 @@ class CvImporter extends Component
     public bool $isProcessing = false;
 
     public ?string $errorMessage = null;
+
+    /** 'idle' | 'extracting' | 'importing' */
+    public string $importStage = 'idle';
+
+    public ?string $extractionCacheKey = null;
+
+    public ?string $tempFilePath = null;
 
     public function mount(): void
     {
@@ -83,29 +89,59 @@ class CvImporter extends Component
             'uploadedFile' => 'required|file|mimes:pdf,doc,docx,txt|max:5120',
         ]);
 
-        $this->isProcessing = true;
+        $creditManager = app(CreditManager::class);
+        if (! $creditManager->hasCredits(Auth::user())) {
+            $this->errorMessage = "You're out of credits. Invite friends to earn more!";
+            $this->dispatch('insufficient-credits');
+
+            return;
+        }
+
         $this->errorMessage = null;
+        $this->isProcessing = true;
+        $this->importStage = 'extracting';
 
-        try {
-            $creditManager = app(CreditManager::class);
-            if (! $creditManager->hasCredits(Auth::user())) {
-                $this->errorMessage = "You're out of credits. Invite friends to earn more!";
-                $this->isProcessing = false;
-                $this->dispatch('insufficient-credits');
+        $extension = strtolower($this->uploadedFile->getClientOriginalExtension());
+        $this->tempFilePath = $this->uploadedFile->storeAs('temp/uploads', uniqid('cv_').'.'.$extension);
+        $this->extractionCacheKey = 'cv_extract_'.uniqid();
 
-                return;
-            }
+        $fullPath = storage_path('app/'.$this->tempFilePath);
 
-            $extractor = new CvTextExtractor;
-            $text = $extractor->extract($this->uploadedFile);
+        ExtractCvText::dispatch($fullPath, $extension, $this->extractionCacheKey);
+    }
+
+    public function checkExtractionStatus(): void
+    {
+        if ($this->importStage !== 'extracting' || ! $this->extractionCacheKey) {
+            return;
+        }
+
+        $status = Cache::get($this->extractionCacheKey.'_status');
+
+        if ($status === 'completed') {
+            $text = Cache::get($this->extractionCacheKey);
 
             if (empty(trim($text))) {
                 $this->errorMessage = 'Could not extract text from the file. Try pasting your CV content directly.';
-
-                $this->isProcessing = false;
+                $this->resetImportState();
+                $this->cleanupTempFile();
 
                 return;
             }
+
+            $this->importStage = 'importing';
+            $this->processAiParsing($text);
+        } elseif ($status === 'failed') {
+            $this->errorMessage = Cache::get($this->extractionCacheKey.'_error', 'Failed to extract text from the file.');
+            $this->resetImportState();
+            $this->cleanupTempFile();
+        }
+    }
+
+    private function processAiParsing(string $text): void
+    {
+        try {
+            $creditManager = app(CreditManager::class);
 
             $agent = new CvParser;
             $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications). Return ONLY valid JSON with these exact keys:\n\n{$text}");
@@ -147,6 +183,9 @@ class CvImporter extends Component
             ]);
             $this->dispatch('credits-updated');
 
+            $this->cleanupTempFile();
+            $this->resetImportState();
+
             $this->redirect(route('cv.edit', $cv));
         } catch (\Throwable $e) {
             Log::error('CvImporter: Import failed', [
@@ -154,7 +193,23 @@ class CvImporter extends Component
                 'trace' => $e->getTraceAsString(),
             ]);
             $this->errorMessage = 'Failed to process your CV. Please try again or start from scratch.';
-            $this->isProcessing = false;
+            $this->cleanupTempFile();
+            $this->resetImportState();
+        }
+    }
+
+    private function resetImportState(): void
+    {
+        $this->isProcessing = false;
+        $this->importStage = 'idle';
+        $this->extractionCacheKey = null;
+    }
+
+    private function cleanupTempFile(): void
+    {
+        if ($this->tempFilePath) {
+            Storage::delete($this->tempFilePath);
+            $this->tempFilePath = null;
         }
     }
 

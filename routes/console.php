@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('credits:reset-monthly')->dailyAt('00:00');
+Schedule::command('cleanup:temp-uploads')->hourly();

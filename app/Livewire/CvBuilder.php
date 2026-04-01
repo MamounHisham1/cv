@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Ai\Agents\CvParser;
+use App\Jobs\ExtractCvText;
 use App\Models\Cv;
 use App\Models\CvCertification;
 use App\Models\CvEducation;
@@ -11,9 +12,10 @@ use App\Models\CvLanguage;
 use App\Models\CvProject;
 use App\Models\CvSkill;
 use App\Services\CreditManager;
-use App\Services\CvTextExtractor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -65,6 +67,13 @@ class CvBuilder extends Component
     public bool $isImporting = false;
 
     public ?string $importError = null;
+
+    /** 'idle' | 'extracting' | 'importing' */
+    public string $importStage = 'idle';
+
+    public ?string $extractionCacheKey = null;
+
+    public ?string $tempFilePath = null;
 
     public function mount(?Cv $cv = null): void
     {
@@ -166,28 +175,59 @@ class CvBuilder extends Component
             'uploadedFile' => 'required|file|mimes:pdf,doc,docx,txt|max:5120',
         ]);
 
-        $this->isImporting = true;
+        $creditManager = app(CreditManager::class);
+        if (! $creditManager->hasCredits(Auth::user())) {
+            $this->importError = "You're out of credits. Invite friends to earn more!";
+            $this->dispatch('insufficient-credits');
+
+            return;
+        }
+
         $this->importError = null;
+        $this->isImporting = true;
+        $this->importStage = 'extracting';
 
-        try {
-            $creditManager = app(CreditManager::class);
-            if (! $creditManager->hasCredits(Auth::user())) {
-                $this->importError = "You're out of credits. Invite friends to earn more!";
-                $this->isImporting = false;
-                $this->dispatch('insufficient-credits');
+        $extension = strtolower($this->uploadedFile->getClientOriginalExtension());
+        $this->tempFilePath = $this->uploadedFile->storeAs('temp/uploads', uniqid('cv_').'.'.$extension);
+        $this->extractionCacheKey = 'cv_extract_'.uniqid();
 
-                return;
-            }
+        $fullPath = storage_path('app/'.$this->tempFilePath);
 
-            $extractor = new CvTextExtractor;
-            $text = $extractor->extract($this->uploadedFile);
+        ExtractCvText::dispatch($fullPath, $extension, $this->extractionCacheKey);
+    }
+
+    public function checkExtractionStatus(): void
+    {
+        if ($this->importStage !== 'extracting' || ! $this->extractionCacheKey) {
+            return;
+        }
+
+        $status = Cache::get($this->extractionCacheKey.'_status');
+
+        if ($status === 'completed') {
+            $text = Cache::get($this->extractionCacheKey);
 
             if (empty(trim($text))) {
                 $this->importError = 'Could not extract text from the file. Try a different format or start from scratch.';
-                $this->isImporting = false;
+                $this->resetImportState();
+                $this->cleanupTempFile();
 
                 return;
             }
+
+            $this->importStage = 'importing';
+            $this->processAiParsing($text);
+        } elseif ($status === 'failed') {
+            $this->importError = Cache::get($this->extractionCacheKey.'_error', 'Failed to extract text from the file.');
+            $this->resetImportState();
+            $this->cleanupTempFile();
+        }
+    }
+
+    private function processAiParsing(string $text): void
+    {
+        try {
+            $creditManager = app(CreditManager::class);
 
             $agent = new CvParser;
             $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications, projects, languages). Return ONLY valid JSON with these exact keys:\n\n{$text}");
@@ -263,13 +303,32 @@ class CvBuilder extends Component
                 'completion_tokens' => $response->usage->completionTokens,
             ]);
             $this->dispatch('credits-updated');
+
+            $this->resetImportState();
+            $this->cleanupTempFile();
         } catch (\Throwable $e) {
             Log::error('CvBuilder: Import failed', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
             $this->importError = 'Failed to process your CV. Please try again or start from scratch.';
-            $this->isImporting = false;
+            $this->resetImportState();
+            $this->cleanupTempFile();
+        }
+    }
+
+    private function resetImportState(): void
+    {
+        $this->isImporting = false;
+        $this->importStage = 'idle';
+        $this->extractionCacheKey = null;
+    }
+
+    private function cleanupTempFile(): void
+    {
+        if ($this->tempFilePath) {
+            Storage::delete($this->tempFilePath);
+            $this->tempFilePath = null;
         }
     }
 

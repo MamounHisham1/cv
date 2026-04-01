@@ -34,6 +34,11 @@
             <p class="mx-auto max-w-lg text-base text-zinc-400">
                 Upload your CV and get an instant AI-powered score across 10 key criteria with actionable feedback.
             </p>
+            <div class="mt-4">
+                <a href="{{ route('evaluations.history') }}" wire:navigate class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                    <x-ui::icon name="clock" class="h-4 w-4" /> View Evaluation History
+                </a>
+            </div>
         </div>
 
         {{-- ===== IDLE / UPLOAD STATE ===== --}}
@@ -108,6 +113,23 @@
             </div>
         @endif
 
+
+        {{-- ===== PROCESSING STATE ===== --}}
+        @if($evaluationState === 'processing')
+            <div class="{{ $glassCard }} mb-6 py-16 text-center"
+                 @if($shouldPoll)
+                     wire:poll.5000ms="checkEvaluationStatus"
+                 @endif>
+                <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-500/10">
+                    <x-ui::icon name="sparkles" class="h-10 w-10 animate-pulse text-emerald-300" />
+                </div>
+                <h2 class="mb-3 text-xl font-bold text-white">Processing your CV…</h2>
+                <p class="text-sm text-zinc-400">Our AI is evaluating 10 key criteria. You can navigate away and come back later.</p>
+                <div class="mx-auto mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-white/10">
+                    <div class="h-full w-3/5 animate-pulse rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
+                </div>
+            </div>
+        @endif
 
         {{-- ===== EVALUATING STATE ===== --}}
         @if($evaluationState === 'evaluating')

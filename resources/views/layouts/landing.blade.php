@@ -55,6 +55,7 @@
                             <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Privacy Policy</a></li>
                             <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Terms of Service</a></li>
                             <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Cookie Policy</a></li>
+                            <li><button onclick="window.laravelCookieConsent && window.laravelCookieConsent.showModal()" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400 cursor-pointer">Cookie Preferences</button></li>
                         </ul>
                     </div>
                 </div>
@@ -70,5 +71,7 @@
             </div>
         </footer>
         @livewireScripts
+        @include('cookie-consent::index')
+        @include('partials.cookie-consent-script')
     </body>
 </html>

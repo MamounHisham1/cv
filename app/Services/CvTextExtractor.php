@@ -15,6 +15,13 @@ class CvTextExtractor
         $path = $file->getRealPath();
         $extension = strtolower($file->getClientOriginalExtension());
 
+        return $this->extractFromPath($path, $extension, $file->getClientOriginalName(), $file->getSize());
+    }
+
+    public function extractFromPath(string $path, string $extension, string $filename = 'unknown', int $size = 0): string
+    {
+        $extension = strtolower($extension);
+
         $text = match ($extension) {
             'txt' => $this->extractTxt($path),
             'pdf' => $this->extractPdf($path),
@@ -23,9 +30,9 @@ class CvTextExtractor
         };
 
         Log::info('CvTextExtractor: Extraction result', [
-            'file' => $file->getClientOriginalName(),
+            'file' => $filename,
             'extension' => $extension,
-            'size_kb' => round($file->getSize() / 1024, 1),
+            'size_kb' => round($size / 1024, 1),
             'chars_extracted' => strlen(trim($text)),
             'text_preview' => strlen(trim($text)) > 200 ? substr(trim($text), 0, 200).'...' : trim($text),
         ]);

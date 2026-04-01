@@ -66,7 +66,7 @@ class OtpVerification extends Component
         Session::put('otp_expires_at', now()->addMinutes(10)->toIso8601String());
         Session::put('otp_sent_at', now());
 
-        Mail::to($pendingRegistration['email'])->send(new OtpMail(
+        Mail::to($pendingRegistration['email'])->queue(new OtpMail(
             otp: $otpCode,
             expiresInMinutes: 10
         ));

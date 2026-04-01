@@ -2,26 +2,27 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use NotificationChannels\WebPush\PushSubscription;
 
 #[Fillable(['name', 'email', 'password', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'google_id', 'avatar'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasDatabaseNotifications, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -35,6 +36,7 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'otp_expires_at' => 'datetime',
             'otp_verified_at' => 'datetime',
+            'notification_preferences' => 'array',
         ];
     }
 
@@ -94,8 +96,49 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(ReferralCode::class);
     }
 
+    /**
+     * Get the user's push subscriptions for web push notifications.
+     *
+     * @return MorphMany<PushSubscription, $this>
+     */
+    public function pushSubscriptions(): MorphMany
+    {
+        return $this->morphMany(PushSubscription::class, 'subscribable');
+    }
+
+    /**
+     * Get the route notification for WebPush.
+     *
+     * @return Collection<int, PushSubscription>
+     */
+    public function routeNotificationForWebPush()
+    {
+        return $this->pushSubscriptions;
+    }
+
     public function hasCredits(): bool
     {
         return ($this->creditBalance?->balance ?? 0) > 0;
+    }
+
+    /**
+     * Get notification preference value.
+     */
+    public function getNotificationPreference(string $key, mixed $default = true): mixed
+    {
+        $preferences = $this->notification_preferences ?? [];
+
+        return $preferences[$key] ?? $default;
+    }
+
+    /**
+     * Update notification preference.
+     */
+    public function updateNotificationPreference(string $key, mixed $value): void
+    {
+        $preferences = $this->notification_preferences ?? [];
+        $preferences[$key] = $value;
+        $this->notification_preferences = $preferences;
+        $this->save();
     }
 }

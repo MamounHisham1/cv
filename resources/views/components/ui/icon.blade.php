@@ -56,6 +56,7 @@ $heroiconMap = [
     'menu' => 'bars-2',
     'search' => 'magnifying-glass',
     'git-branch' => 'folder',
+    'git-compare' => 'arrows-right-left',
     'folder-git-2' => 'folder',
     'book-open' => 'book-open',
     'book-open-text' => 'book-open',
