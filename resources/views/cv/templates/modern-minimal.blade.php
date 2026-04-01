@@ -32,94 +32,106 @@
         </section>
     @endif
 
-    <!-- Experience -->
-    @if($cv->experiences->count() > 0)
-        <section class="mb-8">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Experience</h2>
-            @foreach($cv->experiences as $exp)
-                <div class="mb-6">
-                    <div class="flex justify-between items-start mb-1">
-                        <h3 class="font-semibold text-lg">{{ $exp->title }}</h3>
-                        <span class="text-sm text-gray-500">{{ $exp->duration }}</span>
-                    </div>
-                    <div class="text-gray-700 mb-2">{{ $exp->company }}</div>
-                    <p class="text-gray-600 text-sm leading-relaxed">{{ $exp->description }}</p>
-                </div>
-            @endforeach
-        </section>
-    @endif
+    @foreach($cv->getSectionOrder() as $sectionKey)
+        @if($sectionKey === 'personal') @continue @endif
 
-    <!-- Skills -->
-    @if($cv->skills->count() > 0)
-        <section class="mb-8">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Skills</h2>
-            <div class="flex flex-wrap gap-2">
-                @foreach($cv->skills as $skill)
-                    <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $skill->name }}</span>
-                @endforeach
-            </div>
-        </section>
-    @endif
+        @switch($sectionKey)
+            @case('experience')
+                @if($cv->experiences->count() > 0)
+                    <section class="mb-8">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Experience</h2>
+                        @foreach($cv->experiences as $exp)
+                            <div class="mb-6">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h3 class="font-semibold text-lg">{{ $exp->title }}</h3>
+                                    <span class="text-sm text-gray-500">{{ $exp->duration }}</span>
+                                </div>
+                                <div class="text-gray-700 mb-2">{{ $exp->company }}</div>
+                                <p class="text-gray-600 text-sm leading-relaxed">{{ $exp->description }}</p>
+                            </div>
+                        @endforeach
+                    </section>
+                @endif
+                @break
 
-    <!-- Education -->
-    @if($cv->educations->count() > 0)
-        <section class="mb-8">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Education</h2>
-            @foreach($cv->educations as $edu)
-                <div class="mb-2">
-                    <div class="font-medium">{{ $edu->institution }}</div>
-                    <div class="text-sm text-gray-600">{{ $edu->degree }}{{ $edu->field_of_study ? ', ' . $edu->field_of_study : '' }}</div>
-                </div>
-            @endforeach
-        </section>
-    @endif
-
-    <!-- Certifications -->
-    @if($cv->certifications->count() > 0)
-        <section class="mb-8">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Certifications</h2>
-            <div class="space-y-1">
-                @foreach($cv->certifications as $cert)
-                    <div class="text-sm">
-                        <span class="font-medium">{{ $cert->name }}</span>
-                        <span class="text-gray-500">- {{ $cert->issuing_organization }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-    @endif
-
-    <!-- Projects -->
-    @if($cv->projects->count() > 0)
-        <section class="mb-8">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Projects</h2>
-            @foreach($cv->projects as $project)
-                <div class="mb-4">
-                    <h3 class="font-semibold">{{ $project->name }}</h3>
-                    @if($project->description)
-                        <p class="text-sm text-gray-600 mt-1">{{ $project->description }}</p>
-                    @endif
-                    @if($project->key_achievements && count($project->key_achievements) > 0)
-                        <ul class="mt-1 text-sm text-gray-600 list-disc list-inside">
-                            @foreach($project->key_achievements as $achievement)
-                                <li>{{ $achievement }}</li>
+            @case('skills')
+                @if($cv->skills->count() > 0)
+                    <section class="mb-8">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Skills</h2>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($cv->skills as $skill)
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $skill->name }}</span>
                             @endforeach
-                        </ul>
-                    @endif
-                </div>
-            @endforeach
-        </section>
-    @endif
+                        </div>
+                    </section>
+                @endif
+                @break
 
-    <!-- Languages -->
-    @if($cv->languages->count() > 0)
-        <section>
-            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Languages</h2>
-            <div class="flex flex-wrap gap-2">
-                @foreach($cv->languages as $lang)
-                    <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $lang->language }} <span class="text-gray-500">{{ ucfirst($lang->proficiency) }}</span></span>
-                @endforeach
-            </div>
-        </section>
-    @endif
+            @case('education')
+                @if($cv->educations->count() > 0)
+                    <section class="mb-8">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Education</h2>
+                        @foreach($cv->educations as $edu)
+                            <div class="mb-2">
+                                <div class="font-medium">{{ $edu->institution }}</div>
+                                <div class="text-sm text-gray-600">{{ $edu->degree }}{{ $edu->field_of_study ? ', ' . $edu->field_of_study : '' }}</div>
+                            </div>
+                        @endforeach
+                    </section>
+                @endif
+                @break
+
+            @case('certifications')
+                @if($cv->certifications->count() > 0)
+                    <section class="mb-8">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Certifications</h2>
+                        <div class="space-y-1">
+                            @foreach($cv->certifications as $cert)
+                                <div class="text-sm">
+                                    <span class="font-medium">{{ $cert->name }}</span>
+                                    <span class="text-gray-500">- {{ $cert->issuing_organization }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+                @break
+
+            @case('projects')
+                @if($cv->projects->count() > 0)
+                    <section class="mb-8">
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Projects</h2>
+                        @foreach($cv->projects as $project)
+                            <div class="mb-4">
+                                <h3 class="font-semibold">{{ $project->name }}</h3>
+                                @if($project->description)
+                                    <p class="text-sm text-gray-600 mt-1">{{ $project->description }}</p>
+                                @endif
+                                @if($project->key_achievements && count($project->key_achievements) > 0)
+                                    <ul class="mt-1 text-sm text-gray-600 list-disc list-inside">
+                                        @foreach($project->key_achievements as $achievement)
+                                            <li>{{ $achievement }}</li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        @endforeach
+                    </section>
+                @endif
+                @break
+
+            @case('languages')
+                @if($cv->languages->count() > 0)
+                    <section>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Languages</h2>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($cv->languages as $lang)
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $lang->language }} <span class="text-gray-500">{{ ucfirst($lang->proficiency) }}</span></span>
+                            @endforeach
+                        </div>
+                    </section>
+                @endif
+                @break
+        @endswitch
+    @endforeach
 </div>
