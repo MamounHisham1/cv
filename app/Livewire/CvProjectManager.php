@@ -167,18 +167,12 @@ class CvProjectManager extends Component
         }
     }
 
-    public function handleSort(string $id, int $position): void
+    public function handleSort(array $orderedIds): void
     {
-        $item = CvProject::findOrFail($id);
-        if ($item->cv_id !== $this->cv->id) {
-            return;
+        foreach ($orderedIds as $index => $id) {
+            CvProject::where('id', $id)->where('cv_id', $this->cv->id)->update(['sort_order' => $index]);
         }
-        $items = $this->cv->projects()->get()->values();
-        $items = $items->reject(fn ($item) => $item->id == $id)->values();
-        $items->splice($position, 0, $item);
-        foreach ($items as $index => $item) {
-            $item->update(['sort_order' => $index]);
-        }
+
         $this->loadProjects();
     }
 

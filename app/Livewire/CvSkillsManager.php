@@ -211,18 +211,12 @@ class CvSkillsManager extends Component
         }
     }
 
-    public function handleSort(string $id, int $position): void
+    public function handleSort(array $orderedIds): void
     {
-        $item = CvSkill::findOrFail($id);
-        if ($item->cv_id !== $this->cv->id) {
-            return;
+        foreach ($orderedIds as $index => $id) {
+            CvSkill::where('id', $id)->where('cv_id', $this->cv->id)->update(['sort_order' => $index]);
         }
-        $items = $this->cv->skills()->get()->values();
-        $items = $items->reject(fn ($item) => $item->id == $id)->values();
-        $items->splice($position, 0, $item);
-        foreach ($items as $index => $item) {
-            $item->update(['sort_order' => $index]);
-        }
+
         $this->loadSkills();
     }
 
