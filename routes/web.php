@@ -33,6 +33,11 @@ Route::get('/otp/verify', function () {
 Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::get('/drafts', function () {
         $user = auth()->user();
+
+        if (! $user->cvs()->exists()) {
+            return redirect()->route('cv.builder', ['onboarding' => 1]);
+        }
+
         $cvs = $user->cvs()
             ->with(['experiences', 'skills', 'certifications'])
             ->latest()

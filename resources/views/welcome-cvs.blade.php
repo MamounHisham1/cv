@@ -4,63 +4,6 @@
         <div class="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(16,185,129,0.06),_transparent_55%)]"></div>
 
         <div class="relative mx-auto max-w-5xl px-4 py-12 md:px-6 lg:px-8">
-            @if($cvs->isEmpty())
-            {{-- No CVs: Show two clear options --}}
-            <div class="flex flex-col items-center text-center">
-                <div class="mb-8 flex h-24 w-24 items-center justify-center rounded-3xl border border-emerald-400/20 bg-emerald-500/10">
-                    <x-ui::icon name="file-text" class="h-12 w-12 text-emerald-400" />
-                </div>
-
-                <h1 class="mb-4 text-4xl font-bold text-white md:text-5xl">
-                    Let's build your <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">perfect CV</span>
-                </h1>
-                <p class="mb-12 max-w-lg text-lg text-zinc-400">
-                    Choose the easiest way to get started
-                </p>
-
-                <div class="grid w-full max-w-2xl grid-cols-1 gap-6 md:grid-cols-2">
-                    {{-- Primary: Upload CV --}}
-                    <a href="{{ route('cv.evaluator') }}" wire:navigate
-                       class="group card-hover relative overflow-hidden rounded-3xl border-2 border-emerald-400/30 bg-gradient-to-br from-emerald-500/10 to-emerald-600/10 p-8 text-left transition-all duration-300 hover:border-emerald-400/50 hover:shadow-2xl hover:shadow-emerald-500/20">
-                        <div class="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/20">
-                            <x-ui::icon name="upload" class="h-7 w-7 text-emerald-300" />
-                        </div>
-                        <h2 class="mb-3 text-2xl font-bold text-white">Upload Existing CV</h2>
-                        <p class="mb-4 text-base leading-relaxed text-zinc-300">
-                            Upload your current CV and we'll extract the data automatically. Just review and edit.
-                        </p>
-                        <div class="flex items-center gap-2 text-sm font-medium text-emerald-300">
-                            <x-ui::icon name="check-circle" class="h-4 w-4" />
-                            <span>Fastest option</span>
-                        </div>
-                        <div class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20">
-                            <x-ui::icon name="arrow-right" class="h-4 w-4 text-emerald-300" />
-                        </div>
-                    </a>
-
-                    {{-- Secondary: Create New --}}
-                    <a href="{{ route('cv.builder', ['onboarding' => 1]) }}" wire:navigate
-                       class="card-hover group relative overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/50 p-8 text-left transition-all duration-300 hover:border-white/20 hover:bg-zinc-900/70">
-                        <div class="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
-                            <x-ui::icon name="plus" class="h-7 w-7 text-zinc-400" />
-                        </div>
-                        <h2 class="mb-3 text-2xl font-bold text-white">Create from Scratch</h2>
-                        <p class="mb-4 text-base leading-relaxed text-zinc-400">
-                            Start with a blank canvas and build your CV step by step with AI assistance.
-                        </p>
-                        <div class="flex items-center gap-2 text-sm font-medium text-zinc-400">
-                            <x-ui::icon name="sparkles" class="h-4 w-4" />
-                            <span>AI-powered guidance</span>
-                        </div>
-                        <div class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white/5">
-                            <x-ui::icon name="arrow-right" class="h-4 w-4 text-zinc-400" />
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            @else
-            {{-- Has CVs: Show list --}}
             <div>
                 <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                     <div>
@@ -120,7 +63,6 @@
                     @endforeach
                 </div>
             </div>
-            @endif
         </div>
     </div>
 </x-layouts::app>
