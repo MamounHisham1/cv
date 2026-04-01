@@ -144,7 +144,7 @@
 
             @case('languages')
                 @if($cv->languages->count() > 0)
-                    <section>
+                    <section class="mb-3">
                         <h2 class="font-bold uppercase tracking-wide border-b border-gray-300 pb-0.5 mb-1.5 inline" style="font-size: 11px;">Languages</h2>
                         <span class="ml-2">
                             {{ $cv->languages->map(fn($l) => $l->language . ' (' . ucfirst($l->proficiency) . ')')->implode(' · ') }}

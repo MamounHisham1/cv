@@ -94,7 +94,7 @@
 
                 @case('certifications')
                     @if($cv->certifications->count() > 0)
-                        <div>
+                        <div class="mb-5">
                             <h3 class="text-xs font-bold uppercase tracking-wider text-amber-600 mb-2">Certifications</h3>
                             <div class="space-y-2 text-sm">
                                 @foreach($cv->certifications as $cert)
@@ -175,7 +175,7 @@
 
                 @case('projects')
                     @if($cv->projects->count() > 0)
-                        <section>
+                        <section class="mb-8">
                             <h2 class="text-sm font-bold uppercase tracking-wider text-amber-600 mb-3 flex items-center gap-2">
                                 <span class="w-6 h-0.5 bg-amber-500 rounded"></span> Projects
                             </h2>

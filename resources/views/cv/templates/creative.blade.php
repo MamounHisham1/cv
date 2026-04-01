@@ -68,7 +68,7 @@
 
                 @case('languages')
                     @if($cv->languages->count() > 0)
-                        <div>
+                        <div class="mb-5">
                             <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Languages</h3>
                             <div class="space-y-2 text-sm">
                                 @foreach($cv->languages as $lang)
@@ -154,7 +154,7 @@
 
                 @case('projects')
                     @if($cv->projects->count() > 0)
-                        <section>
+                        <section class="mb-8">
                             <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
                                 <span class="w-8 h-1 bg-teal-500 rounded"></span>
                                 Projects

@@ -122,7 +122,7 @@
 
             @case('languages')
                 @if($cv->languages->count() > 0)
-                    <section>
+                    <section class="mb-8">
                         <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Languages</h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($cv->languages as $lang)

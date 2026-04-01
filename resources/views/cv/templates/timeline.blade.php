@@ -143,7 +143,7 @@
 
             @case('projects')
                 @if($cv->projects->count() > 0)
-                    <section>
+                    <section class="mb-8">
                         <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">Projects</h2>
                         @foreach($cv->projects as $project)
                             <div class="mb-3">
