@@ -693,19 +693,71 @@
         {{-- Main builder layout: aside sidebar + content panel --}}
         <div class="flex flex-col gap-4 lg:flex-row lg:gap-6">
 
-            {{-- ========== MOBILE: Horizontal tab bar ========== --}}
-            <div class="flex items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/5 p-2 backdrop-blur-xl lg:hidden">
+{{-- ========== MOBILE: List tab bar with reordering ========== --}}
+            <div class="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-xl lg:hidden">
                 @foreach($sections as $key => $section)
-                    <button
-                        @click="switchTab('{{ $key }}')"
-                        class="shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-300"
-                        :class="activeTab === '{{ $key }}' ? 'bg-white/10 text-white shadow-lg shadow-emerald-500/10' : 'text-zinc-400 hover:bg-white/10 hover:text-white'"
-                    >
-                        <span class="inline-flex items-center gap-2">
-                            <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
-                            {{ $section['name'] }}
-                        </span>
-                    </button>
+                    @php
+                        $sectionKeys = array_keys($sections);
+                        $sectionIndex = array_search($key, $sectionKeys);
+                        $isFirst = $sectionIndex === 0;
+                        $isLast = $sectionIndex === count($sectionKeys) - 1;
+                        $isPersonal = $key === 'personal';
+                    @endphp
+                    <div class="group flex items-center rounded-xl border transition-all duration-200"
+                         :class="activeTab === '{{ $key }}' ? 'bg-emerald-500/10 border-emerald-400/20' : 'border-transparent hover:bg-white/5'">
+                        <button
+                            @click="switchTab('{{ $key }}')"
+                            class="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left text-sm font-medium transition-all duration-300"
+                            :class="activeTab === '{{ $key }}' ? 'text-emerald-300' : 'text-zinc-400 hover:text-white'"
+                        >
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-200"
+                                 :class="activeTab === '{{ $key }}' ? 'bg-emerald-500/15' : 'bg-white/5 group-hover:bg-white/10'">
+                                <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
+                            </div>
+                            <span class="group-hover:truncate">{{ $section['name'] }}</span>
+                        </button>
+
+                        @if(!$isPersonal)
+                        <div class="flex shrink-0 items-center gap-0.5 pr-1.5 opacity-100 transition-opacity duration-200">
+                            <button
+                                wire:click="moveSectionToTop('{{ $key }}')"
+                                wire:loading.attr="disabled"
+                                class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                title="Move to top"
+                                @if($isFirst) disabled @endif
+                            >
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11l5-5 5 5"/><path d="M7 5l5-5 5 5" opacity="0.4"/></svg>
+                            </button>
+                            <button
+                                wire:click="moveSectionUp('{{ $key }}')"
+                                wire:loading.attr="disabled"
+                                class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                title="Move up"
+                                @if($isFirst) disabled @endif
+                            >
+                                <x-ui::icon name="chevron-up" class="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                                wire:click="moveSectionDown('{{ $key }}')"
+                                wire:loading.attr="disabled"
+                                class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                title="Move down"
+                                @if($isLast) disabled @endif
+                            >
+                                <x-ui::icon name="chevron-down" class="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                                wire:click="moveSectionToBottom('{{ $key }}')"
+                                wire:loading.attr="disabled"
+                                class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                title="Move to bottom"
+                                @if($isLast) disabled @endif
+                            >
+                                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 13l5 5 5-5"/><path d="M7 19l5 5 5-5" opacity="0.4"/></svg>
+                            </button>
+                        </div>
+                        @endif
+                    </div>
                 @endforeach
             </div>
 
@@ -821,7 +873,7 @@
                                 </div>
                             </div>
 
-                            <x-ui::input wire:model.live.debounce.1000ms="title" label="CV Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
+                            <x-ui::input wire:model.live.debounce.1000ms="title" label="Job Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
                             <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
