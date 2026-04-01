@@ -29,6 +29,7 @@
         </div>
     </header>
 
+    <div class="px-8 py-6">
     <!-- Summary -->
     @if($cv->summary)
         <section class="mb-6">
@@ -159,4 +160,5 @@
             @endforeach
         </section>
     @endif
+    </div>
 </div>
