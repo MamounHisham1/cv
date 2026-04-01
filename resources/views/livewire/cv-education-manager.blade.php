@@ -7,6 +7,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -28,12 +31,13 @@
             <form wire:submit="saveEducation" class="mb-8 space-y-4 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Education' : 'Add New Education' }}
+                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
                 </x-ui::heading>
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.institution"
+                            wire:model.live.debounce.1000ms="form.institution"
                             label="Institution"
                             placeholder="e.g., Cairo University"
                             required
@@ -43,7 +47,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.degree"
+                            wire:model.live.debounce.1000ms="form.degree"
                             label="Degree"
                             placeholder="e.g., Bachelor of Computer Science"
                             required
@@ -56,7 +60,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.field_of_study"
+                            wire:model.live.debounce.1000ms="form.field_of_study"
                             label="Field of Study"
                             placeholder="e.g., Software Engineering"
                             :error="$errors->first('form.field_of_study')"
@@ -65,7 +69,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.location"
+                            wire:model.live.debounce.1000ms="form.location"
                             label="Location"
                             placeholder="City, Country (optional)"
                             :error="$errors->first('form.location')"
@@ -77,7 +81,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.start_date"
+                            wire:model.live.debounce.1000ms="form.start_date"
                             type="date"
                             label="Start Date"
                             required
@@ -88,7 +92,7 @@
                     <div class="form-field space-y-3">
                         @if(!$form['is_current'])
                             <x-ui::input
-                                wire:model="form.end_date"
+                                wire:model.live.debounce.1000ms="form.end_date"
                                 type="date"
                                 label="End Date"
                                 :error="$errors->first('form.end_date')"
@@ -104,7 +108,7 @@
                 </div>
 
                 <x-ui::textarea
-                    wire:model="form.description"
+                    wire:model.live.debounce.1000ms="form.description"
                     label="Description (optional)"
                     placeholder="Relevant coursework, honors, activities..."
                     rows="3"
@@ -123,9 +127,9 @@
             </form>
         @endif
 
-        <div class="space-y-0">
+        <div class="space-y-0" wire:sort="handleSort">
             @forelse($educations as $education)
-                <div class="timeline-item group">
+                <div class="timeline-item group" wire:sort:item="{{ $education['id'] }}">
                     <div class="timeline-dot">
                         <x-ui::icon name="graduation-cap" class="w-3 h-3 text-white" />
                     </div>
@@ -189,4 +193,5 @@
             @endforelse
         </div>
     </x-ui::card>
+    @endif
 </div>

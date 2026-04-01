@@ -7,6 +7,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -28,10 +31,11 @@
             <form wire:submit="saveProject" class="mb-8 space-y-4 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Project' : 'Add New Project' }}
+                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model="form.name"
+                    wire:model.live.debounce.1000ms="form.name"
                     label="Project Name"
                     placeholder="e.g., E-Commerce Platform"
                     required
@@ -40,7 +44,7 @@
                 />
 
                 <x-ui::textarea
-                    wire:model="form.description"
+                    wire:model.live.debounce.1000ms="form.description"
                     label="Description"
                     placeholder="Describe what the project does, your role, and the technologies used..."
                     rows="4"
@@ -55,7 +59,7 @@
                     @foreach($form['key_achievements'] as $index => $achievement)
                         <div class="flex gap-2 mb-2">
                             <x-ui::input
-                                wire:model="form.key_achievements.{{ $index }}"
+                                wire:model.live.debounce.1000ms="form.key_achievements.{{ $index }}"
                                 placeholder="e.g., Served 10,000+ users"
                                 class="{{ $fieldClasses }} flex-1"
                             />
@@ -70,7 +74,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.project_url"
+                            wire:model.live.debounce.1000ms="form.project_url"
                             label="Project URL"
                             placeholder="https://..."
                             :error="$errors->first('form.project_url')"
@@ -79,7 +83,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.github_url"
+                            wire:model.live.debounce.1000ms="form.github_url"
                             label="GitHub URL"
                             placeholder="https://github.com/..."
                             :error="$errors->first('form.github_url')"
@@ -91,7 +95,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.start_date"
+                            wire:model.live.debounce.1000ms="form.start_date"
                             type="date"
                             label="Start Date"
                             :error="$errors->first('form.start_date')"
@@ -100,7 +104,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.end_date"
+                            wire:model.live.debounce.1000ms="form.end_date"
                             type="date"
                             label="End Date (optional)"
                             :error="$errors->first('form.end_date')"
@@ -120,9 +124,9 @@
             </form>
         @endif
 
-        <div class="space-y-0">
+        <div class="space-y-0" wire:sort="handleSort">
             @forelse($projects as $project)
-                <div class="timeline-item group">
+                <div class="timeline-item group" wire:sort:item="{{ $project['id'] }}">
                     <div class="timeline-dot">
                         <x-ui::icon name="folder" class="w-3 h-3 text-white" />
                     </div>
@@ -210,4 +214,5 @@
             @endforelse
         </div>
     </x-ui::card>
+    @endif
 </div>

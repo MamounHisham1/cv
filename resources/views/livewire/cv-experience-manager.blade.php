@@ -7,6 +7,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
@@ -25,38 +28,43 @@
 
         @if($showForm)
             <form wire:submit="saveExperience" class="space-y-6 mb-8 form-section">
-                <x-ui::heading size="md" class="text-emerald-300">
-                    {{ $editingId ? 'Edit Experience' : 'Add New Experience' }}
-                </x-ui::heading>
+                <div class="flex items-center justify-between mb-2">
+                    <x-ui::heading size="md" class="text-emerald-300">
+                        {{ $editingId ? 'Edit Experience' : 'Add New Experience' }}
+                    </x-ui::heading>
+                    @if($editingId)
+                        <span class="text-xs text-zinc-500">Auto-saves as you type</span>
+                    @endif
+                </div>
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
-                        <x-ui::input wire:model="form.company" label="Company" placeholder="Company Name" required :error="$errors->first('form.company')" class="{{ $fieldClasses }} {{ $errors->has('form.company') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.1000ms="form.company" label="Company" placeholder="Company Name" required :error="$errors->first('form.company')" class="{{ $fieldClasses }} {{ $errors->has('form.company') ? $errorFieldClasses : '' }}" />
                     </div>
                     <div class="form-field">
-                        <x-ui::input wire:model="form.title" label="Job Title" placeholder="e.g., Senior Project Manager" required :error="$errors->first('form.title')" class="{{ $fieldClasses }} {{ $errors->has('form.title') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.1000ms="form.title" label="Job Title" placeholder="e.g., Senior Project Manager" required :error="$errors->first('form.title')" class="{{ $fieldClasses }} {{ $errors->has('form.title') ? $errorFieldClasses : '' }}" />
                     </div>
                 </div>
 
-                <x-ui::input wire:model="form.location" label="Location" placeholder="City, Country (optional)" :error="$errors->first('form.location')" class="{{ $fieldClasses }} {{ $errors->has('form.location') ? $errorFieldClasses : '' }}" />
+                <x-ui::input wire:model.live.debounce.1000ms="form.location" label="Location" placeholder="City, Country (optional)" :error="$errors->first('form.location')" class="{{ $fieldClasses }} {{ $errors->has('form.location') ? $errorFieldClasses : '' }}" />
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
-                        <x-ui::input wire:model="form.start_date" type="date" label="Start Date" required :error="$errors->first('form.start_date')" class="{{ $fieldClasses }} {{ $errors->has('form.start_date') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.1000ms="form.start_date" type="date" label="Start Date" required :error="$errors->first('form.start_date')" class="{{ $fieldClasses }} {{ $errors->has('form.start_date') ? $errorFieldClasses : '' }}" />
                     </div>
                     <div class="form-field space-y-3">
                         @if(!$form['is_current'])
-                            <x-ui::input wire:model="form.end_date" type="date" label="End Date" :error="$errors->first('form.end_date')" class="{{ $fieldClasses }} {{ $errors->has('form.end_date') ? $errorFieldClasses : '' }}" />
+                            <x-ui::input wire:model.live.debounce.1000ms="form.end_date" type="date" label="End Date" :error="$errors->first('form.end_date')" class="{{ $fieldClasses }} {{ $errors->has('form.end_date') ? $errorFieldClasses : '' }}" />
                         @else
                             <x-ui::input value="Present" label="End Date" disabled class="{{ $fieldClasses }}" />
                         @endif
                         <div>
-                            <x-ui::checkbox wire:model="form.is_current" label="I currently work here" class="border-white/15 bg-white/5 text-emerald-500 accent-emerald-500 focus-visible:ring-emerald-500/20 focus-visible:ring-offset-0" />
+                            <x-ui::checkbox wire:model.live="form.is_current" label="I currently work here" class="border-white/15 bg-white/5 text-emerald-500 accent-emerald-500 focus-visible:ring-emerald-500/20 focus-visible:ring-offset-0" />
                         </div>
                     </div>
                 </div>
 
-                <x-ui::textarea wire:model="form.description" label="Description" placeholder="Describe your role, responsibilities, and achievements..." rows="4" required :error="$errors->first('form.description')" class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}" />
+                <x-ui::textarea wire:model.live.debounce.1000ms="form.description" label="Description" placeholder="Describe your role, responsibilities, and achievements..." rows="4" required :error="$errors->first('form.description')" class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}" />
                 <x-ui::description class="text-zinc-400">Use action verbs and include quantifiable achievements when possible</x-ui::description>
 
                 <div>
@@ -106,9 +114,9 @@
             </form>
         @endif
 
-        <div class="space-y-0">
+        <div wire:sort="handleSort" class="space-y-0">
             @forelse($experiences as $experience)
-                <div class="timeline-item group">
+                <div wire:sort:item="{{ $experience['id'] }}" class="timeline-item group">
                     <div class="timeline-dot">
                         <x-ui::icon name="briefcase" class="w-3 h-3 text-white" />
                     </div>
@@ -196,4 +204,5 @@
             @endforelse
         </div>
     </x-ui::card>
+    @endif
 </div>

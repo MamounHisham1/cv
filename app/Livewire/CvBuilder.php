@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -33,6 +34,8 @@ class CvBuilder extends Component
     public string $stage = 'builder';
 
     public string $activeSection = 'personal';
+
+    public array $sections = [];
 
     public array $templates = [];
 
@@ -92,6 +95,39 @@ class CvBuilder extends Component
         }
 
         $this->templates = $this->getAvailableTemplates();
+        $this->sections = $this->getSections();
+    }
+
+    public function getSections(): array
+    {
+        $default = [
+            'personal' => ['name' => 'Personal', 'icon' => 'user'],
+            'experience' => ['name' => 'Experience', 'icon' => 'briefcase'],
+            'skills' => ['name' => 'Skills', 'icon' => 'zap'],
+            'certifications' => ['name' => 'Certifications', 'icon' => 'trophy'],
+            'education' => ['name' => 'Education', 'icon' => 'graduation-cap'],
+            'projects' => ['name' => 'Projects', 'icon' => 'folder'],
+            'languages' => ['name' => 'Languages', 'icon' => 'globe'],
+        ];
+
+        if ($this->cv && $this->cv->exists && $this->cv->section_order) {
+            $ordered = [];
+            foreach ($this->cv->section_order as $key) {
+                if (isset($default[$key])) {
+                    $ordered[$key] = $default[$key];
+                }
+            }
+
+            foreach ($default as $key => $value) {
+                if (! isset($ordered[$key])) {
+                    $ordered[$key] = $value;
+                }
+            }
+
+            return $ordered;
+        }
+
+        return $default;
     }
 
     /**
@@ -456,6 +492,110 @@ class CvBuilder extends Component
     public function setActiveSection(string $section): void
     {
         $this->activeSection = $section;
+    }
+
+    public function updateSectionOrder(array $orderedKeys): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            return;
+        }
+
+        $this->cv->update(['section_order' => $orderedKeys]);
+        $this->sections = $this->getSections();
+    }
+
+    public function handleSectionSort(string $sectionKey, int $position): void
+    {
+        $currentKeys = array_keys($this->sections);
+        $currentKeys = array_values(array_diff($currentKeys, [$sectionKey]));
+        array_splice($currentKeys, $position, 0, $sectionKey);
+        $this->updateSectionOrder($currentKeys);
+    }
+
+    public function moveSectionUp(string $sectionKey): void
+    {
+        $keys = array_keys($this->sections);
+        $index = array_search($sectionKey, $keys);
+
+        if ($index === false || $index === 0) {
+            return;
+        }
+
+        array_splice($keys, $index - 1, 0, array_splice($keys, $index, 1)[0]);
+        $this->updateSectionOrder($keys);
+    }
+
+    public function moveSectionDown(string $sectionKey): void
+    {
+        $keys = array_keys($this->sections);
+        $index = array_search($sectionKey, $keys);
+
+        if ($index === false || $index === count($keys) - 1) {
+            return;
+        }
+
+        array_splice($keys, $index + 1, 0, array_splice($keys, $index, 1)[0]);
+        $this->updateSectionOrder($keys);
+    }
+
+    public function moveSectionToTop(string $sectionKey): void
+    {
+        $keys = array_keys($this->sections);
+        $index = array_search($sectionKey, $keys);
+
+        if ($index === false || $index === 0) {
+            return;
+        }
+
+        array_splice($keys, $index, 1);
+        array_unshift($keys, $sectionKey);
+        $this->updateSectionOrder($keys);
+    }
+
+    public function moveSectionToBottom(string $sectionKey): void
+    {
+        $keys = array_keys($this->sections);
+        $index = array_search($sectionKey, $keys);
+
+        if ($index === false || $index === count($keys) - 1) {
+            return;
+        }
+
+        array_splice($keys, $index, 1);
+        $keys[] = $sectionKey;
+        $this->updateSectionOrder($keys);
+    }
+
+    public function autosavePersonalInfo(): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            $this->savePersonalInfo();
+
+            return;
+        }
+
+        try {
+            $this->validate([
+                'personalInfo.first_name' => 'required|string|max:255',
+                'personalInfo.last_name' => 'required|string|max:255',
+                'personalInfo.email' => 'required|email|max:255',
+                'personalInfo.phone' => 'nullable|string|max:50',
+                'personalInfo.location' => 'nullable|string|max:255',
+                'personalInfo.linkedin' => 'nullable|url|max:255',
+                'personalInfo.website' => 'nullable|url|max:255',
+                'personalInfo.github' => 'nullable|url|max:255',
+                'title' => 'required|string|max:255',
+                'summary' => 'nullable|string|max:2000',
+            ]);
+
+            $this->cv->update([
+                'title' => $this->title,
+                'template_id' => $this->selectedTemplate,
+                'personal_info' => $this->personalInfo,
+                'summary' => $this->summary,
+            ]);
+        } catch (ValidationException $e) {
+        }
     }
 
     public function toggleAiChat(): void

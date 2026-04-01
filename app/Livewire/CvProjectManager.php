@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cv;
 use App\Models\CvProject;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -135,6 +136,50 @@ class CvProjectManager extends Component
 
         $this->dispatch('notify', message: 'Project deleted successfully!', type: 'success');
         $this->dispatch('cv-updated');
+    }
+
+    public function updated($property): void
+    {
+        if (! str_starts_with($property, 'form.') || ! $this->editingId) {
+            return;
+        }
+
+        $this->autosave();
+    }
+
+    public function autosave(): void
+    {
+        try {
+            $this->validate([
+                'form.name' => 'required|string|max:255',
+                'form.description' => 'required|string|max:5000',
+                'form.key_achievements' => 'nullable|array',
+                'form.project_url' => 'nullable|url|max:255',
+                'form.github_url' => 'nullable|url|max:255',
+                'form.start_date' => 'nullable|date',
+                'form.end_date' => 'nullable|date|after_or_equal:form.start_date',
+            ]);
+
+            CvProject::find($this->editingId)->update($this->form);
+            $this->loadProjects();
+            $this->dispatch('cv-updated');
+        } catch (ValidationException $e) {
+        }
+    }
+
+    public function handleSort(string $id, int $position): void
+    {
+        $item = CvProject::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->projects()->get()->values();
+        $items = $items->reject(fn ($item) => $item->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+        $this->loadProjects();
     }
 
     public function addAchievement(): void

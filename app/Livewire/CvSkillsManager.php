@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Cv;
 use App\Models\CvSkill;
 use App\Models\UserSkillCategory;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -183,6 +184,46 @@ class CvSkillsManager extends Component
 
         $this->dispatch('notify', message: 'Skill deleted successfully!', type: 'success');
         $this->dispatch('cv-updated');
+    }
+
+    public function updated($property): void
+    {
+        if (! str_starts_with($property, 'form.') || ! $this->editingId) {
+            return;
+        }
+
+        $this->autosave();
+    }
+
+    public function autosave(): void
+    {
+        try {
+            $this->validate([
+                'form.name' => 'required|string|max:255',
+                'form.category' => 'required|string|max:50',
+                'form.level' => 'nullable|string|in:'.implode(',', array_keys($this->levels)),
+            ]);
+
+            CvSkill::find($this->editingId)->update($this->form);
+            $this->loadSkills();
+            $this->dispatch('cv-updated');
+        } catch (ValidationException $e) {
+        }
+    }
+
+    public function handleSort(string $id, int $position): void
+    {
+        $item = CvSkill::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->skills()->get()->values();
+        $items = $items->reject(fn ($item) => $item->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+        $this->loadSkills();
     }
 
     public function quickAddSkill(string $skillName): void

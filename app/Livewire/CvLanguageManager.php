@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cv;
 use App\Models\CvLanguage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -136,6 +137,45 @@ class CvLanguageManager extends Component
 
         $this->dispatch('notify', message: 'Language deleted successfully!', type: 'success');
         $this->dispatch('cv-updated');
+    }
+
+    public function updated($property): void
+    {
+        if (! str_starts_with($property, 'form.') || ! $this->editingId) {
+            return;
+        }
+
+        $this->autosave();
+    }
+
+    public function autosave(): void
+    {
+        try {
+            $this->validate([
+                'form.language' => 'required|string|max:100',
+                'form.proficiency' => 'required|string|in:'.implode(',', array_keys($this->proficiencies)),
+            ]);
+
+            CvLanguage::find($this->editingId)->update($this->form);
+            $this->loadLanguages();
+            $this->dispatch('cv-updated');
+        } catch (ValidationException $e) {
+        }
+    }
+
+    public function handleSort(string $id, int $position): void
+    {
+        $item = CvLanguage::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->languages()->get()->values();
+        $items = $items->reject(fn ($item) => $item->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+        $this->loadLanguages();
     }
 
     public function quickAddLanguage(string $languageName): void

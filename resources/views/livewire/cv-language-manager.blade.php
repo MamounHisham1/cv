@@ -16,6 +16,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -37,10 +40,11 @@
             <form wire:submit="saveLanguage" class="mb-8 space-y-4 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Language' : 'Add New Language' }}
+                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model="form.language"
+                    wire:model.live.debounce.1000ms="form.language"
                     label="Language"
                     placeholder="e.g., English"
                     required
@@ -49,7 +53,7 @@
                 />
 
                 <x-ui::select
-                    wire:model="form.proficiency"
+                    wire:model.live.debounce.1000ms="form.proficiency"
                     label="Proficiency"
                     :options="$proficiencies"
                     required
@@ -68,9 +72,9 @@
             </form>
         @endif
 
-        <div class="space-y-0">
+        <div class="space-y-0" wire:sort="handleSort">
             @forelse($languages as $language)
-                <div class="timeline-item group">
+                <div class="timeline-item group" wire:sort:item="{{ $language['id'] }}">
                     <div class="timeline-dot">
                         <x-ui::icon name="globe" class="w-3 h-3 text-white" />
                     </div>
@@ -134,4 +138,5 @@
             </div>
         @endif
     </x-ui::card>
+    @endif
 </div>

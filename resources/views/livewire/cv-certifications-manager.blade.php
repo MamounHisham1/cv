@@ -7,6 +7,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -28,10 +31,11 @@
             <form wire:submit="saveCertification" class="mb-8 space-y-4 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Certification' : 'Add New Certification' }}
+                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model="form.name"
+                    wire:model.live.debounce.1000ms="form.name"
                     label="Certification Name"
                     placeholder="e.g., Project Management Professional (PMP)"
                     required
@@ -40,7 +44,7 @@
                 />
 
                 <x-ui::input
-                    wire:model="form.issuing_organization"
+                    wire:model.live.debounce.1000ms="form.issuing_organization"
                     label="Issuing Organization"
                     placeholder="e.g., Project Management Institute"
                     required
@@ -51,7 +55,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.issue_date"
+                            wire:model.live.debounce.1000ms="form.issue_date"
                             type="date"
                             label="Issue Date"
                             :error="$errors->first('form.issue_date')"
@@ -60,7 +64,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.expiration_date"
+                            wire:model.live.debounce.1000ms="form.expiration_date"
                             type="date"
                             label="Expiration Date (if applicable)"
                             :error="$errors->first('form.expiration_date')"
@@ -72,7 +76,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.credential_id"
+                            wire:model.live.debounce.1000ms="form.credential_id"
                             label="Credential ID"
                             placeholder="Optional"
                             :error="$errors->first('form.credential_id')"
@@ -81,7 +85,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model="form.credential_url"
+                            wire:model.live.debounce.1000ms="form.credential_url"
                             label="Credential URL"
                             placeholder="https://..."
                             :error="$errors->first('form.credential_url')"
@@ -106,9 +110,9 @@
             </form>
         @endif
 
-        <div class="space-y-3">
+        <div class="space-y-3" wire:sort="handleSort">
             @forelse($certifications as $cert)
-                <div class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between" wire:sort:item="{{ $cert['id'] }}">
                     <div class="flex items-start gap-3">
                         <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
                             <x-ui::icon name="trophy" class="w-5 h-5 text-emerald-300" />
@@ -151,4 +155,5 @@
             @endforelse
         </div>
     </x-ui::card>
+    @endif
 </div>

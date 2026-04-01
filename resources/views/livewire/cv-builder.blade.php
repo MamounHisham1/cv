@@ -626,7 +626,14 @@
     @endif
     @else
     {{-- ===================== BUILDER STAGE ===================== --}}
-    <div class="relative mx-auto max-w-[1800px] p-3 md:p-6 lg:p-8">
+    <div
+        x-data="cvBuilderTabs()"
+        x-init="init()"
+        data-active-section="{{ $activeSection }}"
+        data-sections="{{ json_encode(array_keys($sections)) }}"
+        class="relative mx-auto max-w-[1800px] p-3 md:p-6 lg:p-8"
+    >
+        {{-- Header card --}}
         <div class="mb-4 rounded-2xl border border-white/10 bg-zinc-950/80 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl md:mb-6 md:rounded-3xl md:p-6">
             <div class="mb-4 flex flex-col gap-4 sm:mb-6 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -681,24 +688,18 @@
                 </div>
             </div>
             @endif
+        </div>
 
-            <div class="flex items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/5 p-2 backdrop-blur-xl">
-                @php
-                    $sections = [
-                        'personal' => ['name' => 'Personal', 'icon' => 'user'],
-                        'experience' => ['name' => 'Experience', 'icon' => 'briefcase'],
-                        'skills' => ['name' => 'Skills', 'icon' => 'zap'],
-                        'certifications' => ['name' => 'Certifications', 'icon' => 'trophy'],
-                        'education' => ['name' => 'Education', 'icon' => 'graduation-cap'],
-                        'projects' => ['name' => 'Projects', 'icon' => 'folder'],
-                        'languages' => ['name' => 'Languages', 'icon' => 'globe'],
-                    ];
-                @endphp
+        {{-- Main builder layout: aside sidebar + content panel --}}
+        <div class="flex flex-col gap-4 lg:flex-row lg:gap-6">
 
+            {{-- ========== MOBILE: Horizontal tab bar ========== --}}
+            <div class="flex items-center gap-2 overflow-x-auto rounded-full border border-white/10 bg-white/5 p-2 backdrop-blur-xl lg:hidden">
                 @foreach($sections as $key => $section)
                     <button
-                        wire:click="setActiveSection('{{ $key }}')"
-                        class="shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 {{ $activeSection === $key ? 'bg-white/10 text-white shadow-lg shadow-emerald-500/10' : 'text-zinc-400 hover:bg-white/10 hover:text-white' }}"
+                        @click="switchTab('{{ $key }}')"
+                        class="shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-all duration-300"
+                        :class="activeTab === '{{ $key }}' ? 'bg-white/10 text-white shadow-lg shadow-emerald-500/10' : 'text-zinc-400 hover:bg-white/10 hover:text-white'"
                     >
                         <span class="inline-flex items-center gap-2">
                             <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
@@ -707,88 +708,184 @@
                     </button>
                 @endforeach
             </div>
-        </div>
 
-        <div class="space-y-6">
-            @if($activeSection === 'personal')
-                <x-ui::card class="{{ $glassCardClasses }}">
-                    <div class="mb-6">
-                        <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">Personal Information</h2>
-                        <p class="text-sm text-zinc-400">Start with your basic contact details</p>
+            {{-- ========== DESKTOP: Sidebar navigation ========== --}}
+            <aside class="hidden lg:block lg:w-64 xl:w-72 shrink-0">
+                <div class="sticky top-6">
+                    <nav
+                        wire:sort="handleSectionSort"
+                        class="space-y-1 rounded-2xl border border-white/10 bg-zinc-950/80 p-3 shadow-2xl shadow-black/20 backdrop-blur-xl"
+                    >
+                        @foreach($sections as $key => $section)
+                            @php
+                                $sectionKeys = array_keys($sections);
+                                $sectionIndex = array_search($key, $sectionKeys);
+                                $isFirst = $sectionIndex === 0;
+                                $isLast = $sectionIndex === count($sectionKeys) - 1;
+                            @endphp
+                            <div
+                                wire:sort:item="{{ $key }}"
+                                wire:sort:ignore
+                                class="group flex items-center rounded-xl border transition-all duration-200"
+                                :class="activeTab === '{{ $key }}'
+                                    ? 'bg-emerald-500/10 border-emerald-400/20'
+                                    : 'border-transparent hover:bg-white/5'"
+                            >
+                                <button
+                                    @click="switchTab('{{ $key }}')"
+                                    class="flex flex-1 items-center gap-3 px-3 py-2.5 text-left text-sm font-medium transition-all duration-200"
+                                    :class="activeTab === '{{ $key }}' ? 'text-emerald-300' : 'text-zinc-400 hover:text-white'"
+                                >
+                                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all duration-200"
+                                         :class="activeTab === '{{ $key }}' ? 'bg-emerald-500/15' : 'bg-white/5 group-hover:bg-white/10'">
+                                        <x-ui::icon name="{{ $section['icon'] }}" class="w-4 h-4" />
+                                    </div>
+                                    <span class="flex-1">{{ $section['name'] }}</span>
+                                </button>
+
+                                <div class="flex items-center gap-0.5 pr-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <button
+                                        wire:click="moveSectionToTop('{{ $key }}')"
+                                        wire:loading.attr="disabled"
+                                        class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                        title="Move to top"
+                                        @if($isFirst) disabled @endif
+                                    >
+                                        <x-ui::icon name="chevron-up" class="w-3 h-3" />
+                                        <x-ui::icon name="chevron-up" class="w-3 h-3 -mt-1" />
+                                    </button>
+                                    <button
+                                        wire:click="moveSectionUp('{{ $key }}')"
+                                        wire:loading.attr="disabled"
+                                        class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                        title="Move up"
+                                        @if($isFirst) disabled @endif
+                                    >
+                                        <x-ui::icon name="chevron-up" class="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                        wire:click="moveSectionDown('{{ $key }}')"
+                                        wire:loading.attr="disabled"
+                                        class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                        title="Move down"
+                                        @if($isLast) disabled @endif
+                                    >
+                                        <x-ui::icon name="chevron-down" class="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                        wire:click="moveSectionToBottom('{{ $key }}')"
+                                        wire:loading.attr="disabled"
+                                        class="rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 disabled:opacity-30"
+                                        title="Move to bottom"
+                                        @if($isLast) disabled @endif
+                                    >
+                                        <x-ui::icon name="chevron-down" class="w-3 h-3" />
+                                        <x-ui::icon name="chevron-down" class="w-3 h-3 -mt-1" />
+                                    </button>
+                                    <div wire:sort:handle class="cursor-grab rounded p-1 text-zinc-500 transition-colors hover:bg-white/10 hover:text-zinc-300 active:cursor-grabbing" title="Drag to reorder">
+                                        <x-ui::icon name="menu" class="w-3.5 h-3.5" />
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </nav>
+
+                    <div class="mt-3 px-1">
+                        <p class="text-xs text-zinc-600">Drag to reorder sections</p>
                     </div>
-                    <form wire:submit="savePersonalInfo" class="space-y-6">
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />
+                </div>
+            </aside>
+
+            {{-- ========== Content panel ========== --}}
+            <div class="min-w-0 flex-1 space-y-6">
+
+                {{-- Personal Info (always rendered, no lazy needed) --}}
+                <div x-show="activeTab === 'personal'" x-cloak style="display: none;">
+                    <x-ui::card class="{{ $glassCardClasses }}">
+                        <div class="mb-6">
+                            <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">Personal Information</h2>
+                            <p class="text-sm text-zinc-400">Start with your basic contact details</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />
+                                </div>
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.last_name" label="Last Name" placeholder="Doe" required :error="$errors->first('personalInfo.last_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.last_name') ? $errorFieldClasses : '' }}" />
+                                </div>
                             </div>
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.last_name" label="Last Name" placeholder="Doe" required :error="$errors->first('personalInfo.last_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.last_name') ? $errorFieldClasses : '' }}" />
+
+                            <x-ui::input wire:model.live.debounce.1000ms="title" label="CV Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
+                            <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
+
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required :error="$errors->first('personalInfo.email')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.email') ? $errorFieldClasses : '' }}" />
+                                </div>
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" :error="$errors->first('personalInfo.phone')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.phone') ? $errorFieldClasses : '' }}" />
+                                </div>
+                            </div>
+
+                            <x-ui::input wire:model.live.debounce.1000ms="personalInfo.location" label="Location" placeholder="City, Country" :error="$errors->first('personalInfo.location')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.location') ? $errorFieldClasses : '' }}" />
+                            <x-ui::description class="text-zinc-400">City and country where you're based</x-ui::description>
+
+                            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." :error="$errors->first('personalInfo.linkedin')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.linkedin') ? $errorFieldClasses : '' }}" />
+                                </div>
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.github" label="GitHub" placeholder="github.com/..." :error="$errors->first('personalInfo.github')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.github') ? $errorFieldClasses : '' }}" />
+                                </div>
+                                <div class="form-field">
+                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.website" label="Website" placeholder="yoursite.com" :error="$errors->first('personalInfo.website')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.website') ? $errorFieldClasses : '' }}" />
+                                </div>
+                            </div>
+
+                            <x-ui::textarea wire:model.live.debounce.1000ms="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" :error="$errors->first('summary')" class="{{ $fieldClasses }} {{ $errors->has('summary') ? $errorFieldClasses : '' }}" />
+                            <x-ui::description class="text-zinc-400">2-4 sentences highlighting your key strengths and what you bring to the table</x-ui::description>
+
+                            <div class="flex items-center justify-end border-t border-white/10 pt-4">
+                                <span class="text-xs text-zinc-600">Auto-saves as you type</span>
                             </div>
                         </div>
+                    </x-ui::card>
+                </div>
 
-                        <x-ui::input wire:model="title" label="CV Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
-                        <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
+                {{-- Experience (lazy-loaded) --}}
+                <div x-show="activeTab === 'experience'" x-cloak style="display: none;">
+                    <livewire:cv-experience-manager :cv="$cv" lazy />
+                </div>
 
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required :error="$errors->first('personalInfo.email')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.email') ? $errorFieldClasses : '' }}" />
-                            </div>
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" :error="$errors->first('personalInfo.phone')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.phone') ? $errorFieldClasses : '' }}" />
-                            </div>
-                        </div>
+                {{-- Skills (lazy-loaded) --}}
+                <div x-show="activeTab === 'skills'" x-cloak style="display: none;">
+                    <livewire:cv-skills-manager :cv="$cv" lazy />
+                </div>
 
-                        <x-ui::input wire:model="personalInfo.location" label="Location" placeholder="City, Country" :error="$errors->first('personalInfo.location')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.location') ? $errorFieldClasses : '' }}" />
-                        <x-ui::description class="text-zinc-400">City and country where you're based</x-ui::description>
+                {{-- Certifications (lazy-loaded) --}}
+                <div x-show="activeTab === 'certifications'" x-cloak style="display: none;">
+                    <livewire:cv-certifications-manager :cv="$cv" lazy />
+                </div>
 
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." :error="$errors->first('personalInfo.linkedin')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.linkedin') ? $errorFieldClasses : '' }}" />
-                            </div>
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.github" label="GitHub" placeholder="github.com/..." :error="$errors->first('personalInfo.github')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.github') ? $errorFieldClasses : '' }}" />
-                            </div>
-                            <div class="form-field">
-                                <x-ui::input wire:model="personalInfo.website" label="Website" placeholder="yoursite.com" :error="$errors->first('personalInfo.website')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.website') ? $errorFieldClasses : '' }}" />
-                            </div>
-                        </div>
+                {{-- Education (lazy-loaded) --}}
+                <div x-show="activeTab === 'education'" x-cloak style="display: none;">
+                    <livewire:cv-education-manager :cv="$cv" lazy />
+                </div>
 
-                        <x-ui::textarea wire:model="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" :error="$errors->first('summary')" class="{{ $fieldClasses }} {{ $errors->has('summary') ? $errorFieldClasses : '' }}" />
-                        <x-ui::description class="text-zinc-400">2-4 sentences highlighting your key strengths and what you bring to the table</x-ui::description>
+                {{-- Projects (lazy-loaded) --}}
+                <div x-show="activeTab === 'projects'" x-cloak style="display: none;">
+                    <livewire:cv-project-manager :cv="$cv" lazy />
+                </div>
 
-                        <div class="flex justify-end border-t border-white/10 pt-4">
-                            <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">
-                                Save Personal Info
-                            </x-ui::button>
-                        </div>
-                    </form>
-                </x-ui::card>
-            @endif
+                {{-- Languages (lazy-loaded) --}}
+                <div x-show="activeTab === 'languages'" x-cloak style="display: none;">
+                    <livewire:cv-language-manager :cv="$cv" lazy />
+                </div>
 
-            @if($activeSection === 'experience')
-                <livewire:cv-experience-manager :cv="$cv" />
-            @endif
-
-            @if($activeSection === 'skills')
-                <livewire:cv-skills-manager :cv="$cv" />
-            @endif
-
-            @if($activeSection === 'certifications')
-                <livewire:cv-certifications-manager :cv="$cv" />
-            @endif
-
-            @if($activeSection === 'education')
-                <livewire:cv-education-manager :cv="$cv" />
-            @endif
-
-            @if($activeSection === 'projects')
-                <livewire:cv-project-manager :cv="$cv" />
-            @endif
-
-            @if($activeSection === 'languages')
-                <livewire:cv-language-manager :cv="$cv" />
-            @endif
+            </div>
         </div>
+
     </div>
 
     <div class="fixed bottom-6 right-6 z-50">

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cv;
 use App\Models\CvCertification;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -127,6 +128,49 @@ class CvCertificationsManager extends Component
 
         $this->dispatch('notify', message: 'Certification deleted successfully!', type: 'success');
         $this->dispatch('cv-updated');
+    }
+
+    public function updated($property): void
+    {
+        if (! str_starts_with($property, 'form.') || ! $this->editingId) {
+            return;
+        }
+
+        $this->autosave();
+    }
+
+    public function autosave(): void
+    {
+        try {
+            $this->validate([
+                'form.name' => 'required|string|max:255',
+                'form.issuing_organization' => 'required|string|max:255',
+                'form.issue_date' => 'nullable|date',
+                'form.expiration_date' => 'nullable|date|after_or_equal:form.issue_date',
+                'form.credential_id' => 'nullable|string|max:255',
+                'form.credential_url' => 'nullable|url|max:255',
+            ]);
+
+            CvCertification::find($this->editingId)->update($this->form);
+            $this->loadCertifications();
+            $this->dispatch('cv-updated');
+        } catch (ValidationException $e) {
+        }
+    }
+
+    public function handleSort(string $id, int $position): void
+    {
+        $item = CvCertification::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+        $items = $this->cv->certifications()->get()->values();
+        $items = $items->reject(fn ($item) => $item->id == $id)->values();
+        $items->splice($position, 0, $item);
+        foreach ($items as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+        $this->loadCertifications();
     }
 
     public function cancelEdit(): void

@@ -21,12 +21,27 @@ class Cv extends Model
         'personal_info',
         'summary',
         'sort_order',
+        'section_order',
     ];
 
     protected function casts(): array
     {
         return [
             'personal_info' => 'array',
+            'section_order' => 'array',
+        ];
+    }
+
+    public function getSectionOrder(): array
+    {
+        return $this->section_order ?? [
+            'personal',
+            'experience',
+            'skills',
+            'certifications',
+            'education',
+            'projects',
+            'languages',
         ];
     }
 

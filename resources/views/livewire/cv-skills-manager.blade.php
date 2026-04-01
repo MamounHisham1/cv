@@ -28,6 +28,9 @@
 @endphp
 
 <div>
+    @if($isLazy ?? false)
+        @include('livewire.partials.section-skeleton')
+    @else
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
@@ -48,9 +51,10 @@
             <form wire:submit="saveSkill" class="space-y-4 mb-8 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Skill' : 'Add New Skill' }}
+                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
                 </x-ui::heading>
 
-                <x-ui::input wire:model="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />
+                <x-ui::input wire:model.live.debounce.1000ms="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />
 
                 <div
                     x-data="{
@@ -152,7 +156,7 @@
                 </div>
 
                 <div class="form-field">
-                    <x-ui::select wire:model="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
+                    <x-ui::select wire:model.live.debounce.1000ms="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-end gap-3 border-t border-white/10 pt-4">
@@ -181,7 +185,7 @@
             </div>
         </div>
 
-        <div class="space-y-6">
+        <div class="space-y-6" wire:sort="handleSort">
             @foreach($allCategoryKeys as $categoryKey)
                 @if(isset($skills[$categoryKey]) && count($skills[$categoryKey]) > 0)
                     <div>
@@ -192,7 +196,7 @@
                         </h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             @foreach($skills[$categoryKey] as $skill)
-                                <div class="group relative rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10">
+                                <div class="group relative rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10" wire:sort:item="{{ $skill['id'] }}">
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="flex-1 min-w-0">
                                             <h5 class="truncate font-semibold text-white">
@@ -235,4 +239,5 @@
             </div>
         @endif
     </x-ui::card>
+    @endif
 </div>

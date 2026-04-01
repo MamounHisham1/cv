@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Cv;
 use App\Models\CvExperience;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -143,6 +144,56 @@ class CvExperienceManager extends Component
 
         $this->dispatch('notify', message: 'Experience deleted successfully!', type: 'success');
         $this->dispatch('cv-updated');
+    }
+
+    public function updated($property): void
+    {
+        if (! str_starts_with($property, 'form.') || ! $this->editingId) {
+            return;
+        }
+
+        $this->autosave();
+    }
+
+    public function autosave(): void
+    {
+        try {
+            $this->validate([
+                'form.company' => 'required|string|max:255',
+                'form.title' => 'required|string|max:255',
+                'form.location' => 'nullable|string|max:255',
+                'form.start_date' => 'required|date',
+                'form.end_date' => 'nullable|date|after_or_equal:form.start_date',
+                'form.is_current' => 'boolean',
+                'form.description' => 'required|string|max:5000',
+                'form.technologies' => 'nullable|array',
+                'form.achievements' => 'nullable|array',
+            ]);
+
+            CvExperience::find($this->editingId)->update($this->form);
+            $this->loadExperiences();
+            $this->dispatch('cv-updated');
+        } catch (ValidationException $e) {
+        }
+    }
+
+    public function handleSort(string $id, int $position): void
+    {
+        $experience = CvExperience::findOrFail($id);
+
+        if ($experience->cv_id !== $this->cv->id) {
+            return;
+        }
+
+        $items = $this->cv->experiences->values();
+        $items = $items->reject(fn ($item) => $item->id == $id)->values();
+        $items->splice($position, 0, $experience);
+
+        foreach ($items as $index => $item) {
+            $item->update(['sort_order' => $index]);
+        }
+
+        $this->loadExperiences();
     }
 
     public function addAchievement(): void
