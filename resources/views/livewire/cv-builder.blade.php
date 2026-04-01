@@ -669,17 +669,17 @@
             </div>
 
             @if($cv->exists)
-            <div class="mb-4">
+            <div class="mb-4" x-data="{ selected: @entangle('selectedTemplate').live }">
                 <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">Template</div>
                 <div class="flex flex-wrap gap-2">
                     @foreach($templates as $id => $template)
                         <button
                             type="button"
-                            wire:click="updateTemplate('{{ $id }}')"
-                            class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200
-                                {{ $selectedTemplate === $id
-                                    ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
-                                    : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200' }}"
+                            @click="selected = '{{ $id }}'; $wire.updateTemplate('{{ $id }}')"
+                            class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
+                            :class="selected === '{{ $id }}'
+                                ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
+                                : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200'"
                         >
                             <x-ui::icon name="{{ $template['icon'] }}" class="w-3.5 h-3.5" />
                             {{ $template['name'] }}

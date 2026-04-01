@@ -209,7 +209,7 @@
                             </div>
                             <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Still Have Questions?</h3>
                             <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">Our support team is ready to help you with anything you need. We typically respond within 24 hours.</p>
-                            <x-ui::button variant="primary" href="{{ route('contact') }}" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                                 Contact Support
                             </x-ui::button>
                         </div>

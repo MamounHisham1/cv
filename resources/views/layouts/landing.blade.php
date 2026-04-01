@@ -42,19 +42,17 @@
                     <div>
                         <h3 class="mb-4 text-sm font-semibold text-white">Resources</h3>
                         <ul class="space-y-3">
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Blog</a></li>
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">CV Tips</a></li>
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Templates</a></li>
-                            <li><a href="{{ route('home') }}#contact" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Support</a></li>
+                            <li><a href="{{ route('home') }}#templates" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Templates</a></li>
+                            <li><a href="{{ route('faq') }}" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Help Center</a></li>
                         </ul>
                     </div>
 
                     <div>
                         <h3 class="mb-4 text-sm font-semibold text-white">Legal</h3>
                         <ul class="space-y-3">
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Privacy Policy</a></li>
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Terms of Service</a></li>
-                            <li><a href="#" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Cookie Policy</a></li>
+                            <li><a href="{{ route('privacy.policy') }}" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Privacy Policy</a></li>
+                            <li><a href="{{ route('terms.of-service') }}" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Terms of Service</a></li>
+                            <li><a href="{{ route('cookie.policy') }}" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400">Cookie Policy</a></li>
                             <li><button onclick="window.laravelCookieConsent && window.laravelCookieConsent.showModal()" class="text-sm text-zinc-400 transition-colors hover:text-emerald-400 cursor-pointer">Cookie Preferences</button></li>
                         </ul>
                     </div>

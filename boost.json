@@ -8,12 +8,19 @@
     "guidelines": true,
     "mcp": true,
     "nightwatch_mcp": false,
+    "packages": [
+        "filament/filament",
+        "prism-php/prism",
+        "laravel/ai"
+    ],
     "sail": false,
     "skills": [
         "laravel-best-practices",
         "socialite-development",
         "livewire-development",
         "pest-testing",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "ai-sdk-development",
+        "developing-with-prism"
     ]
 }
