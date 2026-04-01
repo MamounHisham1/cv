@@ -10,10 +10,12 @@ use Livewire\Component;
 class CvExperienceManager extends Component
 {
     public ?Cv $cv = null;
+
     public array $experiences = [];
 
     // Form state
     public bool $showForm = false;
+
     public ?int $editingId = null;
 
     public array $form = [
@@ -90,8 +92,9 @@ class CvExperienceManager extends Component
 
     public function saveExperience(): void
     {
-        if (!$this->cv || !$this->cv->exists) {
+        if (! $this->cv || ! $this->cv->exists) {
             $this->dispatch('notify', message: 'Please save your personal information first.', type: 'error');
+
             return;
         }
 

@@ -10,10 +10,12 @@ use Livewire\Component;
 class CvCertificationsManager extends Component
 {
     public ?Cv $cv = null;
+
     public array $certifications = [];
 
     // Form state
     public bool $showForm = false;
+
     public ?int $editingId = null;
 
     public array $form = [
@@ -77,8 +79,9 @@ class CvCertificationsManager extends Component
 
     public function saveCertification(): void
     {
-        if (!$this->cv || !$this->cv->exists) {
+        if (! $this->cv || ! $this->cv->exists) {
             $this->dispatch('notify', message: 'Please save your personal information first.', type: 'error');
+
             return;
         }
 

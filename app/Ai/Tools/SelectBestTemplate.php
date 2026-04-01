@@ -149,7 +149,7 @@ class SelectBestTemplate implements Tool
             $alt = self::TEMPLATES[$altId];
             $result .= "**{$alt['name']}** ({$altId})\n";
             $result .= "{$alt['description']}\n";
-            $result .= "Best for: " . implode(', ', array_slice($alt['ideal_roles'], 0, 2)) . "\n\n";
+            $result .= 'Best for: '.implode(', ', array_slice($alt['ideal_roles'], 0, 2))."\n\n";
         }
 
         // Final advice
@@ -219,6 +219,7 @@ class SelectBestTemplate implements Tool
 
         // Default to level-based recommendation
         $recommendations = self::LEVEL_RECOMMENDATIONS[$level] ?? self::LEVEL_RECOMMENDATIONS['mid'];
+
         return $recommendations[0];
     }
 
@@ -271,18 +272,18 @@ class SelectBestTemplate implements Tool
         $advice = [];
 
         if ($atsPriority !== 'high') {
-            $advice[] = "Consider creating an ATS-optimized version for initial online applications";
+            $advice[] = 'Consider creating an ATS-optimized version for initial online applications';
         }
 
         if ($companyType === 'startup') {
-            $advice[] = "For startups, a visually appealing template can help you stand out";
+            $advice[] = 'For startups, a visually appealing template can help you stand out';
         } else {
-            $advice[] = "For larger companies, ensure your template is ATS-friendly";
+            $advice[] = 'For larger companies, ensure your template is ATS-friendly';
         }
 
         $advice[] = "Always test your CV by uploading it to the company's application system if possible";
-        $advice[] = "Consider having multiple template versions tailored to different types of applications";
+        $advice[] = 'Consider having multiple template versions tailored to different types of applications';
 
-        return implode("\n", array_map(fn($a) => "• {$a}", $advice));
+        return implode("\n", array_map(fn ($a) => "• {$a}", $advice));
     }
 }

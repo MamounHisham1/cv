@@ -22,7 +22,7 @@ class CvExperienceFactory extends Factory
             'cv_id' => Cv::factory(),
             'company' => $this->faker->company(),
             'title' => $this->faker->jobTitle(),
-            'location' => $this->faker->city() . ', ' . $this->faker->country(),
+            'location' => $this->faker->city().', '.$this->faker->country(),
             'start_date' => $startDate,
             'end_date' => $isCurrent ? null : $this->faker->dateTimeBetween($startDate, 'now'),
             'is_current' => $isCurrent,

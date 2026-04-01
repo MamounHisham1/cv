@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\CvCertificationFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CvCertification extends Model
 {
-    /** @use HasFactory<\Database\Factories\CvCertificationFactory> */
+    /** @use HasFactory<CvCertificationFactory> */
     use HasFactory;
 
     protected $table = 'cv_certifications';
@@ -49,7 +50,7 @@ class CvCertification extends Model
 
     public function getIsValidAttribute(): bool
     {
-        if (!$this->expiration_date) {
+        if (! $this->expiration_date) {
             return true;
         }
 

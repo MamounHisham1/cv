@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\CvExperienceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CvExperience extends Model
 {
-    /** @use HasFactory<\Database\Factories\CvExperienceFactory> */
+    /** @use HasFactory<CvExperienceFactory> */
     use HasFactory;
 
     protected $table = 'cv_experiences';

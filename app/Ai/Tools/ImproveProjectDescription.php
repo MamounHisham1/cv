@@ -49,7 +49,7 @@ class ImproveProjectDescription implements Tool
         $metrics = $request['metrics'] ?? [];
 
         if (empty($description)) {
-            return "Error: Please provide a project description to improve.";
+            return 'Error: Please provide a project description to improve.';
         }
 
         $result = "=== Improved Project Description ===\n\n";
@@ -63,8 +63,8 @@ class ImproveProjectDescription implements Tool
 
         // Alternative versions
         $result .= "=== Alternative Versions ===\n\n";
-        $result .= "Technical Focus:\n" . $this->generateTechnicalVersion($description, $awsServices) . "\n\n";
-        $result .= "Business Impact Focus:\n" . $this->generateBusinessVersion($description, $metrics) . "\n\n";
+        $result .= "Technical Focus:\n".$this->generateTechnicalVersion($description, $awsServices)."\n\n";
+        $result .= "Business Impact Focus:\n".$this->generateBusinessVersion($description, $metrics)."\n\n";
 
         // Suggestions
         $result .= "=== Suggestions for Further Improvement ===\n";
@@ -108,13 +108,13 @@ class ImproveProjectDescription implements Tool
         $result = implode('. ', $improved);
 
         // Add AWS services context
-        if (!empty($awsServices)) {
-            $result .= " Utilized " . implode(', ', $awsServices) . " to deliver the solution.";
+        if (! empty($awsServices)) {
+            $result .= ' Utilized '.implode(', ', $awsServices).' to deliver the solution.';
         }
 
         // Add metrics
-        if (!empty($metrics)) {
-            $result .= " " . $this->formatMetrics($metrics);
+        if (! empty($metrics)) {
+            $result .= ' '.$this->formatMetrics($metrics);
         }
 
         return $result;
@@ -134,7 +134,7 @@ class ImproveProjectDescription implements Tool
         $sentence = ucfirst($sentence);
 
         // Ensure sentence ends with period
-        if (!str_ends_with($sentence, '.')) {
+        if (! str_ends_with($sentence, '.')) {
             $sentence .= '.';
         }
 
@@ -161,12 +161,12 @@ class ImproveProjectDescription implements Tool
             'configured', 'optimized', 'automated', 'integrated',
         ];
 
-        $result = "Architected and implemented a scalable solution leveraging ";
-        $result .= !empty($awsServices)
+        $result = 'Architected and implemented a scalable solution leveraging ';
+        $result .= ! empty($awsServices)
             ? implode(', ', array_slice($awsServices, 0, 4))
             : 'AWS cloud services';
-        $result .= ". Designed with high availability, fault tolerance, and security best practices. ";
-        $result .= "Implemented Infrastructure as Code using CloudFormation/Terraform for automated provisioning.";
+        $result .= '. Designed with high availability, fault tolerance, and security best practices. ';
+        $result .= 'Implemented Infrastructure as Code using CloudFormation/Terraform for automated provisioning.';
 
         return $result;
     }
@@ -176,15 +176,15 @@ class ImproveProjectDescription implements Tool
      */
     private function generateBusinessVersion(string $description, array $metrics): string
     {
-        $result = "Led initiative that delivered significant business value through cloud transformation. ";
+        $result = 'Led initiative that delivered significant business value through cloud transformation. ';
 
-        if (!empty($metrics)) {
-            $result .= $this->formatMetrics($metrics) . " ";
+        if (! empty($metrics)) {
+            $result .= $this->formatMetrics($metrics).' ';
         } else {
-            $result .= "Achieved improved operational efficiency and reduced time-to-market. ";
+            $result .= 'Achieved improved operational efficiency and reduced time-to-market. ';
         }
 
-        $result .= "Enhanced system reliability and enabled the organization to scale operations seamlessly.";
+        $result .= 'Enhanced system reliability and enabled the organization to scale operations seamlessly.';
 
         return $result;
     }
@@ -204,7 +204,7 @@ class ImproveProjectDescription implements Tool
             return '';
         }
 
-        return "Results included: " . implode('; ', $formatted) . ".";
+        return 'Results included: '.implode('; ', $formatted).'.';
     }
 
     /**
@@ -240,23 +240,23 @@ class ImproveProjectDescription implements Tool
             }
         }
 
-        if (!$hasAwsFocus) {
-            $suggestions[] = "Consider adding AWS-specific value propositions (scalability, cost optimization, security)";
+        if (! $hasAwsFocus) {
+            $suggestions[] = 'Consider adding AWS-specific value propositions (scalability, cost optimization, security)';
         }
 
         // Check for technical depth
         if (strlen($description) < 100) {
-            $suggestions[] = "Expand with more technical details about architecture decisions and implementation";
+            $suggestions[] = 'Expand with more technical details about architecture decisions and implementation';
         }
 
         // Check for outcome focus
-        if (!str_contains($descLower, 'result') && !str_contains($descLower, 'improved') &&
-            !str_contains($descLower, 'reduced') && !str_contains($descLower, 'increased')) {
-            $suggestions[] = "Focus on outcomes and impact rather than just activities";
+        if (! str_contains($descLower, 'result') && ! str_contains($descLower, 'improved') &&
+            ! str_contains($descLower, 'reduced') && ! str_contains($descLower, 'increased')) {
+            $suggestions[] = 'Focus on outcomes and impact rather than just activities';
         }
 
         if (empty($suggestions)) {
-            $suggestions[] = "Great description! Consider tailoring it to specific job applications.";
+            $suggestions[] = 'Great description! Consider tailoring it to specific job applications.';
         }
 
         return $suggestions;

@@ -56,7 +56,7 @@ class OptimizeForAts implements Tool
         $jobDescription = $request['job_description'] ?? '';
 
         if (empty($cvContent)) {
-            return "Error: Please provide your CV content to analyze.";
+            return 'Error: Please provide your CV content to analyze.';
         }
 
         $result = "=== ATS Compatibility Analysis ===\n\n";
@@ -90,11 +90,11 @@ class OptimizeForAts implements Tool
         $result .= "\n";
 
         // Job description comparison
-        if (!empty($jobDescription)) {
+        if (! empty($jobDescription)) {
             $result .= "=== Job Description Match ===\n\n";
             $match = $this->compareWithJobDescription($cvContent, $jobDescription);
             $result .= "Keyword Match: {$match['percentage']}%\n";
-            $result .= "Missing Keywords: " . implode(', ', array_slice($match['missing'], 0, 8)) . "\n\n";
+            $result .= 'Missing Keywords: '.implode(', ', array_slice($match['missing'], 0, 8))."\n\n";
         }
 
         // Recommendations
@@ -162,7 +162,7 @@ class OptimizeForAts implements Tool
                 break;
             }
         }
-        if (!$foundWork) {
+        if (! $foundWork) {
             $checks[] = "✗ Work experience section not found (use 'Work Experience' or 'Professional Experience')";
         }
 
@@ -174,8 +174,8 @@ class OptimizeForAts implements Tool
                 break;
             }
         }
-        if (!$foundEducation) {
-            $checks[] = "⚠ Education section not found";
+        if (! $foundEducation) {
+            $checks[] = '⚠ Education section not found';
         }
 
         return $checks;
@@ -189,22 +189,22 @@ class OptimizeForAts implements Tool
         $issues = [];
 
         // Check for dates
-        if (!preg_match('/\d{4}/', $cv)) {
-            $issues[] = "✗ No dates found - add employment dates";
+        if (! preg_match('/\d{4}/', $cv)) {
+            $issues[] = '✗ No dates found - add employment dates';
         } else {
-            $issues[] = "✓ Dates found";
+            $issues[] = '✓ Dates found';
         }
 
         // Check for contact info
-        if (!preg_match('/[\w.-]+@[\w.-]+\.\w+/', $cv)) {
-            $issues[] = "✗ Email address not found";
+        if (! preg_match('/[\w.-]+@[\w.-]+\.\w+/', $cv)) {
+            $issues[] = '✗ Email address not found';
         } else {
-            $issues[] = "✓ Email address found";
+            $issues[] = '✓ Email address found';
         }
 
         // Check for phone
-        if (!preg_match('/[\d\s\-\(\)\+]{10,}/', $cv)) {
-            $issues[] = "⚠ Phone number not clearly found";
+        if (! preg_match('/[\d\s\-\(\)\+]{10,}/', $cv)) {
+            $issues[] = '⚠ Phone number not clearly found';
         }
 
         // Check length
@@ -247,6 +247,7 @@ class OptimizeForAts implements Tool
     {
         // Extract words that look like skills/requirements
         preg_match_all('/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/', $text, $matches);
+
         return array_unique(array_map('strtolower', $matches[0]));
     }
 
@@ -257,7 +258,7 @@ class OptimizeForAts implements Tool
     {
         $recommendations = [];
 
-        if (!empty($formattingIssues)) {
+        if (! empty($formattingIssues)) {
             $recommendations[] = 'Fix formatting issues - use a simple, single-column layout';
         }
 

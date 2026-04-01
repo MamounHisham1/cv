@@ -78,7 +78,7 @@ class SuggestKeywords implements Tool
             $result .= "**For {$profession} roles:**\n\n";
 
             foreach ($keywords as $category => $words) {
-                $result .= ucfirst($category) . ":\n";
+                $result .= ucfirst($category).":\n";
                 foreach ($words as $word) {
                     $marker = in_array(strtolower($word), array_map('strtolower', $currentSkills)) ? '✓' : '•';
                     $result .= "  {$marker} {$word}\n";
@@ -90,7 +90,7 @@ class SuggestKeywords implements Tool
         // Action verbs
         $result .= "**Recommended Action Verbs:**\n\n";
         foreach (self::ACTION_VERBS as $category => $verbs) {
-            $result .= ucfirst($category) . ": " . implode(', ', array_slice($verbs, 0, 4)) . "\n";
+            $result .= ucfirst($category).': '.implode(', ', array_slice($verbs, 0, 4))."\n";
         }
         $result .= "\n";
 
@@ -127,22 +127,22 @@ class SuggestKeywords implements Tool
     {
         $tips = [
             "Use standard section headings: 'Work Experience', 'Education', 'Skills'",
-            "Include keywords exactly as they appear in job descriptions",
+            'Include keywords exactly as they appear in job descriptions',
             "Use both acronyms and full terms (e.g., 'AWS (Amazon Web Services)')",
-            "Avoid tables, headers/footers, and complex formatting",
-            "Use a single-column layout for best ATS compatibility",
-            "Save your CV as a .docx or .pdf file",
+            'Avoid tables, headers/footers, and complex formatting',
+            'Use a single-column layout for best ATS compatibility',
+            'Save your CV as a .docx or .pdf file',
         ];
 
         if ($experience === 'senior') {
-            $tips[] = "Highlight leadership and strategic impact";
-            $tips[] = "Include metrics and business outcomes";
+            $tips[] = 'Highlight leadership and strategic impact';
+            $tips[] = 'Include metrics and business outcomes';
         } elseif ($experience === 'entry') {
-            $tips[] = "Focus on relevant coursework and projects";
-            $tips[] = "Include internships and volunteer work";
+            $tips[] = 'Focus on relevant coursework and projects';
+            $tips[] = 'Include internships and volunteer work';
         }
 
-        $result = "";
+        $result = '';
         foreach ($tips as $tip) {
             $result .= "• {$tip}\n";
         }

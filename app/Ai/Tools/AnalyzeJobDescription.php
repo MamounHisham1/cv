@@ -52,7 +52,7 @@ class AnalyzeJobDescription implements Tool
         $cvContent = $request['cv_content'] ?? '';
 
         if (empty($jobDescription)) {
-            return "Error: Please provide a job description to analyze.";
+            return 'Error: Please provide a job description to analyze.';
         }
 
         $result = "=== Job Description Analysis ===\n\n";
@@ -70,8 +70,8 @@ class AnalyzeJobDescription implements Tool
 
         $result .= "**Required Skills:**\n";
         foreach ($skills as $category => $items) {
-            if (!empty($items)) {
-                $result .= "  {$category}: " . implode(', ', $items) . "\n";
+            if (! empty($items)) {
+                $result .= "  {$category}: ".implode(', ', $items)."\n";
             }
         }
         $result .= "\n";
@@ -83,7 +83,7 @@ class AnalyzeJobDescription implements Tool
         $result .= "\n";
 
         // Compare with CV if provided
-        if (!empty($cvContent)) {
+        if (! empty($cvContent)) {
             $result .= "=== CV Match Analysis ===\n\n";
             $match = $this->analyzeMatch($jobDescription, $cvContent);
 
@@ -241,6 +241,7 @@ class AnalyzeJobDescription implements Tool
         // Remove common words and extract meaningful keywords
         $commonWords = ['the', 'and', 'or', 'a', 'an', 'in', 'on', 'at', 'to', 'for', 'of', 'with'];
         $words = str_word_count(strtolower($text), 1);
+
         return array_diff($words, $commonWords);
     }
 }

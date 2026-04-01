@@ -17,7 +17,7 @@ class CvProjectFactory extends Factory
     {
         return [
             'cv_id' => Cv::factory(),
-            'name' => $this->faker->catchPhrase() . ' Platform',
+            'name' => $this->faker->catchPhrase().' Platform',
             'description' => $this->faker->paragraph(3),
             'aws_services_used' => $this->faker->randomElements([
                 'EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB', 'CloudFormation',

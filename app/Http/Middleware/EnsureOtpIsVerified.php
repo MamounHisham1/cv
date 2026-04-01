@@ -26,8 +26,8 @@ class EnsureOtpIsVerified
             return $next($request);
         }
 
-        // Check if OTP is verified in session
-        if (! session()->get('otp_verified')) {
+        // Check if user has verified OTP (check database, not session)
+        if (! $user->otp_verified_at) {
             // Log out the user if they haven't verified OTP
             // This handles edge case where user exists but didn't complete verification
             auth()->logout();

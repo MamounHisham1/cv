@@ -105,10 +105,12 @@ class OtpVerification extends Component
         }
 
         // Create the user now that OTP is verified
+        // OTP verification also serves as email verification
         $user = User::create([
             'name' => $pendingRegistration['name'],
             'email' => $pendingRegistration['email'],
             'password' => $pendingRegistration['password'],
+            'email_verified_at' => now(),
             'otp_verified_at' => now(),
         ]);
 

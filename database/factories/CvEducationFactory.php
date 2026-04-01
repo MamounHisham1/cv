@@ -17,7 +17,7 @@ class CvEducationFactory extends Factory
     {
         return [
             'cv_id' => Cv::factory(),
-            'institution' => $this->faker->company() . ' University',
+            'institution' => $this->faker->company().' University',
             'degree' => $this->faker->randomElement([
                 'Bachelor of Science',
                 'Master of Science',
@@ -30,7 +30,7 @@ class CvEducationFactory extends Factory
                 'Software Engineering',
                 'Cloud Computing',
             ]),
-            'location' => $this->faker->city() . ', ' . $this->faker->country(),
+            'location' => $this->faker->city().', '.$this->faker->country(),
             'start_date' => $this->faker->dateTimeBetween('-10 years', '-6 years'),
             'end_date' => $this->faker->dateTimeBetween('-5 years', '-2 years'),
             'is_current' => false,

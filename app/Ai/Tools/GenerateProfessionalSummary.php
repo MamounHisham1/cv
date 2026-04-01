@@ -14,19 +14,19 @@ class GenerateProfessionalSummary implements Tool
      */
     private const TEMPLATES = [
         'entry' => [
-            'certification_focused' => "AWS Certified {certification} with hands-on experience in {services}. Passionate about cloud computing and eager to contribute to innovative projects leveraging AWS technologies.",
-            'project_focused' => "Cloud-focused developer with experience building {project_types} using {services}. Strong foundation in {skills} with a commitment to learning and growth in AWS ecosystem.",
-            'education_focused' => "Recent {degree} graduate with specialized training in cloud technologies. Practical experience with {services} through academic projects and personal development.",
+            'certification_focused' => 'AWS Certified {certification} with hands-on experience in {services}. Passionate about cloud computing and eager to contribute to innovative projects leveraging AWS technologies.',
+            'project_focused' => 'Cloud-focused developer with experience building {project_types} using {services}. Strong foundation in {skills} with a commitment to learning and growth in AWS ecosystem.',
+            'education_focused' => 'Recent {degree} graduate with specialized training in cloud technologies. Practical experience with {services} through academic projects and personal development.',
         ],
         'mid' => [
-            'technical_leadership' => "Results-driven AWS {role} with {years}+ years architecting and deploying scalable cloud solutions. Proven expertise in {services} with track record of {achievement}.",
-            'specialist' => "AWS-certified {specialization} specialist with {years}+ years optimizing {service_area} solutions. Delivered {metrics} through strategic implementation of {services}.",
-            'full_stack' => "Versatile Cloud Engineer with {years}+ years across the full AWS stack. Expertise spans {service_categories}, with particular strength in {specialty_area}.",
+            'technical_leadership' => 'Results-driven AWS {role} with {years}+ years architecting and deploying scalable cloud solutions. Proven expertise in {services} with track record of {achievement}.',
+            'specialist' => 'AWS-certified {specialization} specialist with {years}+ years optimizing {service_area} solutions. Delivered {metrics} through strategic implementation of {services}.',
+            'full_stack' => 'Versatile Cloud Engineer with {years}+ years across the full AWS stack. Expertise spans {service_categories}, with particular strength in {specialty_area}.',
         ],
         'senior' => [
-            'executive' => "Strategic cloud leader with {years}+ years driving enterprise AWS transformations. Delivered {business_impact} while building high-performing teams and establishing cloud centers of excellence.",
-            'architect' => "Distinguished Solutions Architect with {years}+ years designing mission-critical systems on AWS. Expert in {architectures} serving {scale} users with 99.99% availability.",
-            'consultant' => "Trusted AWS advisor with {years}+ years guiding Fortune 500 companies through cloud adoption. Specialized in {industries}, delivering average {roi}% ROI on cloud investments.",
+            'executive' => 'Strategic cloud leader with {years}+ years driving enterprise AWS transformations. Delivered {business_impact} while building high-performing teams and establishing cloud centers of excellence.',
+            'architect' => 'Distinguished Solutions Architect with {years}+ years designing mission-critical systems on AWS. Expert in {architectures} serving {scale} users with 99.99% availability.',
+            'consultant' => 'Trusted AWS advisor with {years}+ years guiding Fortune 500 companies through cloud adoption. Specialized in {industries}, delivering average {roi}% ROI on cloud investments.',
         ],
     ];
 
@@ -60,13 +60,13 @@ class GenerateProfessionalSummary implements Tool
         $summaries = $this->generateSummaries($level, $yearsExperience, $awsServices, $awsCerts, $jobTitle, $achievements, $specializations);
 
         foreach ($summaries as $style => $summary) {
-            $result .= "**" . ucfirst(str_replace('_', ' ', $style)) . "**\n";
-            $result .= $summary . "\n\n";
+            $result .= '**'.ucfirst(str_replace('_', ' ', $style))."**\n";
+            $result .= $summary."\n\n";
         }
 
         // Key skills to highlight
         $result .= "=== Key Skills to Highlight ===\n";
-        $result .= $this->getKeySkillsToHighlight($awsServices, $level) . "\n\n";
+        $result .= $this->getKeySkillsToHighlight($awsServices, $level)."\n\n";
 
         // Tailoring tips
         $result .= "=== Tips for Tailoring Your Summary ===\n";
@@ -154,7 +154,7 @@ class GenerateProfessionalSummary implements Tool
         $templates = self::TEMPLATES[$level] ?? self::TEMPLATES['mid'];
 
         // Certification-focused summary
-        if (!empty($certs)) {
+        if (! empty($certs)) {
             $highestCert = $this->getHighestCertification($certs);
             $summaries['certification_focused'] = str_replace(
                 ['{certification}', '{services}'],
@@ -170,21 +170,21 @@ class GenerateProfessionalSummary implements Tool
                 $jobTitle ?: 'Cloud Engineer',
                 $years,
                 $this->formatList(array_slice($services, 0, 5)),
-                !empty($achievements) ? $achievements[0] : 'delivering scalable cloud solutions'
+                ! empty($achievements) ? $achievements[0] : 'delivering scalable cloud solutions',
             ],
             $templates['technical_leadership'] ?? $templates[array_key_first($templates)]
         );
 
         // Specialist summary
-        if (!empty($specializations)) {
+        if (! empty($specializations)) {
             $summaries['specialist'] = str_replace(
                 ['{specialization}', '{years}', '{service_area}', '{metrics}', '{services}'],
                 [
                     $specializations[0],
                     $years,
                     $specializations[0],
-                    !empty($achievements) ? $achievements[0] : 'optimized performance and cost efficiency',
-                    $this->formatList(array_slice($services, 0, 4))
+                    ! empty($achievements) ? $achievements[0] : 'optimized performance and cost efficiency',
+                    $this->formatList(array_slice($services, 0, 4)),
                 ],
                 $templates['specialist'] ?? $templates[array_key_first($templates)]
             );
@@ -196,9 +196,9 @@ class GenerateProfessionalSummary implements Tool
                 ['{years}', '{business_impact}', '{architectures}', '{scale}'],
                 [
                     $years,
-                    !empty($achievements) ? $achievements[0] : 'multi-million dollar cost savings',
+                    ! empty($achievements) ? $achievements[0] : 'multi-million dollar cost savings',
                     'highly available, fault-tolerant architectures',
-                    'millions of'
+                    'millions of',
                 ],
                 $templates['executive'] ?? $templates[array_key_first($templates)]
             );
@@ -248,7 +248,8 @@ class GenerateProfessionalSummary implements Tool
         }
 
         $last = array_pop($items);
-        return implode(', ', $items) . ' and ' . $last;
+
+        return implode(', ', $items).' and '.$last;
     }
 
     /**

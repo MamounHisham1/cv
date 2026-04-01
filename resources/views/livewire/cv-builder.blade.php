@@ -239,6 +239,230 @@
                                     </div>
                                 </div>
                             @break
+                            @case('bold')
+                                {{-- Indigo header band, categorized skill pills, uppercase headings --}}
+                                <div class="flex h-full flex-col font-sans text-gray-900">
+                                    <div class="bg-indigo-700 p-3">
+                                        <div class="h-2 w-14 rounded bg-white/90"></div>
+                                        <div class="mt-1 h-1 w-full rounded bg-white/40"></div>
+                                    </div>
+                                    <div class="flex-1 p-3">
+                                        <div class="mb-2">
+                                            <div class="h-1 w-12 rounded bg-indigo-700 mb-1"></div>
+                                            <div class="h-1 w-full rounded bg-gray-200"></div>
+                                            <div class="h-1 w-5/6 rounded bg-gray-100 mt-0.5"></div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="h-1 w-16 rounded bg-indigo-700 mb-1"></div>
+                                            <div class="flex flex-wrap gap-1">
+                                                <div class="h-2 w-8 rounded-full bg-indigo-50 border border-indigo-200"></div>
+                                                <div class="h-2 w-10 rounded-full bg-indigo-50 border border-indigo-200"></div>
+                                                <div class="h-2 w-6 rounded-full bg-indigo-50 border border-indigo-200"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="h-1 w-20 rounded bg-indigo-700 mb-1"></div>
+                                            <div class="space-y-1">
+                                                <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                <div class="h-1 w-3/4 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="h-1 w-10 rounded bg-indigo-700 mb-1"></div>
+                                            <div class="space-y-0.5">
+                                                <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                <div class="h-1 w-2/3 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('timeline')
+                                {{-- Vertical timeline with connected dots, light gray --}}
+                                <div class="flex h-full flex-col p-4 font-sans text-gray-900">
+                                    <div class="mb-3">
+                                        <div class="h-2 w-12 rounded bg-gray-900"></div>
+                                        <div class="mt-1.5 flex gap-2">
+                                            <div class="h-0.5 w-8 rounded bg-gray-400"></div>
+                                            <div class="h-0.5 w-10 rounded bg-gray-400"></div>
+                                            <div class="h-0.5 w-6 rounded bg-gray-400"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <div class="h-0.5 w-8 rounded bg-gray-400 mb-1.5"></div>
+                                        <div class="h-1 w-full rounded bg-gray-200"></div>
+                                        <div class="h-1 w-5/6 rounded bg-gray-100 mt-0.5"></div>
+                                    </div>
+                                    <div class="mb-2 ml-3 relative flex-1">
+                                        <div class="absolute left-0 top-0 bottom-0 w-px bg-gray-300"></div>
+                                        <div class="pl-4 space-y-3">
+                                            <div class="relative">
+                                                <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gray-800 ring-2 ring-gray-100"></div>
+                                                <div class="h-0.5 w-6 rounded bg-gray-400 mb-0.5"></div>
+                                                <div class="h-1 w-12 rounded bg-gray-900 mb-0.5"></div>
+                                                <div class="h-1 w-full rounded bg-gray-200"></div>
+                                            </div>
+                                            <div class="relative">
+                                                <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gray-400"></div>
+                                                <div class="h-0.5 w-6 rounded bg-gray-400 mb-0.5"></div>
+                                                <div class="h-1 w-10 rounded bg-gray-900 mb-0.5"></div>
+                                                <div class="h-1 w-3/4 rounded bg-gray-200"></div>
+                                            </div>
+                                            <div class="relative">
+                                                <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-gray-400"></div>
+                                                <div class="h-0.5 w-6 rounded bg-gray-400 mb-0.5"></div>
+                                                <div class="h-1 w-14 rounded bg-gray-900 mb-0.5"></div>
+                                                <div class="h-1 w-2/3 rounded bg-gray-200"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('swiss')
+                                {{-- Red top bar, bold uppercase typography, 1/3 + 2/3 grid --}}
+                                <div class="flex h-full flex-col font-sans text-gray-900">
+                                    <div class="h-1 bg-red-600"></div>
+                                    <div class="flex-1 p-3">
+                                        <div class="mb-2">
+                                            <div class="h-3 w-16 rounded bg-gray-900"></div>
+                                            <div class="h-3 w-14 rounded bg-gray-300 mt-0.5"></div>
+                                            <div class="h-1 w-8 rounded bg-red-600 mt-1"></div>
+                                        </div>
+                                        <div class="h-px bg-gray-900 mb-2"></div>
+                                        <div class="flex gap-2">
+                                            <div class="w-[35%] space-y-2">
+                                                <div>
+                                                    <div class="h-0.5 w-6 rounded bg-red-600 mb-1"></div>
+                                                    <div class="space-y-0.5">
+                                                        <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                        <div class="h-1 w-3/4 rounded bg-gray-100"></div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="h-0.5 w-8 rounded bg-red-600 mb-1"></div>
+                                                    <div class="space-y-0.5">
+                                                        <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                        <div class="h-1 w-2/3 rounded bg-gray-100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex-1 space-y-2">
+                                                <div>
+                                                    <div class="h-0.5 w-8 rounded bg-red-600 mb-1"></div>
+                                                    <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                    <div class="h-1 w-5/6 rounded bg-gray-100 mt-0.5"></div>
+                                                </div>
+                                                <div>
+                                                    <div class="h-0.5 w-10 rounded bg-red-600 mb-1"></div>
+                                                    <div class="space-y-1">
+                                                        <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                        <div class="h-1 w-3/4 rounded bg-gray-100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('warm')
+                                {{-- Amber sidebar with profile circle, dot skill indicators --}}
+                                <div class="flex h-full text-gray-900">
+                                    <div class="w-[38%] bg-amber-50 p-3 flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-amber-200 mb-1.5 flex items-center justify-center text-xs font-bold text-amber-800">JD</div>
+                                        <div class="h-1.5 w-12 rounded bg-gray-900 mb-0.5"></div>
+                                        <div class="h-1 w-8 rounded bg-amber-400 mb-2"></div>
+                                        <div class="w-full space-y-1 mb-2">
+                                            <div class="h-0.5 w-6 rounded bg-amber-600"></div>
+                                            <div class="h-1 w-full rounded bg-gray-200"></div>
+                                            <div class="h-1 w-3/4 rounded bg-gray-100"></div>
+                                        </div>
+                                        <div class="w-full space-y-1.5">
+                                            <div>
+                                                <div class="h-0.5 w-4 rounded bg-amber-600 mb-0.5"></div>
+                                                <div class="flex gap-0.5"><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-200"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="h-0.5 w-5 rounded bg-amber-600 mb-0.5"></div>
+                                                <div class="flex gap-0.5"><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-200"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-200"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="h-0.5 w-3 rounded bg-amber-600 mb-0.5"></div>
+                                                <div class="flex gap-0.5"><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div><div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-[62%] bg-white p-3">
+                                        <div class="mb-2">
+                                            <div class="flex items-center gap-1 mb-1"><div class="h-0.5 w-3 bg-amber-500 rounded"></div><div class="h-1 w-8 rounded bg-gray-800"></div></div>
+                                            <div class="h-1 w-full rounded bg-gray-200"></div>
+                                            <div class="h-1 w-5/6 rounded bg-gray-100 mt-0.5"></div>
+                                        </div>
+                                        <div class="mb-2">
+                                            <div class="flex items-center gap-1 mb-1"><div class="h-0.5 w-3 bg-amber-500 rounded"></div><div class="h-1 w-10 rounded bg-gray-800"></div></div>
+                                            <div class="ml-2 border-l-2 border-amber-200 pl-2 space-y-1">
+                                                <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                <div class="h-1 w-3/4 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex items-center gap-1 mb-1"><div class="h-0.5 w-3 bg-amber-500 rounded"></div><div class="h-1 w-8 rounded bg-gray-800"></div></div>
+                                            <div class="ml-2 border-l-2 border-amber-200 pl-2 space-y-1">
+                                                <div class="h-1 w-full rounded bg-gray-200"></div>
+                                                <div class="h-1 w-2/3 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @break
+                            @case('compact')
+                                {{-- Dense serif layout, small fonts, education+certs side by side --}}
+                                <div class="flex h-full flex-col font-serif text-gray-900 p-3">
+                                    <div class="border-b border-gray-800 pb-1.5 mb-1.5">
+                                        <div class="flex justify-between items-baseline">
+                                            <div class="h-2 w-16 rounded bg-gray-900"></div>
+                                            <div class="space-y-0.5 text-right">
+                                                <div class="h-0.5 w-12 rounded bg-gray-400"></div>
+                                                <div class="h-0.5 w-10 rounded bg-gray-400"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-0.5 h-0.5 w-8 rounded bg-gray-500"></div>
+                                    </div>
+                                    <div class="h-0.5 w-full rounded bg-gray-200 mb-1.5"></div>
+                                    <div class="h-0.5 w-3/4 rounded bg-gray-100 mb-1.5"></div>
+                                    <div class="mb-1.5">
+                                        <div class="flex items-center gap-1 mb-0.5"><div class="h-px w-4 bg-gray-600"></div><div class="h-0.5 w-6 rounded bg-gray-800"></div></div>
+                                        <div class="flex flex-wrap gap-x-1 gap-y-0.5">
+                                            <div class="h-0.5 w-6 rounded bg-gray-300"></div>
+                                            <div class="h-0.5 w-8 rounded bg-gray-300"></div>
+                                            <div class="h-0.5 w-5 rounded bg-gray-300"></div>
+                                            <div class="h-0.5 w-7 rounded bg-gray-300"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-1.5">
+                                        <div class="flex items-center gap-1 mb-0.5"><div class="h-px w-4 bg-gray-600"></div><div class="h-0.5 w-10 rounded bg-gray-800"></div></div>
+                                        <div class="space-y-0.5">
+                                            <div class="h-0.5 w-full rounded bg-gray-200"></div>
+                                            <div class="h-0.5 w-3/4 rounded bg-gray-100"></div>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <div class="flex-1">
+                                            <div class="h-px w-4 bg-gray-600 mb-0.5"></div>
+                                            <div class="space-y-0.5">
+                                                <div class="h-0.5 w-full rounded bg-gray-200"></div>
+                                                <div class="h-0.5 w-3/4 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="h-px w-4 bg-gray-600 mb-0.5"></div>
+                                            <div class="space-y-0.5">
+                                                <div class="h-0.5 w-full rounded bg-gray-200"></div>
+                                                <div class="h-0.5 w-2/3 rounded bg-gray-100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @break
                         @endswitch
                     </div>
                     <div class="pointer-events-none text-sm font-bold {{ $selectedTemplate === $id ? 'text-emerald-100' : 'text-white' }}">

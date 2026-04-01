@@ -318,6 +318,31 @@ class CvBuilder extends Component
                 'description' => 'Leadership-focused layout',
                 'icon' => 'briefcase',
             ],
+            'bold' => [
+                'name' => 'Bold',
+                'description' => 'Eye-catching header with vibrant indigo tones and categorized skills',
+                'icon' => 'fire',
+            ],
+            'timeline' => [
+                'name' => 'Timeline',
+                'description' => 'Visual career timeline with connected dots and date axis',
+                'icon' => 'clock',
+            ],
+            'swiss' => [
+                'name' => 'Swiss',
+                'description' => 'Grid-based typographic design with bold red accents',
+                'icon' => 'grid',
+            ],
+            'warm' => [
+                'name' => 'Warm',
+                'description' => 'Approachable two-column layout with warm cream sidebar and amber accents',
+                'icon' => 'sun',
+            ],
+            'compact' => [
+                'name' => 'Compact',
+                'description' => 'Dense single-column layout for experienced professionals',
+                'icon' => 'arrows-pointing-in',
+            ],
         ];
     }
 

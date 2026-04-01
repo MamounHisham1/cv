@@ -36,13 +36,14 @@ class CvCertificationFactory extends Factory
 
         if ($isAws) {
             $cert = $this->faker->randomElement($awsCerts);
+
             return [
                 'cv_id' => Cv::factory(),
                 'name' => $cert['name'],
                 'issuing_organization' => 'Amazon Web Services (AWS)',
                 'issue_date' => $this->faker->dateTimeBetween('-3 years', '-6 months'),
                 'expiration_date' => $this->faker->optional(0.7)->dateTimeBetween('+6 months', '+2 years'),
-                'credential_id' => 'AWS-' . $this->faker->regexify('[A-Z0-9]{10}'),
+                'credential_id' => 'AWS-'.$this->faker->regexify('[A-Z0-9]{10}'),
                 'credential_url' => $this->faker->optional()->url(),
                 'is_aws_certification' => true,
                 'aws_level' => $cert['level'],
@@ -51,6 +52,7 @@ class CvCertificationFactory extends Factory
         }
 
         $cert = $this->faker->randomElement($otherCerts);
+
         return [
             'cv_id' => Cv::factory(),
             'name' => $cert['name'],
