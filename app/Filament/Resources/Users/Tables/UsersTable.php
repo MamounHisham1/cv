@@ -83,6 +83,16 @@ class UsersTable
                         ]);
                     })
                     ->successNotificationTitle('Credits added successfully'),
+                Action::make('impersonate')
+                    ->label('Impersonate')
+                    ->icon('heroicon-o-user')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->hidden(fn ($record) => $record->id === auth()->id())
+                    ->action(function ($record) {
+                        return redirect()->route('impersonate.start', $record);
+                    })
+                    ->visible(fn () => auth()->user()->canAccessPanel(filament()->getCurrentPanel())),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

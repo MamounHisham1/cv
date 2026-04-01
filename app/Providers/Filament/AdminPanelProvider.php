@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Widgets\CvStatsOverview;
 use App\Filament\Widgets\RecentCvEvaluations;
 use App\Filament\Widgets\TopResumeSamples;
+use App\Http\Middleware\Impersonate;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -55,9 +56,14 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                Impersonate::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                'panels::body.start',
+                fn () => view('filament.impersonate-banner'),
+            );
     }
 }

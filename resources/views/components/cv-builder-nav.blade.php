@@ -7,6 +7,17 @@
 @endphp
 
 <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
+    @if(app(\App\Services\ImpersonateService::class)->isImpersonating())
+        <div class="bg-amber-600 px-4 py-2 text-center text-sm font-medium text-white">
+            You are impersonating <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->email }})
+            <form method="POST" action="{{ route('impersonate.stop') }}" class="inline ml-3">
+                @csrf
+                <button type="submit" class="rounded bg-white/20 px-3 py-0.5 text-sm font-medium text-white hover:bg-white/30 transition-colors">
+                    Stop Impersonating
+                </button>
+            </form>
+        </div>
+    @endif
     <div class="mx-auto flex min-h-16 max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
 
         <x-app-logo href="/" class="shrink-0" />

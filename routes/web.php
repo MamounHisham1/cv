@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Livewire\CreditHistory;
@@ -8,6 +9,7 @@ use App\Livewire\CvEvaluator;
 use App\Livewire\EvaluationHistory;
 use App\Livewire\ReferralDashboard;
 use App\Models\Cv;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +37,13 @@ Route::get('/otp/verify', function () {
 
     return view('auth.otp-verify');
 })->name('otp.verify');
+
+Route::middleware(['auth', 'impersonate'])->group(function () {
+    Route::get('/impersonate/{user}', [ImpersonateController::class, 'start'])
+        ->name('impersonate.start');
+    Route::post('/impersonate/stop', [ImpersonateController::class, 'stop'])
+        ->name('impersonate.stop');
+});
 
 Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::get('/drafts', function () {

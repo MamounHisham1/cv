@@ -2,12 +2,17 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\ImpersonateService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureOtpIsVerified
 {
+    public function __construct(
+        protected ImpersonateService $impersonateService,
+    ) {}
+
     /**
      * Handle an incoming request.
      *
@@ -17,6 +22,10 @@ class EnsureOtpIsVerified
     {
         if (! auth()->check()) {
             return redirect()->route('login');
+        }
+
+        if ($this->impersonateService->isImpersonating()) {
+            return $next($request);
         }
 
         $user = auth()->user();
