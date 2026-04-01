@@ -500,15 +500,26 @@ class CvBuilder extends Component
             return;
         }
 
+        $orderedKeys = array_values(array_diff($orderedKeys, ['personal']));
+        array_unshift($orderedKeys, 'personal');
+
         $this->cv->update(['section_order' => $orderedKeys]);
         $this->sections = $this->getSections();
     }
 
     public function handleSectionSort(string $sectionKey, int $position): void
     {
-        $currentKeys = array_keys($this->sections);
+        if ($sectionKey === 'personal') {
+            $this->dispatch('notify', message: 'Personal Information must stay at the top.', type: 'error');
+
+            return;
+        }
+
+        $currentKeys = array_values(array_diff(array_keys($this->sections), ['personal']));
         $currentKeys = array_values(array_diff($currentKeys, [$sectionKey]));
+        $position = max(0, $position - 1);
         array_splice($currentKeys, $position, 0, $sectionKey);
+        array_unshift($currentKeys, 'personal');
         $this->updateSectionOrder($currentKeys);
     }
 
@@ -564,6 +575,13 @@ class CvBuilder extends Component
         array_splice($keys, $index, 1);
         $keys[] = $sectionKey;
         $this->updateSectionOrder($keys);
+    }
+
+    public function updated($property): void
+    {
+        if (str_starts_with($property, 'personalInfo.') || $property === 'title' || $property === 'summary') {
+            $this->autosavePersonalInfo();
+        }
     }
 
     public function autosavePersonalInfo(): void

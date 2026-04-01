@@ -722,9 +722,10 @@
                                 $sectionIndex = array_search($key, $sectionKeys);
                                 $isFirst = $sectionIndex === 0;
                                 $isLast = $sectionIndex === count($sectionKeys) - 1;
+                                $isPersonal = $key === 'personal';
                             @endphp
                             <div
-                                wire:sort:item="{{ $key }}"
+                                @if(!$isPersonal) wire:sort:item="{{ $key }}" @endif
                                 class="group flex items-center rounded-xl border transition-all duration-200"
                                 :class="activeTab === '{{ $key }}'
                                     ? 'bg-emerald-500/10 border-emerald-400/20'
@@ -743,6 +744,7 @@
                                      <span class="group-hover:truncate">{{ $section['name'] }}</span>
                                 </button>
 
+                                @if(!$isPersonal)
                                 <div class="flex shrink-0 items-center gap-0.5 pr-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                     <button
                                         wire:click="moveSectionToTop('{{ $key }}')"
@@ -788,6 +790,7 @@
                                         <x-ui::icon name="menu" class="w-3.5 h-3.5" />
                                     </div>
                                 </div>
+                                @endif
                             </div>
                         @endforeach
                     </nav>
