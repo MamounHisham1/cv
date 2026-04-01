@@ -18,7 +18,7 @@ Route::view('/cookie-policy', 'pages.cookie-policy')->name('cookie.policy');
 Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy.policy');
 Route::view('/terms-of-service', 'pages.terms-of-service')->name('terms.of-service');
 Route::view('/faq', 'pages.faq')->name('faq');
-Route::redirect('/dashboard', '/builder');
+Route::redirect('/dashboard', '/drafts');
 
 // Override Fortify's registration store route to not log user in
 Route::post('/register', [RegisteredUserController::class, 'store'])
