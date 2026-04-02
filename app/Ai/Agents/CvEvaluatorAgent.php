@@ -17,6 +17,7 @@ use Stringable;
 #[Model('mistral-large-3:675b-cloud')]
 #[Temperature(0.0)]
 #[MaxTokens(4096)]
+#[Timeout(300)]
 class CvEvaluatorAgent implements Agent, HasStructuredOutput
 {
     use Promptable;

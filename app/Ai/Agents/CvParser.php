@@ -15,6 +15,7 @@ use Stringable;
 #[Provider(Lab::Ollama)]
 #[Temperature(0.0)]
 #[MaxTokens(8192)]
+#[Timeout(300)]
 class CvParser implements Agent, HasStructuredOutput
 {
     use Promptable;

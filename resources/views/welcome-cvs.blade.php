@@ -25,6 +25,10 @@
                                 <x-ui::icon name="file-text" class="h-6 w-6 text-zinc-400" />
                             </div>
                             <div class="flex gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
+                                   class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Evaluate">
+                                    <x-ui::icon name="sparkles" class="h-4 w-4" />
+                                </a>
                                 <a href="{{ route('cv.edit', $cv) }}" wire:navigate
                                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white">
                                     <x-ui::icon name="pencil" class="h-4 w-4" />

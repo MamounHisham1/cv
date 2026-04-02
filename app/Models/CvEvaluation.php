@@ -28,6 +28,7 @@ class CvEvaluation extends Model
 
     protected $fillable = [
         'user_id',
+        'cv_id',
         'filename',
         'status',
         'error_message',
@@ -89,5 +90,10 @@ class CvEvaluation extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function cv(): BelongsTo
+    {
+        return $this->belongsTo(Cv::class);
     }
 }

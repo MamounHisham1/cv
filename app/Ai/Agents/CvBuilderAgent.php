@@ -32,6 +32,7 @@ use Stringable;
 
 #[Provider(Lab::Ollama)]
 #[Temperature(0.7)]
+#[Timeout(300)]
 class CvBuilderAgent implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;

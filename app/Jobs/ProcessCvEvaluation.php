@@ -28,12 +28,14 @@ class ProcessCvEvaluation implements ShouldQueue
         public string $cvText,
         public ?string $filename,
         public string $inputMode,
+        public ?int $cvId = null,
     ) {}
 
     public function handle(): void
     {
         $evaluation = CvEvaluation::create([
             'user_id' => $this->userId,
+            'cv_id' => $this->cvId,
             'filename' => $this->filename,
             'status' => 'processing',
             'cv_text' => $this->cvText,

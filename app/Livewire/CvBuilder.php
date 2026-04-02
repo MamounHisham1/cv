@@ -2,8 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Ai\Agents\CvParser;
-use App\Jobs\ExtractCvText;
+use App\Jobs\ParseCvWithAi;
 use App\Models\Cv;
 use App\Models\CvCertification;
 use App\Models\CvEducation;
@@ -13,11 +12,11 @@ use App\Models\CvProject;
 use App\Models\CvSkill;
 use App\Services\CreditManager;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use League\Flysystem\UnableToRetrieveMetadata;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -71,10 +70,8 @@ class CvBuilder extends Component
 
     public ?string $importError = null;
 
-    /** 'idle' | 'extracting' | 'importing' */
-    public string $importStage = 'idle';
-
-    public ?string $extractionCacheKey = null;
+    /** 'idle' | 'importing' | 'completed' | 'failed' */
+    public string $importStatus = 'idle';
 
     public ?string $tempFilePath = null;
 
@@ -83,7 +80,11 @@ class CvBuilder extends Component
         if ($cv && $cv->exists) {
             $this->authorize('update', $cv);
             $this->cv = $cv;
-            $this->stage = 'builder';
+
+            if ($cv->title === 'Importing...') {
+                $this->importStatus = 'importing';
+            }
+
             $this->loadCvData();
         } else {
             $this->cv = new Cv;
@@ -96,6 +97,32 @@ class CvBuilder extends Component
 
         $this->templates = $this->getAvailableTemplates();
         $this->sections = $this->getSections();
+    }
+
+    public function hydrate(): void
+    {
+        if ($this->uploadedFile && ! $this->cv?->exists) {
+            try {
+                $this->uploadedFile->getSize();
+            } catch (UnableToRetrieveMetadata) {
+                $this->uploadedFile = null;
+            }
+        }
+    }
+
+    public function getUploadedFileSize(): ?string
+    {
+        if (! $this->uploadedFile) {
+            return null;
+        }
+
+        try {
+            $size = $this->uploadedFile->getSize();
+
+            return number_format($size / 1024, 1).' KB';
+        } catch (UnableToRetrieveMetadata) {
+            return 'File size unavailable';
+        }
     }
 
     public function getSections(): array
@@ -219,145 +246,70 @@ class CvBuilder extends Component
             return;
         }
 
-        $this->importError = null;
-        $this->isImporting = true;
-        $this->importStage = 'extracting';
-
         $extension = strtolower($this->uploadedFile->getClientOriginalExtension());
+        $originalName = $this->uploadedFile->getClientOriginalName();
+        $fileSize = $this->uploadedFile->getSize();
         $this->tempFilePath = $this->uploadedFile->storeAs('temp/uploads', uniqid('cv_').'.'.$extension);
-        $this->extractionCacheKey = 'cv_extract_'.uniqid();
 
-        $fullPath = storage_path('app/'.$this->tempFilePath);
+        $fullPath = storage_path('app/private/'.$this->tempFilePath);
 
-        ExtractCvText::dispatch($fullPath, $extension, $this->extractionCacheKey);
-    }
+        if (! file_exists($fullPath)) {
+            $this->importError = 'Failed to store the uploaded file. Please try again.';
+            $this->resetImportState();
 
-    public function checkExtractionStatus(): void
-    {
-        if ($this->importStage !== 'extracting' || ! $this->extractionCacheKey) {
             return;
         }
 
-        $status = Cache::get($this->extractionCacheKey.'_status');
+        $cv = Cv::create([
+            'user_id' => Auth::id(),
+            'title' => 'Importing...',
+            'template_id' => $this->selectedTemplate,
+            'personal_info' => [
+                'first_name' => '',
+                'last_name' => '',
+                'email' => Auth::user()->email,
+                'phone' => '',
+                'location' => '',
+                'linkedin' => '',
+                'github' => '',
+                'website' => '',
+            ],
+            'status' => 'draft',
+        ]);
 
-        if ($status === 'completed') {
-            $text = Cache::get($this->extractionCacheKey);
+        ParseCvWithAi::dispatch(
+            Auth::id(),
+            $fullPath,
+            $extension,
+            $originalName,
+            $fileSize,
+            $cv->id,
+        );
 
-            if (empty(trim($text))) {
-                $this->importError = 'Could not extract text from the file. Try a different format or start from scratch.';
-                $this->resetImportState();
-                $this->cleanupTempFile();
-
-                return;
-            }
-
-            $this->importStage = 'importing';
-            $this->processAiParsing($text);
-        } elseif ($status === 'failed') {
-            $this->importError = Cache::get($this->extractionCacheKey.'_error', 'Failed to extract text from the file.');
-            $this->resetImportState();
-            $this->cleanupTempFile();
-        }
+        $this->redirect(route('cv.edit', $cv));
     }
 
-    private function processAiParsing(string $text): void
+    public function checkImportStatus(): void
     {
-        try {
-            $creditManager = app(CreditManager::class);
+        if (! $this->cv || ! $this->cv->exists || $this->importStatus !== 'importing') {
+            return;
+        }
 
-            $agent = new CvParser;
-            $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications, projects, languages). Return ONLY valid JSON with these exact keys:\n\n{$text}");
+        $this->cv->refresh();
 
-            Log::info('CvBuilder: AI raw response', [
-                'response_class' => get_class($response),
-                'text' => substr($response->text, 0, 500),
-                'has_structured' => isset($response->structured),
-                'structured' => isset($response->structured) ? $response->structured : null,
-            ]);
-
-            $data = $response->structured;
-            $data = $this->normalizeImportData($data);
-
-            $personalInfo = [
-                'first_name' => $data['first_name'] ?? '',
-                'last_name' => $data['last_name'] ?? '',
-                'email' => $data['email'] ?? Auth::user()->email,
-                'phone' => $data['phone'] ?? '',
-                'location' => $data['location'] ?? '',
-                'linkedin' => $data['linkedin'] ?? '',
-                'github' => $data['github'] ?? '',
-                'website' => $data['website'] ?? '',
-            ];
-
-            $cv = Cv::create([
-                'user_id' => Auth::id(),
-                'title' => $data['title'] ?? 'Imported CV',
-                'template_id' => $this->selectedTemplate,
-                'personal_info' => $personalInfo,
-                'summary' => $data['summary'] ?? '',
-                'status' => 'draft',
-            ]);
-
-            $this->importExperiences($cv, $data['experiences'] ?? []);
-            $this->importSkills($cv, $data['skills'] ?? []);
-            $this->importEducations($cv, $data['educations'] ?? []);
-            $this->importCertifications($cv, $data['certifications'] ?? []);
-            $this->importProjects($cv, $data['projects'] ?? []);
-            $this->importLanguages($cv, $data['languages'] ?? []);
-
-            Log::info('CvBuilder: Import completed', [
-                'cv_id' => $cv->id,
-                'title' => $cv->title,
-                'template_id' => $cv->template_id,
-                'personal_info' => $cv->personal_info,
-                'summary' => $cv->summary,
-                'experiences_count' => $cv->experiences->count(),
-                'experiences' => $cv->experiences->map->only(['company', 'title', 'location', 'start_date', 'end_date', 'is_current'])->toArray(),
-                'skills_count' => $cv->skills->count(),
-                'skills' => $cv->skills->map->only(['name', 'category', 'level'])->toArray(),
-                'educations_count' => $cv->educations->count(),
-                'educations' => $cv->educations->map->only(['institution', 'degree', 'field_of_study', 'start_date', 'end_date'])->toArray(),
-                'certifications_count' => $cv->certifications->count(),
-                'certifications' => $cv->certifications->map->only(['name', 'issuing_organization', 'issue_date'])->toArray(),
-                'projects_count' => $cv->projects->count(),
-                'projects' => $cv->projects->map->only(['name', 'description', 'start_date', 'end_date'])->toArray(),
-                'languages_count' => $cv->languages->count(),
-                'languages' => $cv->languages->map->only(['language', 'proficiency'])->toArray(),
-            ]);
-
-            $this->cv = $cv;
+        if ($this->cv->title === 'Import failed') {
+            $this->importStatus = 'failed';
+        } elseif ($this->cv->title !== 'Importing...') {
+            $this->importStatus = 'completed';
             $this->loadCvData();
-            $this->showOnboardingModal = false;
-            $this->stage = 'builder';
-            $this->activeSection = 'personal';
-            $this->dispatch('cv-saved', cvId: $cv->id);
-            $this->dispatch('cv-updated', cvId: $cv->id);
-
-            $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
-            $creditManager->deduct(Auth::user(), $credits, 'ai_parse', $cv, [
-                'prompt_tokens' => $response->usage->promptTokens,
-                'completion_tokens' => $response->usage->completionTokens,
-            ]);
+            $this->dispatch('cv-updated', cvId: $this->cv->id);
             $this->dispatch('credits-updated');
-
-            $this->resetImportState();
-            $this->cleanupTempFile();
-        } catch (\Throwable $e) {
-            Log::error('CvBuilder: Import failed', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            $this->importError = 'Failed to process your CV. Please try again or start from scratch.';
-            $this->resetImportState();
-            $this->cleanupTempFile();
         }
     }
 
     private function resetImportState(): void
     {
         $this->isImporting = false;
-        $this->importStage = 'idle';
-        $this->extractionCacheKey = null;
     }
 
     private function cleanupTempFile(): void

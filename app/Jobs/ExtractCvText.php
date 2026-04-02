@@ -22,12 +22,14 @@ class ExtractCvText implements ShouldQueue
         public string $filePath,
         public string $extension,
         public string $cacheKey,
+        public string $filename = 'unknown',
+        public int $fileSize = 0,
     ) {}
 
     public function handle(CvTextExtractor $extractor): void
     {
         try {
-            $text = $extractor->extractFromPath($this->filePath, $this->extension);
+            $text = $extractor->extractFromPath($this->filePath, $this->extension, $this->filename, $this->fileSize);
 
             Cache::put($this->cacheKey, $text, now()->addMinutes(10));
             Cache::put($this->cacheKey.'_status', 'completed', now()->addMinutes(10));

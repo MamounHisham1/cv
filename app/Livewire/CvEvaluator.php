@@ -3,9 +3,11 @@
 namespace App\Livewire;
 
 use App\Jobs\ProcessCvEvaluation;
+use App\Models\Cv;
 use App\Models\CvEvaluation;
 use App\Services\CreditManager;
 use App\Services\CvTextExtractor;
+use League\Flysystem\UnableToRetrieveMetadata;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -51,9 +53,16 @@ class CvEvaluator extends Component
     /**
      * Load the most recent evaluation for the authenticated user.
      */
-    public function mount(): void
+    public function mount(?Cv $cv = null): void
     {
         if (! auth()->check()) {
+            return;
+        }
+
+        if ($cv && $cv->exists) {
+            $this->authorize('update', $cv);
+            $this->evaluateFromCv($cv);
+
             return;
         }
 
@@ -78,6 +87,20 @@ class CvEvaluator extends Component
         $this->evaluations = auth()->check()
             ? auth()->user()->cvEvaluations()->latest()->get()->toArray()
             : [];
+    }
+
+    public function hydrate(): void
+    {
+        try {
+            if ($this->uploadedFile) {
+                $this->uploadedFile->getClientOriginalName();
+            }
+        } catch (UnableToRetrieveMetadata $e) {
+            $this->uploadedFile = null;
+            if ($this->evaluationState === 'uploading') {
+                $this->evaluationState = 'idle';
+            }
+        }
     }
 
     public function updatedUploadedFile(): void
@@ -143,6 +166,55 @@ class CvEvaluator extends Component
             $this->cvText,
             $filename,
             $this->inputMode,
+        );
+
+        $this->refreshEvaluations();
+    }
+
+    public function evaluateFromCv(Cv $cv): void
+    {
+        $this->errorMessage = null;
+        $this->result = null;
+        $this->uploadedFile = null;
+        $this->pastedText = '';
+
+        $this->cvText = $cv->toText();
+
+        if (empty(trim($this->cvText))) {
+            $this->errorMessage = 'This CV is empty. Add some content first.';
+            $this->evaluationState = 'error';
+
+            return;
+        }
+
+        if (! app(CreditManager::class)->hasCredits(auth()->user())) {
+            $this->errorMessage = "You're out of credits. Invite friends to earn more!";
+            $this->evaluationState = 'error';
+            $this->dispatch('insufficient-credits');
+
+            return;
+        }
+
+        $filename = $cv->title.'.cv';
+
+        $evaluation = CvEvaluation::create([
+            'user_id' => auth()->id(),
+            'cv_id' => $cv->id,
+            'filename' => $filename,
+            'status' => CvEvaluation::STATUS_PENDING,
+            'cv_text' => $this->cvText,
+        ]);
+
+        $this->pendingEvaluationId = $evaluation->id;
+        $this->evaluationState = 'processing';
+        $this->shouldPoll = true;
+
+        ProcessCvEvaluation::dispatch(
+            auth()->id(),
+            $this->cvText,
+            $filename,
+            'builder',
+            $cv->id,
         );
 
         $this->refreshEvaluations();

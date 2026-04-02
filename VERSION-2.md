@@ -4,7 +4,7 @@
 
 - [ ] **Payment integration (Stripe/Paddle)** — Plans are defined in config (free/pro/enterprise) but no checkout flow exists. This is the single biggest revenue unlock.
 - [ ] **Server-side PDF generation** — `dompdf` is installed but unused. Replace `window.print()` with proper server-side PDF generation for consistent output with A4 page breaks and embedded fonts.
-- [ ] **Evaluate your own CVs** — Allow clicking "Evaluate" on a builder-created CV directly instead of requiring export-to-PDF then re-upload. The evaluator should accept a Cv model ID.
+- [~] **Evaluate your own CVs** — Allow clicking "Evaluate" on a builder-created CV directly instead of requiring export-to-PDF then re-upload. The evaluator should accept a Cv model ID.
 - [ ] **Credit purchase flow** — Add one-time credit pack purchases (e.g., 50 credits for $5). The `purchase_bonus` config key already exists for this.
 
 ## Builder UX

@@ -40,6 +40,13 @@ return [
         'api_key' => env('QDRANT_API_KEY', ''),
     ],
 
+    'ollama' => [
+        'url' => env('OLLAMA_BASE_URL', 'http://localhost:11434'),
+        'model' => env('OLLAMA_MODEL', 'llama3.1:8b'),
+        'timeout' => (int) env('OLLAMA_TIMEOUT', 300),
+        'embedding_model' => env('OLLAMA_EMBEDDING_MODEL', 'mxbai-embed-large'),
+    ],
+
     'google' => [
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),

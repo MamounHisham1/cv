@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Ai\Agents\CvParser;
+use App\Jobs\ExtractCvText;
 use App\Models\Cv;
 use App\Models\CvCertification;
 use App\Models\CvEducation;
@@ -10,7 +11,9 @@ use App\Models\CvExperience;
 use App\Models\CvSkill;
 use App\Services\CreditManager;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -102,12 +105,21 @@ class CvImporter extends Component
         $this->importStage = 'extracting';
 
         $extension = strtolower($this->uploadedFile->getClientOriginalExtension());
+        $originalName = $this->uploadedFile->getClientOriginalName();
+        $fileSize = $this->uploadedFile->getSize();
         $this->tempFilePath = $this->uploadedFile->storeAs('temp/uploads', uniqid('cv_').'.'.$extension);
         $this->extractionCacheKey = 'cv_extract_'.uniqid();
 
-        $fullPath = storage_path('app/'.$this->tempFilePath);
+        // Laravel 13 stores files in storage/app/private/ by default
+        $fullPath = storage_path('app/private/'.$this->tempFilePath);
 
-        ExtractCvText::dispatch($fullPath, $extension, $this->extractionCacheKey);
+        ExtractCvText::dispatch(
+            $fullPath,
+            $extension,
+            $this->extractionCacheKey,
+            $originalName,
+            $fileSize,
+        );
     }
 
     public function checkExtractionStatus(): void

@@ -63,7 +63,7 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
 
     Route::get('/builder', CvBuilder::class)->name('cv.builder');
     Route::get('/builder/{cv}', CvBuilder::class)->name('cv.edit');
-    Route::get('/evaluator', CvEvaluator::class)->name('cv.evaluator');
+    Route::get('/evaluator/{cv?}', CvEvaluator::class)->name('cv.evaluator');
     Route::get('/evaluations/history', EvaluationHistory::class)->name('evaluations.history');
     Route::get('/referrals', ReferralDashboard::class)->name('referrals');
     Route::get('/credits', CreditHistory::class)->name('credits.history');

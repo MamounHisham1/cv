@@ -585,7 +585,7 @@
                                 <x-ui::icon name="document-text" class="w-8 h-8 text-emerald-300" />
                                 <div class="text-left">
                                     <div class="text-sm font-medium text-white">{{ $uploadedFile->getClientOriginalName() }}</div>
-                                    <div class="text-xs text-zinc-400">{{ number_format($uploadedFile->getSize() / 1024, 1) }} KB</div>
+                                    <div class="text-xs text-zinc-400">{{ $this->getUploadedFileSize() }}</div>
                                 </div>
                             </div>
                         @else
@@ -629,6 +629,7 @@
     <div
         x-data="cvBuilderTabs()"
         x-init="init()"
+        @if($cv && $cv->title === 'Importing...') wire:poll.3s="checkImportStatus" @endif
         data-active-section="{{ $activeSection }}"
         data-sections="{{ json_encode(array_keys($sections)) }}"
         class="relative mx-auto max-w-[1800px] p-3 md:p-6 lg:p-8"
@@ -656,6 +657,9 @@
                         <span class="hidden sm:inline">New CV</span>
                     </button>
                     @if($cv->exists)
+                        <x-ui::button variant="ghost" href="{{ route('cv.evaluator', $cv) }}" wire:navigate icon="sparkles" class="{{ $secondaryButtonClasses }}">
+                            <span class="hidden sm:inline">Evaluate</span>
+                        </x-ui::button>
                         <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link" class="{{ $secondaryButtonClasses }}">
                             <span class="hidden sm:inline">Open Preview</span>
                             <span class="sm:hidden">Preview</span>
@@ -856,6 +860,35 @@
             {{-- ========== Content panel ========== --}}
             <div class="min-w-0 flex-1 space-y-6">
 
+                @if($importStatus === 'importing')
+                    <x-ui::card class="{{ $glassCardClasses }}">
+                        <div class="flex flex-col items-center justify-center py-20">
+                            <svg class="mb-4 h-10 w-10 animate-spin text-emerald-400" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                            <h3 class="mb-1 text-lg font-semibold text-white">Importing your CV...</h3>
+                            <p class="text-sm text-zinc-400">Extracting text and parsing your information with AI</p>
+                        </div>
+                    </x-ui::card>
+                @elseif($importStatus === 'failed')
+                    <x-ui::card class="{{ $glassCardClasses }}">
+                        <div class="flex flex-col items-center justify-center py-20">
+                            <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-red-400/20 bg-red-500/10">
+                                <x-ui::icon name="exclamation-triangle" class="h-7 w-7 text-red-400" />
+                            </div>
+                            <h3 class="mb-1 text-lg font-semibold text-white">Import Failed</h3>
+                            <p class="mb-6 text-sm text-zinc-400">Something went wrong while importing your CV. You can still edit it manually.</p>
+                            <button
+                                wire:click="importStatus = 'completed'"
+                                class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-all duration-300 hover:bg-white/10 hover:text-white"
+                            >
+                                <x-ui::icon name="pencil" class="h-4 w-4" />
+                                Edit Manually
+                            </button>
+                        </div>
+                    </x-ui::card>
+                @else
                 {{-- Personal Info (always rendered, no lazy needed) --}}
                 <div x-show="activeTab === 'personal'" x-cloak style="display: none;">
                     <x-ui::card class="{{ $glassCardClasses }}">
@@ -939,6 +972,8 @@
                 <div x-show="activeTab === 'languages'" x-cloak style="display: none;">
                     <livewire:cv-language-manager :cv="$cv" lazy />
                 </div>
+
+                @endif
 
             </div>
         </div>

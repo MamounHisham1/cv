@@ -55,7 +55,7 @@
 
     {{-- Step 2: Upload --}}
     @if($step === 'upload')
-    <div>
+    <div @if($importStage === 'extracting') wire:poll.2s="checkExtractionStatus" @endif>
         <button wire:click="showChoose" class="mb-6 inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white">
             <x-ui::icon name="arrow-left" class="h-4 w-4" />
             Back to templates
