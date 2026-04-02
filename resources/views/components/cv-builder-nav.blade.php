@@ -36,9 +36,10 @@
 
         <div class="flex-1"></div>
 
-        {{-- Mobile: credits next to hamburger --}}
+        {{-- Mobile: credits + bell next to hamburger --}}
         <div class="flex items-center gap-2 lg:hidden">
             <livewire:credit-balance-indicator />
+            <livewire:notification-bell />
             <div x-data="{ open: false }">
                 <button @click="open = !open" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors">
                     <svg x-show="!open" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

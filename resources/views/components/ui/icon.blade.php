@@ -80,6 +80,7 @@ $heroiconMap = [
     'github' => 'link',
     'link' => 'link',
     'database' => 'circle-stack',
+    'bell' => 'bell',
     'arrow-right-left' => 'arrows-right-left',
 ];
 
@@ -89,7 +90,13 @@ $component = "heroicon-{$prefix}-{$heroiconName}";
 @endphp
 
 @php
-$sizeClass = 'size-' . ($size === 'sm' ? '4' : ($size === 'md' ? '5' : ($size === 'lg' ? '6' : '8')));
+$sizeMap = [
+    'sm' => 'h-4 w-4',
+    'md' => 'h-5 w-5',
+    'lg' => 'h-6 w-6',
+    'xl' => 'h-8 w-8',
+];
+$sizeClass = $sizeMap[$size] ?? $sizeMap['md'];
 @endphp
 
 <x-dynamic-component :component="$component" {{ $attributes->merge(['class' => $sizeClass]) }} />

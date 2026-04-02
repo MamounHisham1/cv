@@ -7,8 +7,6 @@ use Livewire\Component;
 
 class NotificationBell extends Component
 {
-    public bool $dropdownOpen = false;
-
     public int $unreadCount = 0;
 
     public array $notifications = [];
@@ -40,11 +38,6 @@ class NotificationBell extends Component
     public function loadNotifications(): void
     {
         $this->loadData();
-    }
-
-    public function toggleDropdown(): void
-    {
-        $this->dropdownOpen = ! $this->dropdownOpen;
     }
 
     public function markAsRead(string $id): void

@@ -1,7 +1,7 @@
-<div wire:poll.30s="loadNotifications" class="relative" x-data="{ open: @entangle('dropdownOpen') }" @click.outside="open = false">
+<div wire:poll.30s="loadNotifications" class="relative" x-data="{ open: false }" @click.outside="open = false">
     <button
         type="button"
-        @click="open = !open; $wire.toggleDropdown()"
+        @click="open = !open"
         class="relative p-2 text-zinc-400 hover:text-zinc-100 transition-colors"
     >
         <x-ui::icon name="bell" size="lg" />
