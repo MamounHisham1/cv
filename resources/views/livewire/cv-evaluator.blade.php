@@ -118,16 +118,13 @@
         @if($evaluationState === 'processing')
             <div class="{{ $glassCard }} mb-6 py-16 text-center"
                  @if($shouldPoll)
-                     wire:poll.5000ms="checkEvaluationStatus"
+                     wire:poll.5000ms.keep-alive="checkEvaluationStatus"
                  @endif>
                 <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-500/10">
-                    <x-ui::icon name="sparkles" class="h-10 w-10 animate-pulse text-emerald-300" />
+                    <x-ui::spinner size="lg" class="text-emerald-300" />
                 </div>
                 <h2 class="mb-3 text-xl font-bold text-white">Processing your CV…</h2>
                 <p class="text-sm text-zinc-400">Our AI is evaluating 10 key criteria. You can navigate away and come back later.</p>
-                <div class="mx-auto mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-white/10">
-                    <div class="h-full w-3/5 animate-pulse rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
-                </div>
             </div>
         @endif
 
@@ -135,13 +132,10 @@
         @if($evaluationState === 'evaluating')
             <div class="{{ $glassCard }} mb-6 py-16 text-center">
                 <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-500/10">
-                    <x-ui::icon name="sparkles" class="h-10 w-10 animate-pulse text-emerald-300" />
+                    <x-ui::spinner size="lg" class="text-emerald-300" />
                 </div>
                 <h2 class="mb-3 text-xl font-bold text-white">Analysing your CV…</h2>
                 <p class="text-sm text-zinc-400">Our AI is evaluating 10 key criteria. This takes about 15–30 seconds.</p>
-                <div class="mx-auto mt-8 h-1.5 w-64 overflow-hidden rounded-full bg-white/10">
-                    <div class="h-full w-3/5 animate-pulse rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"></div>
-                </div>
             </div>
         @endif
 
@@ -275,7 +269,8 @@
             </div>
 
             {{-- Score progression sparkline --}}
-            <div class="mb-6 flex items-end gap-1 h-16">
+            {{-- TODO: Re-Enable after enhancing the design --}}
+            {{-- <div class="mb-6 flex items-end gap-1 h-16">
                 @foreach($evaluations as $eval)
                     @php
                         $heightPct = max(15, ($eval['overall_score'] ?? 0));
@@ -289,7 +284,7 @@
                          wire:click="toggleEvaluationSelection({{ $eval['id'] }}">
                     </div>
                 @endforeach
-            </div>
+            </div> --}}
 
             {{-- History list --}}
             <div class="space-y-3 max-h-[420px] overflow-y-auto pr-1">

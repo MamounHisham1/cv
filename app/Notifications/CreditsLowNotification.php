@@ -44,6 +44,7 @@ class CreditsLowNotification extends Notification
         return [
             'remaining_credits' => $this->remainingCredits,
             'threshold' => $this->threshold,
+            'url' => route('credits.history'),
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class NotificationBell extends Component
@@ -16,6 +17,7 @@ class NotificationBell extends Component
         $this->loadData();
     }
 
+    #[On('notification-received')]
     public function loadData(): void
     {
         if (! Auth::check()) {
@@ -35,11 +37,6 @@ class NotificationBell extends Component
         ])->toArray();
     }
 
-    public function loadNotifications(): void
-    {
-        $this->loadData();
-    }
-
     public function markAsRead(string $id): void
     {
         if (! Auth::check()) {
@@ -47,6 +44,14 @@ class NotificationBell extends Component
         }
 
         Auth::user()->notifications()->where('id', $id)->update(['read_at' => now()]);
+
+        $notification = Auth::user()->notifications()->where('id', $id)->first();
+
+        if ($notification && isset($notification->data['url'])) {
+            $this->redirect($notification->data['url']);
+        }
+
+        $this->loadData();
     }
 
     public function markAllAsRead(): void
@@ -56,14 +61,17 @@ class NotificationBell extends Component
         }
 
         Auth::user()->unreadNotifications()->update(['read_at' => now()]);
+        $this->loadData();
     }
 
     public function getNotificationIcon(string $type): string
     {
         return match ($type) {
-            'App\Notifications\EvaluationCompletedNotification' => 'chart-bar',
-            'App\Notifications\CreditsLowNotification' => 'credit-card',
-            'App\Notifications\ReferralSignedUpNotification' => 'user-plus',
+            'App\Notifications\EvaluationCompletedNotification' => 'check-circle',
+            'App\Notifications\CreditsLowNotification' => 'alert-triangle',
+            'App\Notifications\CreditsGrantedNotification' => 'star',
+            'App\Notifications\CvParsedNotification' => 'document-text',
+            'App\Notifications\ReferralSignedUpNotification' => 'users',
             'App\Notifications\OtpSentNotification' => 'shield-check',
             default => 'bell',
         };
@@ -74,6 +82,8 @@ class NotificationBell extends Component
         return match ($type) {
             'App\Notifications\EvaluationCompletedNotification' => "Evaluation complete: {$data['score']}/100 ({$data['grade']})",
             'App\Notifications\CreditsLowNotification' => "Low credits: {$data['remaining_credits']} remaining",
+            'App\Notifications\CreditsGrantedNotification' => "+{$data['amount']} credits added",
+            'App\Notifications\CvParsedNotification' => "CV imported: {$data['cv_title']}",
             'App\Notifications\ReferralSignedUpNotification' => "{$data['referred_user_name']} joined!",
             'App\Notifications\OtpSentNotification' => 'OTP code sent',
             default => 'Notification',

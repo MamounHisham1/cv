@@ -1,4 +1,6 @@
-<div class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm">
-    <x-credit-coin size="sm" />
-    <span class="font-medium tabular-nums text-zinc-200">{{ number_format($balance) }}</span>
-</div>
+<span class="inline-flex items-center gap-1">
+    <x-credit-coin size="lg" class="text-zinc-400" />
+    <span class="flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-white">
+        {{ number_format($balance) }}
+    </span>
+</span>

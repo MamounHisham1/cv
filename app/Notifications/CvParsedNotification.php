@@ -2,18 +2,18 @@
 
 namespace App\Notifications;
 
-use App\Models\CvEvaluation;
+use App\Models\Cv;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\WebPush\WebPushChannel;
 use NotificationChannels\WebPush\WebPushMessage;
 
-class EvaluationCompletedNotification extends Notification
+class CvParsedNotification extends Notification
 {
     use Queueable;
 
     public function __construct(
-        public CvEvaluation $evaluation,
+        public Cv $cv,
     ) {}
 
     public function via(object $notifiable): array
@@ -30,18 +30,17 @@ class EvaluationCompletedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'evaluation_id' => $this->evaluation->id,
-            'score' => $this->evaluation->overall_score,
-            'grade' => $this->evaluation->grade,
-            'url' => route('cv.evaluator'),
+            'cv_id' => $this->cv->id,
+            'cv_title' => $this->cv->title,
+            'url' => route('cv.edit', $this->cv->id),
         ];
     }
 
     public function toWebPush(object $notifiable, mixed $subscription): WebPushMessage
     {
         return WebPushMessage::create()
-            ->title('CV Evaluation Ready')
-            ->body("Your CV evaluation is ready! Score: {$this->evaluation->overall_score}/100")
-            ->action('View', 'view', route('cv.evaluator'));
+            ->title('CV Import Complete')
+            ->body("\"{$this->cv->title}\" has been imported and parsed successfully.")
+            ->action('Edit CV', 'edit', route('cv.edit', $this->cv->id));
     }
 }

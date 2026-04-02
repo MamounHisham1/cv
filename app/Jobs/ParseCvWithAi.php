@@ -103,6 +103,7 @@ class ParseCvWithAi implements ShouldQueue
 
             $user = $cv->user;
             if ($user) {
+                $user->notify(new CvParsedNotification($cv->fresh()));
                 $creditManager = app(CreditManager::class);
                 $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
                 $creditManager->deduct($user, $credits, 'ai_parse', $cv, [

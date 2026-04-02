@@ -43,6 +43,7 @@ class ReferralSignedUpNotification extends Notification
         return [
             'referred_user_name' => $this->referredUser->name,
             'referred_user_id' => $this->referredUser->id,
+            'url' => route('referrals'),
         ];
     }
 

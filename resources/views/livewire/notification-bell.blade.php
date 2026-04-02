@@ -1,4 +1,4 @@
-<div wire:poll.30s="loadNotifications" class="relative" x-data="{ open: false }" @click.outside="open = false">
+<div wire:poll.keep-alive="loadData" class="relative" x-data="{ open: false }" @click.outside="open = false">
     <button
         type="button"
         @click="open = !open"

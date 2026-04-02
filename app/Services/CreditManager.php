@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CreditBalance;
 use App\Models\CreditTransaction;
 use App\Models\User;
+use App\Notifications\CreditsGrantedNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Ai\Responses\Data\Usage;
@@ -32,12 +33,20 @@ class CreditManager
 
             $balance->increment('balance', $credits);
 
-            return CreditTransaction::create([
+            $transaction = CreditTransaction::create([
                 'user_id' => $user->id,
                 'amount' => $credits,
                 'type' => $type,
                 'metadata' => ! empty($metadata) ? $metadata : null,
             ]);
+
+            if ($type === 'admin_grant' || $type === 'admin_adjustment') {
+                $newBalance = $balance->fresh()->balance;
+                $reason = $metadata['reason'] ?? 'Admin action';
+                $user->notify(new CreditsGrantedNotification($credits, $reason, $newBalance));
+            }
+
+            return $transaction;
         });
     }
 
