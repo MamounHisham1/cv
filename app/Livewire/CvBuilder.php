@@ -300,10 +300,7 @@ class CvBuilder extends Component
         if ($this->cv->title === 'Import failed') {
             $this->importStatus = 'failed';
         } elseif ($this->cv->title !== 'Importing...') {
-            $this->importStatus = 'completed';
-            $this->loadCvData();
-            $this->dispatch('cv-updated', cvId: $this->cv->id);
-            $this->dispatch('credits-updated');
+            $this->redirect(route('cv.edit', $this->cv));
         }
     }
 
