@@ -10,6 +10,7 @@ use App\Services\CreditManager;
 use App\Services\EvaluationVectorStore;
 use App\Services\ResumeVectorStore;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 
@@ -29,17 +30,28 @@ class ProcessCvEvaluation implements ShouldQueue
         public ?string $filename,
         public string $inputMode,
         public ?int $cvId = null,
+        public ?int $evaluationId = null,
     ) {}
 
     public function handle(): void
     {
-        $evaluation = CvEvaluation::create([
-            'user_id' => $this->userId,
-            'cv_id' => $this->cvId,
-            'filename' => $this->filename,
-            'status' => 'processing',
-            'cv_text' => $this->cvText,
-        ]);
+        if ($this->evaluationId) {
+            $evaluation = CvEvaluation::find($this->evaluationId);
+            if (! $evaluation) {
+                Log::error('ProcessCvEvaluation: Evaluation not found', ['evaluation_id' => $this->evaluationId]);
+
+                return;
+            }
+            $evaluation->update(['status' => 'processing']);
+        } else {
+            $evaluation = CvEvaluation::create([
+                'user_id' => $this->userId,
+                'cv_id' => $this->cvId,
+                'filename' => $this->filename,
+                'status' => 'processing',
+                'cv_text' => $this->cvText,
+            ]);
+        }
 
         try {
             $ragContext = $this->gatherRagContext($this->cvText);
@@ -206,17 +218,35 @@ class ProcessCvEvaluation implements ShouldQueue
             if ($user) {
                 $creditManager = app(CreditManager::class);
                 $credits = $creditManager->calculateFromUsage($response->usage, 'ai_evaluation');
-                $creditManager->deduct(
-                    $user,
-                    $credits,
-                    'ai_evaluation',
-                    $evaluation,
-                    [
-                        'prompt_tokens' => $response->usage->promptTokens,
-                        'completion_tokens' => $response->usage->completionTokens,
-                        'model' => 'mistral-large-3',
-                    ]
-                );
+
+                // Retry deduction with backoff to handle SQLite locking
+                $attempt = 0;
+                $maxAttempts = 3;
+                $deducted = false;
+
+                while ($attempt < $maxAttempts && ! $deducted) {
+                    try {
+                        $creditManager->deduct(
+                            $user,
+                            $credits,
+                            'ai_evaluation',
+                            $evaluation,
+                            [
+                                'prompt_tokens' => $response->usage->promptTokens,
+                                'completion_tokens' => $response->usage->completionTokens,
+                                'model' => 'mistral-large-3',
+                            ]
+                        );
+                        $deducted = true;
+                    } catch (QueryException $e) {
+                        $attempt++;
+                        if (str_contains($e->getMessage(), 'database is locked') && $attempt < $maxAttempts) {
+                            usleep(100000 * $attempt); // 100ms, 200ms, 300ms backoff
+                        } else {
+                            throw $e;
+                        }
+                    }
+                }
             }
 
             try {

@@ -76,6 +76,7 @@ class CvEvaluator extends Component
                 'criteria' => $latestEvaluation->criteria,
                 'top_strengths' => $latestEvaluation->top_strengths ?? [],
                 'critical_improvements' => $latestEvaluation->critical_improvements ?? [],
+                'cv_id' => $latestEvaluation->cv_id,
             ];
             $this->evaluationState = 'complete';
         } elseif ($latestEvaluation && ($latestEvaluation->isPending() || $latestEvaluation->isProcessing())) {
@@ -166,6 +167,7 @@ class CvEvaluator extends Component
             $this->cvText,
             $filename,
             $this->inputMode,
+            evaluationId: $evaluation->id,
         );
 
         $this->refreshEvaluations();
@@ -195,6 +197,36 @@ class CvEvaluator extends Component
             return;
         }
 
+        $existing = CvEvaluation::where('user_id', auth()->id())
+            ->where('cv_id', $cv->id)
+            ->where('status', CvEvaluation::STATUS_PENDING)
+            ->latest()
+            ->first();
+
+        if ($existing) {
+            $this->pendingEvaluationId = $existing->id;
+            $this->evaluationState = 'processing';
+            $this->shouldPoll = true;
+            $this->refreshEvaluations();
+
+            return;
+        }
+
+        $processing = CvEvaluation::where('user_id', auth()->id())
+            ->where('cv_id', $cv->id)
+            ->where('status', 'processing')
+            ->latest()
+            ->first();
+
+        if ($processing) {
+            $this->pendingEvaluationId = $processing->id;
+            $this->evaluationState = 'processing';
+            $this->shouldPoll = true;
+            $this->refreshEvaluations();
+
+            return;
+        }
+
         $filename = $cv->title.'.cv';
 
         $evaluation = CvEvaluation::create([
@@ -215,6 +247,7 @@ class CvEvaluator extends Component
             $filename,
             'builder',
             $cv->id,
+            evaluationId: $evaluation->id,
         );
 
         $this->refreshEvaluations();
@@ -246,6 +279,7 @@ class CvEvaluator extends Component
                 'criteria' => $evaluation->criteria,
                 'top_strengths' => $evaluation->top_strengths ?? [],
                 'critical_improvements' => $evaluation->critical_improvements ?? [],
+                'cv_id' => $evaluation->cv_id,
             ];
             $this->refreshEvaluations();
         } elseif ($evaluation->isFailed()) {

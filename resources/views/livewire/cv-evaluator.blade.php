@@ -176,9 +176,15 @@
                         <button wire:click="restart" class="{{ $ghostBtn }}">
                             <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Evaluate Again
                         </button>
-                        <a href="{{ route('cv.builder') }}" wire:navigate class="{{ $primaryBtn }}">
-                            <x-ui::icon name="pencil" class="h-4 w-4" /> Build CV
-                        </a>
+                        @if($result['cv_id'] ?? null)
+                            <a href="{{ route('cv.edit', $result['cv_id']) }}" wire:navigate class="{{ $primaryBtn }}">
+                                <x-ui::icon name="pencil" class="h-4 w-4" /> Edit CV
+                            </a>
+                        @else
+                            <a href="{{ route('cv.builder') }}" wire:navigate class="{{ $primaryBtn }}">
+                                <x-ui::icon name="plus" class="h-4 w-4" /> Build CV
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>

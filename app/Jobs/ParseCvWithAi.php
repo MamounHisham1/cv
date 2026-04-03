@@ -10,9 +10,11 @@ use App\Models\CvExperience;
 use App\Models\CvLanguage;
 use App\Models\CvProject;
 use App\Models\CvSkill;
+use App\Notifications\CvParsedNotification;
 use App\Services\CreditManager;
 use App\Services\CvTextExtractor;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -106,10 +108,28 @@ class ParseCvWithAi implements ShouldQueue
                 $user->notify(new CvParsedNotification($cv->fresh()));
                 $creditManager = app(CreditManager::class);
                 $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
-                $creditManager->deduct($user, $credits, 'ai_parse', $cv, [
-                    'prompt_tokens' => $response->usage->promptTokens,
-                    'completion_tokens' => $response->usage->completionTokens,
-                ]);
+
+                // Retry deduction with backoff to handle SQLite locking
+                $attempt = 0;
+                $maxAttempts = 3;
+                $deducted = false;
+
+                while ($attempt < $maxAttempts && ! $deducted) {
+                    try {
+                        $creditManager->deduct($user, $credits, 'ai_parse', $cv, [
+                            'prompt_tokens' => $response->usage->promptTokens,
+                            'completion_tokens' => $response->usage->completionTokens,
+                        ]);
+                        $deducted = true;
+                    } catch (QueryException $e) {
+                        $attempt++;
+                        if (str_contains($e->getMessage(), 'database is locked') && $attempt < $maxAttempts) {
+                            usleep(100000 * $attempt);
+                        } else {
+                            throw $e;
+                        }
+                    }
+                }
             }
         } catch (\Throwable $e) {
             Log::error('ParseCvWithAi: Import failed', [
