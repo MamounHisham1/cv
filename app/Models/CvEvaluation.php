@@ -107,8 +107,12 @@ class CvEvaluation extends Model
      */
     public function getDisplayNameAttribute(): string
     {
-        // If linked to a CV, use its title
+        // If linked to a CV, use its title (unless it indicates a failure)
         if ($this->cv && $this->cv->title) {
+            if (stripos($this->cv->title, 'import failed') !== false || stripos($this->cv->title, 'failed import') !== false) {
+                return 'Failed Import';
+            }
+
             return $this->cv->title;
         }
 
