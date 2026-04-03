@@ -114,6 +114,11 @@ class CvEvaluation extends Model
 
         // If we have a filename, clean it up
         if ($this->filename) {
+            // Check for failed import before cleaning
+            if (stripos($this->filename, 'import failed') !== false) {
+                return 'Failed Import';
+            }
+
             // Remove file extension
             $name = pathinfo($this->filename, PATHINFO_FILENAME);
 
@@ -122,11 +127,6 @@ class CvEvaluation extends Model
 
             // Convert to title case
             $name = ucwords(strtolower($name));
-
-            // If it looks like a failed import, indicate that
-            if (stripos($name, 'import failed') !== false) {
-                return 'Failed Import';
-            }
 
             return $name ?: 'CV Evaluation';
         }
