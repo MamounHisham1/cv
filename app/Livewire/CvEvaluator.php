@@ -61,6 +61,48 @@ class CvEvaluator extends Component
 
         if ($cv && $cv->exists) {
             $this->authorize('update', $cv);
+
+            // Check if there's already a completed evaluation for this CV
+            $completedEvaluation = CvEvaluation::where('user_id', auth()->id())
+                ->where('cv_id', $cv->id)
+                ->where('status', CvEvaluation::STATUS_COMPLETED)
+                ->latest()
+                ->first();
+
+            if ($completedEvaluation) {
+                // Show the existing completed evaluation
+                $this->result = [
+                    'overall_score' => $completedEvaluation->overall_score,
+                    'grade' => $completedEvaluation->grade,
+                    'summary' => $completedEvaluation->summary,
+                    'criteria' => $completedEvaluation->criteria,
+                    'top_strengths' => $completedEvaluation->top_strengths ?? [],
+                    'critical_improvements' => $completedEvaluation->critical_improvements ?? [],
+                    'cv_id' => $completedEvaluation->cv_id,
+                ];
+                $this->evaluationState = 'complete';
+                $this->refreshEvaluations();
+
+                return;
+            }
+
+            // Check for pending/processing evaluations
+            $pendingEvaluation = CvEvaluation::where('user_id', auth()->id())
+                ->where('cv_id', $cv->id)
+                ->whereIn('status', [CvEvaluation::STATUS_PENDING, CvEvaluation::STATUS_PROCESSING])
+                ->latest()
+                ->first();
+
+            if ($pendingEvaluation) {
+                $this->pendingEvaluationId = $pendingEvaluation->id;
+                $this->evaluationState = 'processing';
+                $this->shouldPoll = true;
+                $this->refreshEvaluations();
+
+                return;
+            }
+
+            // No existing evaluation, start a new one
             $this->evaluateFromCv($cv);
 
             return;
