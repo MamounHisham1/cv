@@ -163,31 +163,36 @@
         @if($evaluationState === 'complete' && $result)
             {{-- Score hero --}}
             <div class="{{ $glassCard }} mb-6">
-                <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+                <div class="flex flex-col gap-6 sm:flex-row sm:items-start">
                     <div class="flex h-28 w-28 shrink-0 flex-col items-center justify-center rounded-full border-4 border-emerald-400/30 bg-emerald-500/10 shadow-xl shadow-emerald-500/20">
                         <span class="text-4xl font-black {{ $this->gradeColour($result['grade'] ?? 'F') }}">{{ $result['grade'] ?? '—' }}</span>
                         <span class="text-xs font-semibold text-zinc-400">{{ $result['overall_score'] ?? 0 }}/100</span>
                     </div>
-                    <div class="flex-1 text-center sm:text-left">
+                    <div class="flex-1 min-w-0">
                         <h2 class="mb-2 text-2xl font-bold text-white">Your CV Score</h2>
                         <p class="leading-relaxed text-zinc-400">{{ $result['summary'] ?? '' }}</p>
-                    </div>
-                    <div class="flex gap-3 shrink-0">
-                        @if($result['cv_id'] ?? null)
-                            <button wire:click="reevaluate({{ $result['cv_id'] }})" class="{{ $ghostBtn }}">
-                                <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Re-evaluate
-                            </button>
-                            <a href="{{ route('cv.edit', $result['cv_id']) }}" wire:navigate class="{{ $primaryBtn }}">
-                                <x-ui::icon name="pencil" class="h-4 w-4" /> Edit CV
-                            </a>
-                        @else
-                            <button wire:click="restart" class="{{ $ghostBtn }}">
-                                <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Evaluate Again
-                            </button>
-                            <a href="{{ route('cv.builder') }}" wire:navigate class="{{ $primaryBtn }}">
-                                <x-ui::icon name="plus" class="h-4 w-4" /> Build CV
-                            </a>
-                        @endif
+                        
+                        {{-- Action buttons --}}
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            @if($result['cv_id'] ?? null)
+                                <button wire:click="restart" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                                    <x-ui::icon name="upload" class="h-3.5 w-3.5" /> New CV
+                                </button>
+                                <button wire:click="reevaluate({{ $result['cv_id'] }})" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" /> Re-evaluate
+                                </button>
+                                <a href="{{ route('cv.edit', $result['cv_id']) }}" wire:navigate class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500">
+                                    <x-ui::icon name="pencil" class="h-3.5 w-3.5" /> Edit CV
+                                </a>
+                            @else
+                                <button wire:click="restart" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" /> Evaluate Again
+                                </button>
+                                <a href="{{ route('cv.builder') }}" wire:navigate class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500">
+                                    <x-ui::icon name="plus" class="h-3.5 w-3.5" /> Build CV
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
