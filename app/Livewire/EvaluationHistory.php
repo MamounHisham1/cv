@@ -83,7 +83,7 @@ class EvaluationHistory extends Component
             $this->selectedEvaluation = null;
         }
 
-        $this->compareSelections = array_values(array_filter($this->compareSelections, fn ($v) => $v !== $id));
+        $this->compareSelections = array_values(array_filter($this->compareSelections, fn($v) => $v !== $id));
 
         if (count($this->compareSelections) < 2) {
             $this->comparisonResult = null;
@@ -100,7 +100,7 @@ class EvaluationHistory extends Component
     public function toggleSelection(int $id): void
     {
         if (in_array($id, $this->compareSelections)) {
-            $this->compareSelections = array_values(array_filter($this->compareSelections, fn ($v) => $v !== $id));
+            $this->compareSelections = array_values(array_filter($this->compareSelections, fn($v) => $v !== $id));
             $this->comparisonResult = null;
         } elseif (count($this->compareSelections) < 2) {
             $this->compareSelections[] = $id;
@@ -134,10 +134,16 @@ class EvaluationHistory extends Component
         }
 
         $allCriteriaKeys = [
-            'contact_information', 'professional_summary', 'work_experience',
-            'skills_section', 'education', 'ats_compatibility',
-            'formatting_readability', 'achievements_impact',
-            'keyword_optimisation', 'overall_completeness',
+            'contact_information',
+            'professional_summary',
+            'work_experience',
+            'skills_section',
+            'education',
+            'ats_compatibility',
+            'formatting_readability',
+            'achievements_impact',
+            'keyword_optimisation',
+            'overall_completeness',
         ];
 
         $criteriaDiffs = [];
@@ -223,7 +229,7 @@ class EvaluationHistory extends Component
         }
 
         if ($this->search) {
-            $query->where('filename', 'like', '%'.$this->search.'%');
+            $query->where('filename', 'like', '%' . $this->search . '%');
         }
 
         match ($this->sortBy) {

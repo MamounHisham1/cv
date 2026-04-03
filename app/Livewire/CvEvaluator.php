@@ -285,7 +285,7 @@ class CvEvaluator extends Component
             return;
         }
 
-        $filename = $cv->title.'.cv';
+        $filename = $cv->title . '.cv';
 
         $evaluation = CvEvaluation::create([
             'user_id' => auth()->id(),
@@ -434,10 +434,16 @@ class CvEvaluator extends Component
         }
 
         $allCriteriaKeys = [
-            'contact_information', 'professional_summary', 'work_experience',
-            'skills_section', 'education', 'ats_compatibility',
-            'formatting_readability', 'achievements_impact',
-            'keyword_optimisation', 'overall_completeness',
+            'contact_information',
+            'professional_summary',
+            'work_experience',
+            'skills_section',
+            'education',
+            'ats_compatibility',
+            'formatting_readability',
+            'achievements_impact',
+            'keyword_optimisation',
+            'overall_completeness',
         ];
 
         $criteriaDiffs = [];

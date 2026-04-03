@@ -70,7 +70,7 @@ class ProcessCvEvaluation implements ShouldQueue
                 $rawText = trim((string) $response->text);
                 $decoded = json_decode($rawText, true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new \RuntimeException('AI returned invalid JSON: '.json_last_error_msg());
+                    throw new \RuntimeException('AI returned invalid JSON: ' . json_last_error_msg());
                 }
                 $data = $decoded;
             }
@@ -159,7 +159,7 @@ class ProcessCvEvaluation implements ShouldQueue
                 $topThree = array_slice($sortedCriteria, 0, 3, true);
                 foreach ($topThree as $key => $item) {
                     if ($item['score'] >= 8) {
-                        $strengths[] = ucwords(str_replace('_', ' ', $key)).': '.$item['reason'];
+                        $strengths[] = ucwords(str_replace('_', ' ', $key)) . ': ' . $item['reason'];
                     }
                 }
             }
@@ -170,7 +170,7 @@ class ProcessCvEvaluation implements ShouldQueue
                 $bottomThree = array_slice($sortedCriteria, 0, 3, true);
                 foreach ($bottomThree as $key => $item) {
                     if ($item['score'] <= 7) {
-                        $improvements[] = ucwords(str_replace('_', ' ', $key)).': '.$item['reason'];
+                        $improvements[] = ucwords(str_replace('_', ' ', $key)) . ': ' . $item['reason'];
                     }
                 }
             }
@@ -327,22 +327,22 @@ class ProcessCvEvaluation implements ShouldQueue
         $prompt = '';
 
         if (! empty($ragContext['resumes'])) {
-            $prompt .= '=== REFERENCE RESUME SAMPLES ('.count($ragContext['resumes'])." results from 17,000+ database) ===\n\n";
+            $prompt .= '=== REFERENCE RESUME SAMPLES (' . count($ragContext['resumes']) . " results from 17,000+ database) ===\n\n";
 
             foreach ($ragContext['resumes'] as $i => $resume) {
-                $prompt .= '--- Sample '.($i + 1)." (Role: {$resume['role']}, Source: {$resume['source']}, Relevance: {$resume['score']}) ---\n";
-                $prompt .= mb_substr($resume['content'], 0, 2000)."\n\n";
+                $prompt .= '--- Sample ' . ($i + 1) . " (Role: {$resume['role']}, Source: {$resume['source']}, Relevance: {$resume['score']}) ---\n";
+                $prompt .= mb_substr($resume['content'], 0, 2000) . "\n\n";
             }
 
             $prompt .= "Use these real-world resume samples as benchmarks. Compare the CV against the strongest samples found.\n\n";
         }
 
         if (! empty($ragContext['evaluations'])) {
-            $prompt .= '=== PAST CV EVALUATIONS ('.count($ragContext['evaluations'])." results) ===\n\n";
+            $prompt .= '=== PAST CV EVALUATIONS (' . count($ragContext['evaluations']) . " results) ===\n\n";
 
             foreach ($ragContext['evaluations'] as $i => $eval) {
-                $prompt .= '--- Evaluation '.($i + 1)." (Grade: {$eval['grade']}, Overall Score: {$eval['overall_score']}/100, Similarity: {$eval['score']}) ---\n";
-                $prompt .= mb_substr($eval['content'], 0, 2000)."\n\n";
+                $prompt .= '--- Evaluation ' . ($i + 1) . " (Grade: {$eval['grade']}, Overall Score: {$eval['overall_score']}/100, Similarity: {$eval['score']}) ---\n";
+                $prompt .= mb_substr($eval['content'], 0, 2000) . "\n\n";
             }
 
             $prompt .= "Use these past evaluations as benchmarks. Pay attention to common weaknesses found in similar CVs and strengths that earned high scores. Adjust your scoring accordingly.\n\n";

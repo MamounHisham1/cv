@@ -171,7 +171,7 @@
                     <div class="flex-1 min-w-0">
                         <h2 class="mb-2 text-2xl font-bold text-white">Your CV Score</h2>
                         <p class="leading-relaxed text-zinc-400">{{ $result['summary'] ?? '' }}</p>
-                        
+
                         {{-- Action buttons --}}
                         <div class="mt-4 flex flex-wrap gap-2">
                             @if($result['cv_id'] ?? null)
