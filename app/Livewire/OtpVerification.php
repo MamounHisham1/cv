@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Mail\OtpMail;
 use App\Models\User;
 use App\Services\ReferralService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -39,15 +40,11 @@ class OtpVerification extends Component
         // Get OTP cooldown from session
         $otpSentAt = Session::get('otp_sent_at');
         if ($otpSentAt) {
-            $secondsSinceSent = now()->diffInSeconds($otpSentAt);
-            if ($secondsSinceSent < 60) {
+            $sentAt = Carbon::parse($otpSentAt);
+            $secondsSinceSent = $sentAt->diffInSeconds(now(), false);
+            if ($secondsSinceSent >= 0 && $secondsSinceSent < 60) {
                 $this->resendCooldown = 60 - (int) $secondsSinceSent;
             }
-        }
-
-        // Only send OTP if we don't have a valid one already
-        if ($this->resendCooldown === 0 && ! Session::get('otp_code')) {
-            $this->sendOtp();
         }
     }
 
@@ -137,6 +134,12 @@ class OtpVerification extends Component
         if ($this->resendCooldown > 0) {
             $this->resendCooldown--;
         }
+    }
+
+    public function cancel(): void
+    {
+        Session::forget(['pending_registration', 'otp_code', 'otp_expires_at', 'otp_sent_at']);
+        $this->redirectRoute('login');
     }
 
     public function render()

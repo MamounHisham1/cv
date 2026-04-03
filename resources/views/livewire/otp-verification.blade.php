@@ -132,12 +132,11 @@
 
     {{-- Back to login --}}
     <div class="text-center">
-        <a
-            href="{{ route('logout') }}"
-            wire:navigate
+        <button
+            wire:click="cancel"
             class="text-sm text-zinc-500 hover:text-zinc-300"
         >
             ← Back to login
-        </a>
+        </button>
     </div>
 </div>
