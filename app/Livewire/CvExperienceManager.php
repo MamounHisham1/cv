@@ -45,7 +45,7 @@ class CvExperienceManager extends Component
     }
 
     #[On('cv-saved')]
-    public function onCvSaved(int $cvId): void
+    public function onCvSaved($cvId): void
     {
         if ($this->cv && $this->cv->id === $cvId) {
             $this->cv->refresh();

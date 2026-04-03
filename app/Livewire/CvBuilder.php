@@ -318,11 +318,15 @@ class CvBuilder extends Component
     }
 
     #[On('cv-updated')]
-    public function onCvUpdated(int $cvId): void
+    public function onCvUpdated($cvId = null): void
     {
-        if ($this->cv && $this->cv->id === $cvId) {
-            $this->cv->refresh();
-            $this->loadCvData();
+        // If cvId is provided, only refresh if it matches our CV
+        // If no cvId is provided, always refresh (event from sibling component)
+        if ($cvId === null || ($this->cv && $this->cv->id === $cvId)) {
+            if ($this->cv && $this->cv->exists) {
+                $this->cv->refresh();
+                $this->loadCvData();
+            }
         }
     }
 

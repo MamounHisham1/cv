@@ -71,7 +71,7 @@ class CvAiChat extends Component
     }
 
     #[On('cv-saved')]
-    public function onCvSaved(int $cvId): void
+    public function onCvSaved($cvId): void
     {
         $this->cv = Cv::find($cvId);
     }
