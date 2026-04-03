@@ -114,9 +114,9 @@
             </form>
         @endif
 
-        <div wire:sort="handleSort" class="space-y-0">
+        <div class="space-y-0">
             @forelse($experiences as $experience)
-                <div wire:sort:item="{{ $experience['id'] }}" class="timeline-item group">
+                <div class="timeline-item group">
                     <div class="timeline-dot">
                         <x-ui::icon name="briefcase" class="w-3 h-3 text-white" />
                     </div>
@@ -180,6 +180,12 @@
                             </div>
 
                             <div class="flex lg:flex-col gap-2 lg:shrink-0">
+                                <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $experience['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
+                                    <span class="sr-only">Move Up</span>
+                                </x-ui::button>
+                                <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $experience['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
+                                    <span class="sr-only">Move Down</span>
+                                </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="editExperience({{ $experience['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
                                     <span class="sr-only lg:not-sr-only">Edit</span>
                                 </x-ui::button>

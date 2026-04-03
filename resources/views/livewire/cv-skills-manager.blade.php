@@ -185,7 +185,7 @@
             </div>
         </div>
 
-        <div class="space-y-6" wire:sort="handleSort">
+        <div class="space-y-6">
             @foreach($allCategoryKeys as $categoryKey)
                 @if(isset($skills[$categoryKey]) && count($skills[$categoryKey]) > 0)
                     <div>
@@ -196,7 +196,7 @@
                         </h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             @foreach($skills[$categoryKey] as $skill)
-                                <div class="group relative rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10" wire:sort:item="{{ $skill['id'] }}">
+                                <div class="group relative rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10">
                                     <div class="flex items-start justify-between gap-3">
                                         <div class="flex-1 min-w-0">
                                             <h5 class="truncate font-semibold text-white">
@@ -213,7 +213,13 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <div class="flex items-center gap-1 transition-opacity duration-200">
+                                            <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $skill['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} shrink-0">
+                                                <span class="sr-only">Move Up</span>
+                                            </x-ui::button>
+                                            <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $skill['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} shrink-0">
+                                                <span class="sr-only">Move Down</span>
+                                            </x-ui::button>
                                             <x-ui::button variant="ghost" size="sm" wire:click="editSkill({{ $skill['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} shrink-0" />
                                             <x-ui::button variant="ghost" size="sm" wire:click="deleteSkill({{ $skill['id'] }})" wire:confirm="Delete this skill?" icon="trash-2" class="shrink-0 border border-red-400/20 bg-red-500/10 text-red-300 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200" />
                                         </div>

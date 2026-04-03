@@ -127,9 +127,9 @@
             </form>
         @endif
 
-        <div class="space-y-0" wire:sort="handleSort">
+        <div class="space-y-0">
             @forelse($educations as $education)
-                <div class="timeline-item group" wire:sort:item="{{ $education['id'] }}">
+                <div class="timeline-item group">
                     <div class="timeline-dot">
                         <x-ui::icon name="graduation-cap" class="w-3 h-3 text-white" />
                     </div>
@@ -169,6 +169,12 @@
                             </div>
 
                             <div class="flex lg:flex-col gap-2 lg:shrink-0">
+                                <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $education['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
+                                    <span class="sr-only">Move Up</span>
+                                </x-ui::button>
+                                <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $education['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
+                                    <span class="sr-only">Move Down</span>
+                                </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="editEducation({{ $education['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
                                     <span class="sr-only lg:not-sr-only">Edit</span>
                                 </x-ui::button>

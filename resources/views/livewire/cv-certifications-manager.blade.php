@@ -110,9 +110,9 @@
             </form>
         @endif
 
-        <div class="space-y-3" wire:sort="handleSort">
+        <div class="space-y-3">
             @forelse($certifications as $cert)
-                <div class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between" wire:sort:item="{{ $cert['id'] }}">
+                <div class="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-start gap-3">
                         <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
                             <x-ui::icon name="trophy" class="w-5 h-5 text-emerald-300" />
@@ -129,6 +129,12 @@
                         </div>
                     </div>
                     <div class="flex gap-1">
+                        <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $cert['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }}">
+                            <span class="sr-only">Move Up</span>
+                        </x-ui::button>
+                        <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $cert['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }}">
+                            <span class="sr-only">Move Down</span>
+                        </x-ui::button>
                         <x-ui::button
                             wire:click="editCertification({{ $cert['id'] }})"
                             variant="ghost"

@@ -219,12 +219,48 @@ class CvSkillsManager extends Component
         }
         $items = $this->cv->skills()->orderBy('sort_order')->get()->values();
         $items = $items->reject(fn ($i) => $i->id == $id)->values();
-        $items->splice($position, 0, $item);
+        $items->splice($position, 0, [$item]);
         foreach ($items as $index => $i) {
             $i->update(['sort_order' => $index]);
         }
 
         $this->loadSkills();
+    }
+
+    public function moveUp(int $id): void
+    {
+        $item = CvSkill::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+
+        $items = $this->cv->skills()->orderBy('sort_order')->get()->values();
+        $currentIndex = $items->search(fn ($i) => $i->id === $id);
+
+        if ($currentIndex > 0) {
+            $prevItem = $items[$currentIndex - 1];
+            $item->update(['sort_order' => $currentIndex - 1]);
+            $prevItem->update(['sort_order' => $currentIndex]);
+            $this->loadSkills();
+        }
+    }
+
+    public function moveDown(int $id): void
+    {
+        $item = CvSkill::findOrFail($id);
+        if ($item->cv_id !== $this->cv->id) {
+            return;
+        }
+
+        $items = $this->cv->skills()->orderBy('sort_order')->get()->values();
+        $currentIndex = $items->search(fn ($i) => $i->id === $id);
+
+        if ($currentIndex < $items->count() - 1) {
+            $nextItem = $items[$currentIndex + 1];
+            $item->update(['sort_order' => $currentIndex + 1]);
+            $nextItem->update(['sort_order' => $currentIndex]);
+            $this->loadSkills();
+        }
     }
 
     public function quickAddSkill(string $skillName): void
