@@ -348,6 +348,25 @@ class CvEvaluator extends Component
     }
 
     /**
+     * Re-evaluate the current CV (creates a fresh evaluation).
+     */
+    public function reevaluate(?Cv $cv = null): void
+    {
+        // If we have a CV from the route, re-evaluate it
+        if ($cv && $cv->exists) {
+            $this->authorize('update', $cv);
+            $this->result = null;
+            $this->errorMessage = null;
+            $this->evaluateFromCv($cv);
+
+            return;
+        }
+
+        // Otherwise, reset to upload state
+        $this->restart();
+    }
+
+    /**
      * Compute the grade colour for display.
      */
     public function gradeColour(string $grade): string

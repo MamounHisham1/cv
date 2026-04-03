@@ -173,14 +173,17 @@
                         <p class="leading-relaxed text-zinc-400">{{ $result['summary'] ?? '' }}</p>
                     </div>
                     <div class="flex gap-3 shrink-0">
-                        <button wire:click="restart" class="{{ $ghostBtn }}">
-                            <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Evaluate Again
-                        </button>
                         @if($result['cv_id'] ?? null)
+                            <button wire:click="reevaluate({{ $result['cv_id'] }})" class="{{ $ghostBtn }}">
+                                <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Re-evaluate
+                            </button>
                             <a href="{{ route('cv.edit', $result['cv_id']) }}" wire:navigate class="{{ $primaryBtn }}">
                                 <x-ui::icon name="pencil" class="h-4 w-4" /> Edit CV
                             </a>
                         @else
+                            <button wire:click="restart" class="{{ $ghostBtn }}">
+                                <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Evaluate Again
+                            </button>
                             <a href="{{ route('cv.builder') }}" wire:navigate class="{{ $primaryBtn }}">
                                 <x-ui::icon name="plus" class="h-4 w-4" /> Build CV
                             </a>
