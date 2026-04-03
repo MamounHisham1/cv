@@ -22,9 +22,13 @@
                     <!-- Icon -->
                     <tr>
                         <td style="padding: 10px 40px 20px 40px; text-align: center;">
-                            <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #059669 0%, #10b981 100%); display: inline-flex; align-items: center; justify-content: center;">
-                                <span style="font-size: 28px; color: #ffffff;">&#10003;</span>
-                            </div>
+                            <table role="presentation" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #059669 0%, #10b981 100%); text-align: center; vertical-align: middle;">
+                                        <span style="font-size: 28px; color: #ffffff; line-height: 56px;">&#10003;</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
 
