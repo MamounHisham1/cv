@@ -189,6 +189,22 @@ class CvEvaluator extends Component
             return;
         }
 
+        // Check if there's already a pending or processing evaluation for this exact CV text
+        $existingEvaluation = CvEvaluation::where('user_id', auth()->id())
+            ->where('cv_text', $this->cvText)
+            ->whereIn('status', [CvEvaluation::STATUS_PENDING, CvEvaluation::STATUS_PROCESSING])
+            ->latest()
+            ->first();
+
+        if ($existingEvaluation) {
+            $this->pendingEvaluationId = $existingEvaluation->id;
+            $this->evaluationState = 'processing';
+            $this->shouldPoll = true;
+            $this->refreshEvaluations();
+
+            return;
+        }
+
         $filename = $this->inputMode === 'upload'
             ? $this->uploadedFile?->getClientOriginalName()
             : null;
