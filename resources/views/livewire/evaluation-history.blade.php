@@ -114,7 +114,7 @@
                         <span class="text-xl font-black {{ $this->gradeColour($comparisonResult['eval_a']['grade']) }}">{{ $comparisonResult['eval_a']['grade'] }}</span>
                         <span class="text-[10px] text-zinc-400">{{ $comparisonResult['eval_a']['overall_score'] }}</span>
                     </div>
-                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_a']['filename'] ?? 'Pasted' }}</p>
+                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_a']['display_name'] ?? 'Pasted' }}</p>
                 </div>
 
                 <div class="text-center">
@@ -144,7 +144,7 @@
                         <span class="text-xl font-black {{ $this->gradeColour($comparisonResult['eval_b']['grade']) }}">{{ $comparisonResult['eval_b']['grade'] }}</span>
                         <span class="text-[10px] text-zinc-400">{{ $comparisonResult['eval_b']['overall_score'] }}</span>
                     </div>
-                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_b']['filename'] ?? 'Pasted' }}</p>
+                    <p class="mt-1 truncate text-xs text-zinc-400">{{ $comparisonResult['eval_b']['display_name'] ?? 'Pasted' }}</p>
                 </div>
             </div>
 
@@ -242,7 +242,7 @@
                     {{-- Info --}}
                     <div class="flex-1 min-w-0">
                         <p class="truncate text-sm font-medium text-zinc-200">
-                            {{ $evaluation->filename ?? 'Pasted Text' }}
+                            {{ $evaluation->display_name }}
                         </p>
                         <p class="text-xs text-zinc-500">
                             {{ $evaluation->created_at->format('M j, Y \a\t g:i A') }}
@@ -336,7 +336,7 @@
                             <span class="text-xs font-semibold text-zinc-400">{{ $detailEvaluation->overall_score ?? 0 }}/100</span>
                         </div>
                         <div class="flex-1 text-center sm:text-left">
-                            <h3 class="mb-1 text-xl font-bold text-white">{{ $detailEvaluation->filename ?? 'Pasted Text' }}</h3>
+                            <h3 class="mb-1 text-xl font-bold text-white">{{ $detailEvaluation->display_name }}</h3>
                             <p class="text-sm text-zinc-400">{{ $detailEvaluation->summary ?? '' }}</p>
                         </div>
                     </div>

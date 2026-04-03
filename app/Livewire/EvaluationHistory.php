@@ -206,7 +206,7 @@ class EvaluationHistory extends Component
 
     public function render()
     {
-        $query = CvEvaluation::where('user_id', Auth::id());
+        $query = CvEvaluation::where('user_id', Auth::id())->with('cv');
 
         if ($this->statusFilter !== 'all') {
             match ($this->statusFilter) {

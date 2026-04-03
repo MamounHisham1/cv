@@ -41,6 +41,10 @@ class CvEvaluation extends Model
         'cv_text',
     ];
 
+    protected $appends = [
+        'display_name',
+    ];
+
     protected $casts = [
         'criteria' => 'array',
         'top_strengths' => 'array',
@@ -95,5 +99,38 @@ class CvEvaluation extends Model
     public function cv(): BelongsTo
     {
         return $this->belongsTo(Cv::class);
+    }
+
+    /**
+     * Get a user-friendly display name for the evaluation.
+     * Prioritizes the CV title, then cleans up the filename.
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        // If linked to a CV, use its title
+        if ($this->cv && $this->cv->title) {
+            return $this->cv->title;
+        }
+
+        // If we have a filename, clean it up
+        if ($this->filename) {
+            // Remove file extension
+            $name = pathinfo($this->filename, PATHINFO_FILENAME);
+
+            // Replace underscores/hyphens with spaces
+            $name = str_replace(['_', '-'], ' ', $name);
+
+            // Convert to title case
+            $name = ucwords(strtolower($name));
+
+            // If it looks like a failed import, indicate that
+            if (stripos($name, 'import failed') !== false) {
+                return 'Failed Import';
+            }
+
+            return $name ?: 'CV Evaluation';
+        }
+
+        return 'Pasted Text';
     }
 }
