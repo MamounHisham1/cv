@@ -501,48 +501,60 @@
                     <p class="text-lg text-zinc-400">Real examples of how SeratyAI transforms a generic CV into an interview-worthy one.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {{-- Before --}}
-                    <div class="relative flex">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
+
+                    {{-- ===== BEFORE ===== --}}
+                    <div class="relative">
                         <div class="absolute -top-3 left-6 z-10">
                             <span class="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-red-500/30">Before</span>
                         </div>
-                        <div class="relative bg-red-950/30 rounded-2xl border border-red-500/20 overflow-hidden flex flex-col w-full">
-                            <div class="p-8 space-y-5 flex-1">
-                                {{-- Contact --}}
-                                <div class="flex items-center gap-3 pb-4 border-b border-red-500/10">
-                                    <div class="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
-                                        <x-ui::icon name="user" size="sm" class="text-red-400/50" />
+                        <div class="relative bg-red-950/30 rounded-2xl border border-red-500/20 overflow-hidden">
+                            <div class="p-7 space-y-6">
+                                {{-- Header --}}
+                                <div class="flex items-center gap-4 pb-5 border-b border-red-500/10">
+                                    <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/15 flex items-center justify-center shrink-0">
+                                        <span class="text-sm font-bold text-red-400/50">JD</span>
                                     </div>
-                                    <div>
-                                        <div class="h-2.5 w-24 rounded-full bg-red-500/10 mb-1.5"></div>
-                                        <div class="text-xs text-red-400/40">john.doe@email.com</div>
+                                    <div class="min-w-0">
+                                        <h3 class="text-base font-bold text-red-300/60">John Doe</h3>
+                                        <p class="text-xs text-red-400/40 mt-0.5">Software Developer</p>
+                                        <div class="flex items-center gap-1.5 mt-2">
+                                            <svg class="w-3 h-3 text-red-500/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                            <span class="text-[11px] text-red-400/35">john.doe@email.com</span>
+                                        </div>
                                     </div>
                                 </div>
+
                                 {{-- Summary --}}
                                 <div>
-                                    <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-xs font-bold text-red-400/60 uppercase tracking-wider">Summary</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Summary</span>
                                     </div>
-                                    <p class="text-sm text-red-300/40 leading-relaxed italic">"Hardworking professional looking for new opportunities. I have experience in many things and am a team player."</p>
+                                    <p class="text-sm text-red-300/40 leading-relaxed italic pl-3.5">"Hardworking professional looking for new opportunities. I have experience in many things and am a team player."</p>
                                 </div>
+
                                 {{-- Experience --}}
                                 <div>
-                                    <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-xs font-bold text-red-400/60 uppercase tracking-wider">Experience</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Experience</span>
                                     </div>
-                                    <div class="bg-red-950/40 rounded-lg p-3 border border-red-500/10">
-                                        <div class="text-sm font-medium text-red-300/50">Software Developer — Some Company</div>
-                                        <p class="text-xs text-red-300/30 mt-1 italic">"Worked on various projects and helped the team with coding tasks."</p>
+                                    <div class="relative pl-5 border-l-2 border-red-500/10 ml-0.5">
+                                        <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-red-500/20 border border-red-500/30"></div>
+                                        <div>
+                                            <h5 class="text-sm font-semibold text-red-300/50">Software Developer</h5>
+                                            <p class="text-xs text-red-400/35 mt-0.5">Some Company</p>
+                                            <p class="text-[12px] text-red-300/30 mt-2 leading-relaxed italic">"Worked on various projects and helped the team with coding tasks."</p>
+                                        </div>
                                     </div>
                                 </div>
+
                                 {{-- Skills --}}
                                 <div>
                                     <div class="flex items-center gap-2 mb-3">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-xs font-bold text-red-400/60 uppercase tracking-wider">Skills</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Skills</span>
                                     </div>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach(['Microsoft Office', 'Communication', 'Teamwork'] as $skill)
@@ -551,50 +563,97 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- ATS Footer --}}
+                            <div class="px-7 py-4 bg-red-950/30 border-t border-red-500/10">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+                                            <span class="text-xs font-black text-red-400/50">D</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] text-red-400/40 font-medium">ATS Score</span>
+                                            <div class="w-20 h-1 bg-red-500/10 rounded-full mt-1 overflow-hidden">
+                                                <div class="h-full w-[23%] bg-red-500/30 rounded-full"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="text-[10px] font-bold text-red-400/40 uppercase tracking-wider bg-red-500/5 px-2.5 py-1 rounded-full border border-red-500/10">Likely Rejected</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    {{-- After --}}
-                    <div class="relative flex">
+                    {{-- ===== AFTER ===== --}}
+                    <div class="relative">
                         <div class="absolute -top-3 left-6 z-10">
                             <span class="bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">After — SeratyAI</span>
                         </div>
-                        <div class="relative bg-emerald-950/20 rounded-2xl border border-emerald-500/30 overflow-hidden shadow-lg shadow-emerald-500/5 flex flex-col w-full">
-                            <div class="p-8 space-y-5 flex-1">
-                                {{-- Contact --}}
-                                <div class="flex items-center gap-3 pb-4 border-b border-emerald-500/15">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-500/15 flex items-center justify-center">
-                                        <x-ui::icon name="user" size="sm" class="text-emerald-400" />
+                        <div class="relative bg-emerald-950/20 rounded-2xl border border-emerald-500/30 overflow-hidden shadow-lg shadow-emerald-500/5">
+                            <div class="p-7 space-y-6">
+                                {{-- Header --}}
+                                <div class="flex items-center gap-4 pb-5 border-b border-emerald-500/15">
+                                    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center shrink-0">
+                                        <span class="text-sm font-bold text-emerald-400">JD</span>
                                     </div>
-                                    <div>
-                                        <div class="h-2.5 w-24 rounded-full bg-emerald-500/30 mb-1.5"></div>
-                                        <div class="text-xs text-emerald-400/70">john.doe@email.com &middot; linkedin.com/in/johndoe</div>
+                                    <div class="min-w-0">
+                                        <h3 class="text-base font-bold text-white">John Doe</h3>
+                                        <p class="text-xs text-emerald-400/80 mt-0.5 font-medium">Senior Full-Stack Developer</p>
+                                        <div class="flex items-center gap-3 mt-2">
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-300/70">
+                                                <svg class="w-3 h-3 text-emerald-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                                john.doe@email.com
+                                            </span>
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-300/70">
+                                                <svg class="w-3 h-3 text-emerald-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                                linkedin.com/in/johndoe
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+
                                 {{-- Summary --}}
                                 <div>
-                                    <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Summary</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Summary</span>
                                     </div>
-                                    <p class="text-sm text-emerald-100/80 leading-relaxed">"Results-driven Full-Stack Developer with 4+ years of experience building scalable web applications. Proven track record of reducing deployment time by 40% and mentoring junior developers."</p>
+                                    <p class="text-sm text-zinc-300/90 leading-relaxed pl-3.5">"Results-driven Full-Stack Developer with 4+ years of experience building scalable web applications. Proven track record of reducing deployment time by 40% and mentoring junior developers."</p>
                                 </div>
+
                                 {{-- Experience --}}
                                 <div>
-                                    <div class="flex items-center gap-2 mb-2">
+                                    <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Experience</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Experience</span>
                                     </div>
-                                    <div class="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/20">
-                                        <div class="text-sm font-semibold text-white">Senior Software Developer — TechCorp Inc.</div>
-                                        <p class="text-xs text-emerald-100/70 mt-1">"Architected microservices serving 50K+ daily users, reducing API latency by 35%. Led a team of 5 engineers through 3 successful product launches."</p>
+                                    <div class="relative pl-5 border-l-2 border-emerald-500/30 ml-0.5">
+                                        <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-emerald-400 border border-emerald-500/50 shadow shadow-emerald-400/30"></div>
+                                        <div>
+                                            <div class="flex items-start justify-between gap-2">
+                                                <h5 class="text-sm font-semibold text-white">Senior Software Developer</h5>
+                                                <span class="text-[10px] text-emerald-400/60 font-medium shrink-0 mt-0.5">2021 — Present</span>
+                                            </div>
+                                            <p class="text-xs text-emerald-300/70 mt-0.5 font-medium">TechCorp Inc.</p>
+                                            <ul class="mt-2 space-y-1.5">
+                                                <li class="flex gap-2 text-[12px] text-zinc-400/80 leading-relaxed">
+                                                    <span class="text-emerald-400 mt-0.5 shrink-0">&#8226;</span>
+                                                    Architected microservices serving <span class="text-emerald-300 font-medium">50K+ daily users</span>, reducing API latency by 35%.
+                                                </li>
+                                                <li class="flex gap-2 text-[12px] text-zinc-400/80 leading-relaxed">
+                                                    <span class="text-emerald-400 mt-0.5 shrink-0">&#8226;</span>
+                                                    Led a team of <span class="text-emerald-300 font-medium">5 engineers</span> through 3 successful product launches.
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
+
                                 {{-- Skills --}}
                                 <div>
                                     <div class="flex items-center gap-2 mb-3">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Skills</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Skills</span>
                                     </div>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach(['Laravel', 'React', 'AWS', 'Docker', 'PostgreSQL', 'CI/CD'] as $skill)
@@ -603,17 +662,22 @@
                                     </div>
                                 </div>
                             </div>
-                            {{-- ATS Score Footer --}}
-                            <div class="px-8 pb-6">
-                                <div class="flex items-center gap-3 pt-4 border-t border-emerald-500/15">
-                                    <div class="flex items-center gap-2 bg-emerald-500/15 px-3 py-1.5 rounded-full border border-emerald-500/25">
-                                        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-                                        <span class="text-xs font-bold text-emerald-300">ATS Score: 92%</span>
+
+                            {{-- ATS Footer --}}
+                            <div class="px-7 py-4 bg-emerald-950/20 border-t border-emerald-500/15">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center">
+                                            <span class="text-xs font-black text-emerald-400">A</span>
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] text-emerald-400/60 font-medium">ATS Score</span>
+                                            <div class="w-20 h-1 bg-emerald-500/10 rounded-full mt-1 overflow-hidden">
+                                                <div class="h-full w-[92%] bg-emerald-400 rounded-full"></div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center gap-2 bg-blue-500/15 px-3 py-1.5 rounded-full border border-blue-500/25">
-                                        <div class="w-2 h-2 rounded-full bg-blue-400"></div>
-                                        <span class="text-xs font-bold text-blue-300">Grade: A</span>
-                                    </div>
+                                    <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Top Candidate</span>
                                 </div>
                             </div>
                         </div>
@@ -637,9 +701,9 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach([
-                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['30 credits/month', '5 AI builder messages', 'All 5 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
-                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['100 credits/month', '50 AI builder messages', 'All 5 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => true],
-                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['500 credits/month', 'Unlimited AI builder messages', 'All 5 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => true]
+                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['30 credits/month', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
+                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['100 credits/month', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => true],
+                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['500 credits/month', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => true]
                     ] as $plan)
                     <div class="relative group {{ $plan['popular'] ? 'md:-mt-4 md:mb-[-1rem]' : '' }}">
                         @if($plan['popular'])
@@ -701,12 +765,14 @@
 
                 <div class="space-y-3" x-data="{ open: null }">
                     @foreach([
-                        ['id' => 'd4q1', 'q' => 'What is SeratyAI?', 'a' => 'An AI-powered CV builder that creates professional, ATS-optimized resumes with real-time compatibility scoring.'],
-                        ['id' => 'd4q2', 'q' => 'Is my data secure?', 'a' => 'Yes. All data encrypted at rest and in transit. We never sell or share your data. GDPR and SOC 2 compliant.'],
-                        ['id' => 'd4q3', 'q' => 'Is there a free trial?', 'a' => 'Every new account gets a 7-day Pro trial. No credit card required.'],
-                        ['id' => 'd4q4', 'q' => 'Can I cancel anytime?', 'a' => 'Yes. Cancel anytime from settings. No fees.'],
-                        ['id' => 'd4q5', 'q' => 'What export formats?', 'a' => 'High-quality PDF, universally accepted.'],
-                        ['id' => 'd4q6', 'q' => 'Multiple CVs?', 'a' => 'Pro and Enterprise users create unlimited CVs.']
+                        ['id' => 'd4q1', 'q' => 'What is SeratyAI?', 'a' => 'SeratyAI is an AI-powered CV builder that creates professional, ATS-optimized resumes. It includes an AI chat assistant, real-time compatibility scoring, smart CV parsing, and 10 beautifully designed templates.'],
+                        ['id' => 'd4q2', 'q' => 'Is SeratyAI free to use?', 'a' => 'Yes! The free plan gives you 30 credits per month and 5 AI builder messages — no credit card required. You can also earn more credits through our referral program.'],
+                        ['id' => 'd4q3', 'q' => 'What can I spend credits on?', 'a' => 'Each credit can be used for an AI evaluation, AI CV parsing, or an AI builder message. Your credits reset monthly based on your plan.'],
+                        ['id' => 'd4q4', 'q' => 'How does the referral program work?', 'a' => 'Share your referral link and earn 10 credits when someone signs up (they get 8 too). If they upgrade to a paid plan, you both earn an additional 15 credits.'],
+                        ['id' => 'd4q5', 'q' => 'How many CV templates are available?', 'a' => 'SeratyAI offers 10 professionally designed templates including Professional Classic, Modern Minimal, Swiss, Executive, Creative, Bold, Compact, Timeline, Warm, and Technical ATS.'],
+                        ['id' => 'd4q6', 'q' => 'What export formats are supported?', 'a' => 'You can export your CV as a high-quality PDF, ready for printing or submitting to job applications.'],
+                        ['id' => 'd4q7', 'q' => 'Can I import an existing CV?', 'a' => 'Yes! You can paste your existing CV content and our AI will intelligently parse it into structured sections — saving you from starting from scratch.'],
+                        ['id' => 'd4q8', 'q' => 'Is my data secure?', 'a' => 'Absolutely. Your data is encrypted at rest and in transit. We never sell or share your personal information.']
                     ] as $faq)
                     <div class="overflow-hidden rounded-xl border bg-white/5 backdrop-blur-xl transition-all duration-300" x-bind:class="open === '{{ $faq['id'] }}' ? 'border-emerald-500/30 bg-emerald-500/5 shadow-lg shadow-emerald-500/10' : 'border-white/10 hover:border-emerald-500/20'">
                         <button type="button" @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'" x-bind:aria-expanded="open === '{{ $faq['id'] }}'" class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-white/5">

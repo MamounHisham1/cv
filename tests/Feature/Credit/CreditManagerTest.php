@@ -174,7 +174,7 @@ describe('CreditManager', function () {
     });
 
     describe('grantMonthlyCredits', function () {
-        it('resets balance to plan monthly amount', function () {
+        it('tops up balance to plan monthly amount', function () {
             $user = User::factory()->create();
             CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 0, 'plan' => 'free']);
 
@@ -195,16 +195,49 @@ describe('CreditManager', function () {
                 ->first();
 
             expect($transaction)->not->toBeNull()
-                ->and($transaction->amount)->toBe(30);
+                ->and($transaction->amount)->toBe(25);
         });
 
-        it('does not stack credits (resets, not adds)', function () {
+        it('does not reduce users with balance above plan amount', function () {
             $user = User::factory()->create();
-            CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 25, 'plan' => 'free']);
+            CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 50, 'plan' => 'free']);
 
             $this->manager->grantMonthlyCredits($user);
 
-            expect($this->manager->getBalance($user))->toBe(30);
+            expect($this->manager->getBalance($user))->toBe(50);
+        });
+
+        it('does not grant credits when balance equals plan amount', function () {
+            $user = User::factory()->create();
+            CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 30, 'plan' => 'free']);
+
+            $transaction = $this->manager->grantMonthlyCredits($user);
+
+            expect($this->manager->getBalance($user))->toBe(30)
+                ->and($transaction->amount)->toBe(0);
+        });
+
+        it('sends email notification when credits are granted', function () {
+            $user = User::factory()->create();
+            CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 10, 'plan' => 'free']);
+
+            $this->manager->grantMonthlyCredits($user);
+
+            expect($user->notifications->count())->toBe(1);
+        });
+
+        it('updates monthly_credits_reset_at timestamp', function () {
+            $user = User::factory()->create();
+            CreditBalance::factory()->create([
+                'user_id' => $user->id,
+                'balance' => 0,
+                'plan' => 'free',
+                'monthly_credits_reset_at' => now()->subDays(31),
+            ]);
+
+            $this->manager->grantMonthlyCredits($user);
+
+            expect($user->fresh()->creditBalance->monthly_credits_reset_at->diffInSeconds(now()))->toBeLessThan(5);
         });
     });
 });

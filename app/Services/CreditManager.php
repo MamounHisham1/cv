@@ -144,17 +144,35 @@ class CreditManager
             $planConfig = config("credits.plans.{$balance->plan}", config('credits.plans.free'));
             $monthlyCredits = $planConfig['monthly_credits'] ?? 0;
 
-            $balance->update([
-                'balance' => $monthlyCredits,
-                'monthly_credits_reset_at' => now(),
+            $creditsToGrant = max(0, $monthlyCredits - $balance->balance);
+
+            if ($creditsToGrant === 0) {
+                $balance->update([
+                    'monthly_credits_reset_at' => now(),
+                ]);
+
+                return CreditTransaction::create([
+                    'user_id' => $user->id,
+                    'amount' => 0,
+                    'type' => 'monthly_grant',
+                    'metadata' => ['plan' => $balance->plan, 'skipped' => true, 'reason' => 'Balance already at or above monthly limit'],
+                ]);
+            }
+
+            $balance->increment('balance', $creditsToGrant);
+            $balance->update(['monthly_credits_reset_at' => now()]);
+
+            $transaction = CreditTransaction::create([
+                'user_id' => $user->id,
+                'amount' => $creditsToGrant,
+                'type' => 'monthly_grant',
+                'metadata' => ['plan' => $balance->plan, 'previous_balance' => $balance->balance - $creditsToGrant],
             ]);
 
-            return CreditTransaction::create([
-                'user_id' => $user->id,
-                'amount' => $monthlyCredits,
-                'type' => 'monthly_grant',
-                'metadata' => ['plan' => $balance->plan],
-            ]);
+            $newBalance = $balance->fresh()->balance;
+            $user->notify(new CreditsGrantedNotification($creditsToGrant, 'Monthly free credits', $newBalance));
+
+            return $transaction;
         });
     }
 
