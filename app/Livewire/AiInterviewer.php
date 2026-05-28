@@ -42,6 +42,9 @@ class AiInterviewer extends Component
     // System prompt built from CV data for the Deepgram Voice Agent
     public string $systemPrompt = '';
 
+    // Dynamic greeting for the Voice Agent
+    public string $greeting = '';
+
     #[Computed]
     public function cvs()
     {
@@ -87,6 +90,7 @@ class AiInterviewer extends Component
         $this->state = 'active';
         $this->messages = [];
         $this->systemPrompt = $this->buildSystemPrompt($cv);
+        $this->greeting = $this->buildGreeting($cv);
     }
 
     public function saveMessage(string $role, string $content)
@@ -192,6 +196,20 @@ class AiInterviewer extends Component
             'role' => $role,
             'content' => $content,
         ];
+    }
+
+    protected function buildGreeting(Cv $cv): string
+    {
+        $pi = $cv->personal_info;
+        $firstName = $pi['first_name'] ?? 'there';
+        $title = $cv->title ? " as a {$cv->title}" : '';
+
+        $expCount = $cv->experiences()->count();
+        $experienceContext = $expCount > 0
+            ? " I see you have {$expCount} ".Str::plural('role', $expCount).' on your CV.'
+            : '';
+
+        return "Hello {$firstName}! Welcome to your mock interview{$title}.{$experienceContext} Let's jump right in — could you tell me a bit about yourself and what you're looking for in your next role?";
     }
 
     protected function buildSystemPrompt(Cv $cv): string

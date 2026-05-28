@@ -15,6 +15,7 @@ document.addEventListener('alpine:init', () => {
         turnCount: 0,
         interviewConcluding: false,
         nextPlayTime: 0,
+        activeSources: [],
         maxTurns: 12,
 
         get statusMessage() {
@@ -47,14 +48,15 @@ document.addEventListener('alpine:init', () => {
                 if (newState === 'active') {
                     const systemPrompt = this.$wire.systemPrompt;
                     const interviewType = this.$wire.interviewType;
+                    const greeting = this.$wire.greeting;
                     const jobDesc = this.$wire.jobDescription;
                     console.log('Interview started, JD:', jobDesc ? jobDesc.substring(0, 100) + '...' : 'No JD provided');
-                    this.connectVoiceAgent(systemPrompt, interviewType);
+                    this.connectVoiceAgent(systemPrompt, interviewType, greeting);
                 }
             });
         },
 
-        async connectVoiceAgent(systemPrompt, interviewType) {
+        async connectVoiceAgent(systemPrompt, interviewType, greeting) {
             this.isConnecting = true;
             this.connectionError = '';
 
@@ -91,7 +93,7 @@ document.addEventListener('alpine:init', () => {
                             speak: {
                                 provider: { type: 'deepgram', model: 'aura-2-orion-en' }
                             },
-                            greeting: "Hello! I'm your AI interviewer today. Let's get started — could you tell me about yourself and your background?"
+                            greeting: greeting || "Hello! I'm your AI interviewer today. Let's get started."
                         }
                     }));
 
@@ -149,6 +151,7 @@ document.addEventListener('alpine:init', () => {
                     break;
                 case 'UserStartedSpeaking':
                     this.isProcessing = false;
+                    this.stopPlayback();
                     break;
                 case 'AgentStartedSpeaking':
                     this.isProcessing = false;
@@ -222,6 +225,21 @@ document.addEventListener('alpine:init', () => {
             }
             source.start(this.nextPlayTime);
             this.nextPlayTime += audioBuffer.duration;
+
+            this.activeSources.push(source);
+            source.onended = () => {
+                const idx = this.activeSources.indexOf(source);
+                if (idx > -1) this.activeSources.splice(idx, 1);
+            };
+        },
+
+        stopPlayback() {
+            for (const source of this.activeSources) {
+                try { source.stop(); } catch (e) {}
+            }
+            this.activeSources = [];
+            this.nextPlayTime = 0;
+            this.isAiSpeaking = false;
         },
 
         async finalizeInterview() {
