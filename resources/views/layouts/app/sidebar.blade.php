@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-zinc-950 text-zinc-100">
-        @if (request()->routeIs('cv.builder', 'cv.edit', 'cv.evaluator', 'drafts', 'referrals', 'credits.history', 'profile.edit', 'security.edit', 'evaluations.history'))
+        @if (request()->routeIs('cv.builder', 'cv.edit', 'cv.evaluator', 'ai.interview', 'drafts', 'referrals', 'credits.history', 'profile.edit', 'security.edit', 'evaluations.history'))
             <x-cv-builder-nav />
         @else
             <x-landing-navbar />
@@ -48,5 +48,7 @@
                 </div>
             </template>
         </div>
+
+        @stack('scripts')
     </body>
 </html>

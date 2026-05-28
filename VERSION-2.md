@@ -4,15 +4,15 @@
 
 - [ ] **Payment integration (Stripe/Paddle)** — Plans are defined in config (free/pro/enterprise) but no checkout flow exists. This is the single biggest revenue unlock.
 - [ ] **Server-side PDF generation** — `dompdf` is installed but unused. Replace `window.print()` with proper server-side PDF generation for consistent output with A4 page breaks and embedded fonts.
-- [~] **Evaluate your own CVs** — Allow clicking "Evaluate" on a builder-created CV directly instead of requiring export-to-PDF then re-upload. The evaluator should accept a Cv model ID.
+- [X] **Evaluate your own CVs** — Allow clicking "Evaluate" on a builder-created CV directly instead of requiring export-to-PDF then re-upload. The evaluator should accept a Cv model ID.
 - [ ] **Credit purchase flow** — Add one-time credit pack purchases (e.g., 50 credits for $5). The `purchase_bonus` config key already exists for this.
 
 ## Builder UX
 
 - [ ] **CV duplication/cloning** — Add a "Duplicate" button on the drafts page so users can create variations for different job applications.
 - [ ] **Inline preview pane** — Embed the template preview side-by-side in the builder instead of requiring navigation to a separate `/preview` route.
-- [ ] **Autosave** — Periodically save form state to prevent data loss from accidental navigation.
-- [ ] **Drag-and-drop reordering** — Allow reordering experiences, skills, and other list items.
+- [X] **Autosave** — Periodically save form state to prevent data loss from accidental navigation.
+- [X] **Drag-and-drop reordering** — Allow reordering experiences, skills, and other list items.
 - [ ] **CV deletion** — Users can create and edit CVs but cannot delete them.
 - [ ] **Profile photo upload** — The Creative template has a placeholder circle but there is no photo upload field in personal info.
 

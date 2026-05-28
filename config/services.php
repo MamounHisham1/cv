@@ -53,4 +53,8 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    'deepgram' => [
+        'key' => env('DEEPGRAM_API_KEY'),
+    ],
+
 ];

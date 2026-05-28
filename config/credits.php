@@ -9,6 +9,7 @@ return [
         'ai_evaluation' => 1,
         'ai_parse' => 1,
         'ai_builder_message' => 1,
+        'ai_interview' => 3,
     ],
 
     'plans' => [

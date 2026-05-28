@@ -62,6 +62,7 @@ $heroiconMap = [
     'moon' => 'moon',
     'sun' => 'sun',
     'external-link' => 'arrow-top-right-on-square',
+    'mic' => 'microphone',
 ];
 $heroiconName = $heroiconMap[$icon] ?? $icon;
 $component = 'heroicon-c-' . $heroiconName;

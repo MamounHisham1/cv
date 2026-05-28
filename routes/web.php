@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Livewire\AiInterviewer;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
 use App\Livewire\CvEvaluator;
@@ -64,6 +65,7 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::get('/builder', CvBuilder::class)->name('cv.builder');
     Route::get('/builder/{cv}', CvBuilder::class)->name('cv.edit');
     Route::get('/evaluator/{cv?}', CvEvaluator::class)->name('cv.evaluator');
+    Route::get('/interview', AiInterviewer::class)->name('ai.interview');
     Route::get('/evaluations/history', EvaluationHistory::class)->name('evaluations.history');
     Route::get('/referrals', ReferralDashboard::class)->name('referrals');
     Route::get('/credits', CreditHistory::class)->name('credits.history');
