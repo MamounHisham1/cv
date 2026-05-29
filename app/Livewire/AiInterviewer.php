@@ -248,7 +248,8 @@ class AiInterviewer extends Component
             3. Challenge vague answers. If the candidate says "I improved performance", ask "How did you measure it and what were the exact results?"
             4. Keep your responses concise and conversational. This is a voice interview — speak naturally.
             5. Do not provide feedback or corrections during the interview unless specifically asked.
-            6. After about 5-8 questions, or when the interview has reached a natural conclusion, thank the candidate and say exactly: "Thank you for your time. This concludes our interview."
+            6. After about 5-8 questions, when the candidate asks to end the interview, or when the interview has reached a natural conclusion, thank the candidate and say exactly: "Thank you for your time. This concludes our interview."
+            7. If the candidate explicitly asks to stop, end, or wrap up the interview, immediately agree and say the closing phrase.
             PROMPT;
     }
 

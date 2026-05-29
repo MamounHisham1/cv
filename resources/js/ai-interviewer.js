@@ -17,6 +17,14 @@ document.addEventListener('alpine:init', () => {
         nextPlayTime: 0,
         activeSources: [],
         maxTurns: 12,
+        elapsedSeconds: 0,
+        timerInterval: null,
+
+        get formattedTime() {
+            const m = Math.floor(this.elapsedSeconds / 60);
+            const s = this.elapsedSeconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        },
 
         get statusMessage() {
             if (this.isConnecting) return 'Connecting...';
@@ -99,6 +107,8 @@ document.addEventListener('alpine:init', () => {
 
                     this.isConnecting = false;
                     this.isListening = true;
+                    this.elapsedSeconds = 0;
+                    this.timerInterval = setInterval(() => this.elapsedSeconds++, 1000);
                 };
 
                 this.voiceSocket.onmessage = (event) => {
@@ -194,8 +204,11 @@ document.addEventListener('alpine:init', () => {
                 this.turnCount++;
             }
 
-            if (role === 'interviewer' && content.toLowerCase().includes('this concludes our interview')) {
-                this.interviewConcluding = true;
+            if (role === 'interviewer') {
+                const lower = content.toLowerCase();
+                if (lower.includes('concludes') || lower.includes('conclude') || lower.includes('end of') || lower.includes('wrap up') || lower.includes('that completes') || lower.includes('thank you for your time')) {
+                    this.interviewConcluding = true;
+                }
             }
         },
 
@@ -255,12 +268,19 @@ document.addEventListener('alpine:init', () => {
         },
 
         async endCall() {
+            this.stopPlayback();
             this.disconnectVoiceAgent();
-            this.$wire.endInterview();
+            this.isListening = false;
+            this.isAiSpeaking = false;
+            this.isProcessing = false;
+            this.isConnecting = false;
+            this.interviewConcluding = false;
+            await this.$wire.endInterview();
         },
 
         disconnectVoiceAgent() {
             this.isListening = false;
+            if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
 
             if (this.voiceSocket) { try { this.voiceSocket.close(); } catch (e) {} this.voiceSocket = null; }
             if (this.workletNode) { try { this.workletNode.disconnect(); } catch (e) {} this.workletNode = null; }
@@ -268,12 +288,5 @@ document.addEventListener('alpine:init', () => {
             if (this.mediaStream) { this.mediaStream.getTracks().forEach(t => t.stop()); this.mediaStream = null; }
             if (this.playbackCtx) { try { this.playbackCtx.close(); } catch (e) {} this.playbackCtx = null; }
         },
-
-        scrollTranscript() {
-            this.$nextTick(() => {
-                const el = this.$refs.transcript;
-                if (el) el.scrollTop = el.scrollHeight;
-            });
-        }
     }));
 });

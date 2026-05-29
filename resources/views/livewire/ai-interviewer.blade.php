@@ -107,102 +107,121 @@
             </div>
         @endif
 
-        <!-- ACTIVE INTERVIEW STATE -->
+        <!-- ACTIVE INTERVIEW STATE — Podcast/Waveform UI -->
         @if ($state === 'active')
+            <style>
+                @keyframes waveform-speaking {
+                    0%, 100% { height: 8px; margin-top: -4px; }
+                    50% { height: 28px; margin-top: -14px; }
+                }
+                @keyframes waveform-listening {
+                    0%, 100% { height: 4px; margin-top: -2px; }
+                    50% { height: 10px; margin-top: -5px; }
+                }
+                .waveform-speaking {
+                    animation: waveform-speaking 0.6s ease-in-out infinite;
+                    animation-delay: var(--bar-delay, 0s);
+                }
+                .waveform-listening {
+                    animation: waveform-listening 1.5s ease-in-out infinite;
+                    animation-delay: var(--bar-delay, 0s);
+                }
+            </style>
+
             <div class="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl flex flex-col h-[70vh]">
 
-                <!-- Header -->
-                <div class="p-4 border-b border-white/5 flex items-center justify-between shrink-0 bg-zinc-900/80 rounded-t-2xl">
+                <!-- Top Bar -->
+                <div class="px-5 py-3 flex items-center justify-between shrink-0">
                     <div class="flex items-center gap-3">
-                        <div class="relative flex h-3 w-3">
+                        <div class="relative flex h-2.5 w-2.5">
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                         </div>
                         <span class="text-sm font-medium text-white">Live Interview</span>
-                        <span class="text-xs text-zinc-500 ml-2" x-text="turnCount > 0 ? 'Questions: ' + turnCount : 'Connecting...'"></span>
+                        <span class="text-xs text-zinc-600">|</span>
+                        <span class="text-xs font-mono text-zinc-400" x-text="formattedTime">0:00</span>
+                        <span class="text-xs text-zinc-600">|</span>
+                        <span class="text-xs text-zinc-500" x-text="turnCount > 0 ? turnCount + ' answered' : ''"></span>
                     </div>
                     <div class="flex items-center gap-3">
                         <span x-show="isConnecting" class="text-xs text-yellow-400">Connecting...</span>
                         <span x-show="connectionError" class="text-xs text-red-400" x-text="connectionError"></span>
-                        <button @click="endCall()" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-700 transition">
+                        <button @click="endCall()" class="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition border border-red-500/20">
                             End Interview
                         </button>
                     </div>
                 </div>
 
-                <!-- Transcript Area -->
-                <div class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth" id="transcript-container" x-ref="transcript">
-                    <div x-show="transcript.length === 0 && !isAiSpeaking && !isProcessing" class="h-full flex items-center justify-center text-zinc-500 italic">
-                        Connecting...
+                <!-- Center: Waveform Visualizer -->
+                <div class="flex-1 flex flex-col items-center justify-center gap-8">
+
+                    <!-- Circular Waveform -->
+                    <div class="relative w-52 h-52 flex items-center justify-center">
+                        <!-- Outer glow -->
+                        <div class="absolute inset-0 rounded-full transition-all duration-700"
+                             :class="isAiSpeaking ? 'bg-emerald-500/10 shadow-[0_0_80px_rgba(16,185,129,0.15)]' : (isListening ? 'bg-zinc-500/5' : 'bg-transparent')">
+                        </div>
+
+                        <!-- Waveform bars ring -->
+                        <div class="absolute inset-0">
+                            @foreach(range(0, 23) as $i)
+                                <div class="absolute left-1/2 top-1/2 w-1.5 -translate-x-1/2"
+                                     style="transform: rotate({{ $i * 15 }}deg); transform-origin: center 104px;">
+                                    <div class="waveform-bar w-full rounded-full"
+                                         style="--bar-delay: {{ $i * 0.07 }}s"
+                                         :class="isAiSpeaking
+                                             ? 'waveform-speaking bg-emerald-400'
+                                             : (isListening
+                                                 ? 'waveform-listening bg-zinc-600'
+                                                 : 'bg-zinc-700 h-[3px] -mt-[2px]')">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <!-- Inner circle -->
+                        <div class="relative w-28 h-28 rounded-full flex items-center justify-center transition-all duration-500"
+                             :class="isAiSpeaking
+                                 ? 'bg-emerald-500/20 border-2 border-emerald-500/40'
+                                 : (isProcessing
+                                     ? 'bg-yellow-500/10 border-2 border-yellow-500/20'
+                                     : (isListening
+                                         ? 'bg-zinc-800 border-2 border-zinc-700'
+                                         : 'bg-zinc-900 border-2 border-zinc-800'))">
+
+                            <!-- Listening icon -->
+                            <svg x-show="isListening && !isAiSpeaking && !isProcessing" class="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
+
+                            <!-- AI speaking icon -->
+                            <svg x-show="isAiSpeaking" class="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414M7.05 4.05A9 9 0 003 12c0 2.485 1.005 4.735 2.636 6.364" /></svg>
+
+                            <!-- Thinking spinner -->
+                            <svg x-show="isProcessing" class="w-10 h-10 text-yellow-400 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+
+                            <!-- Connecting -->
+                            <svg x-show="isConnecting" class="w-10 h-10 text-zinc-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0" /></svg>
+                        </div>
                     </div>
 
-                    <template x-for="(msg, idx) in transcript" :key="idx">
-                        <div>
-                            <template x-if="msg.role === 'interviewer'">
-                                <div class="flex items-start gap-4">
-                                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-                                        <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
-                                    </div>
-                                    <div class="flex-1 pt-1">
-                                        <p class="text-emerald-400 text-xs font-semibold mb-1 uppercase tracking-wider">Interviewer</p>
-                                        <div class="text-white text-lg leading-relaxed" x-text="msg.content"></div>
-                                    </div>
-                                </div>
-                            </template>
-                            <template x-if="msg.role === 'candidate'">
-                                <div class="flex items-start gap-4 flex-row-reverse">
-                                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700">
-                                        <svg class="w-5 h-5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                                    </div>
-                                    <div class="flex-1 pt-1 text-right">
-                                        <p class="text-zinc-500 text-xs font-semibold mb-1 uppercase tracking-wider">You</p>
-                                        <div class="text-zinc-300 text-lg leading-relaxed inline-block bg-zinc-800/50 rounded-2xl rounded-tr-sm px-5 py-3" x-text="msg.content"></div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-
-                    <!-- Agent thinking indicator -->
-                    <div x-show="isProcessing" class="flex items-start gap-4">
-                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-                            <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" /></svg>
-                        </div>
-                        <div class="flex-1 pt-1">
-                            <p class="text-emerald-400 text-xs font-semibold mb-1 uppercase tracking-wider">Interviewer</p>
-                            <div class="text-zinc-500 italic">Thinking...</div>
-                        </div>
+                    <!-- Status -->
+                    <div class="flex flex-col items-center gap-2">
+                        <span class="text-sm font-medium transition-colors duration-300" :class="statusColor" x-text="statusMessage"></span>
+                        <span class="text-xs text-zinc-600" x-text="isAiSpeaking ? 'AI is responding...' : (isProcessing ? 'Processing...' : (isListening ? 'Speak naturally — the AI is listening' : ''))"></span>
                     </div>
                 </div>
 
-                <!-- Live Call Footer -->
-                <div class="p-6 border-t border-white/5 bg-zinc-900/80 rounded-b-2xl shrink-0">
-                    <div class="flex flex-col items-center justify-center gap-4">
-                        <div class="text-sm font-medium flex items-center gap-2 h-6" :class="statusColor">
-                            <span x-text="statusMessage"></span>
-                            <div x-show="isAiSpeaking" class="flex items-center gap-1 h-4">
-                                <div class="w-1 bg-emerald-500 rounded-full animate-pulse" style="animation-delay: 0ms; height: 100%"></div>
-                                <div class="w-1 bg-emerald-500 rounded-full animate-pulse" style="animation-delay: 150ms; height: 60%"></div>
-                                <div class="w-1 bg-emerald-500 rounded-full animate-pulse" style="animation-delay: 300ms; height: 80%"></div>
-                                <div class="w-1 bg-emerald-500 rounded-full animate-pulse" style="animation-delay: 450ms; height: 40%"></div>
-                            </div>
-                        </div>
-
-                        <div class="relative">
-                            <div
-                                class="w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500"
-                                :class="isAiSpeaking
-                                    ? 'bg-zinc-800 border border-white/10'
-                                    : 'bg-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.3)]'"
-                            >
-                                <svg x-show="!isAiSpeaking" class="w-8 h-8 text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                                <svg x-show="isAiSpeaking" class="w-8 h-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15.536a5 5 0 001.414 1.414M7.05 4.05A9 9 0 003 12c0 2.485 1.005 4.735 2.636 6.364" /></svg>
-                            </div>
-                            <div x-show="isListening && !isAiSpeaking" class="absolute inset-0 rounded-full border-2 border-emerald-500 animate-ping opacity-40"></div>
-                        </div>
-
-                        <p class="text-xs text-zinc-500" x-text="statusMessage === 'Connecting...' ? 'Setting up voice connection...' : (isAiSpeaking ? 'Speaking...' : 'Listening — just talk naturally')"></p>
-                    </div>
+                <!-- Bottom -->
+                <div class="px-5 py-4 flex items-center justify-center shrink-0">
+                    <span x-show="isListening && !isAiSpeaking" class="text-xs text-zinc-600 flex items-center gap-1.5">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        Mic active
+                    </span>
                 </div>
             </div>
         @endif
