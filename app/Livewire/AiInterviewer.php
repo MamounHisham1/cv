@@ -119,9 +119,13 @@ class AiInterviewer extends Component
             'duration_seconds' => now()->diffInSeconds($this->session->started_at),
         ]);
 
-        $creditManager->deduct(Auth::user(), config('credits.minimum_charge.ai_interview', 3), 'ai_interview', clone $this->session, [
-            'interview_type' => $this->session->interview_type,
-        ]);
+        try {
+            $creditManager->deduct(Auth::user(), config('credits.minimum_charge.ai_interview', 3), 'ai_interview', clone $this->session, [
+                'interview_type' => $this->session->interview_type,
+            ]);
+        } catch (\Throwable $e) {
+            logger()->error('Credit deduction failed on interview end: '.$e->getMessage());
+        }
 
         $this->state = 'evaluating';
     }

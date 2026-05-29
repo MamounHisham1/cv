@@ -37,6 +37,6 @@ export const LAYOUT = {
   width: 1080,
   height: 1920,
   fps: 30,
-  duration: 60,
-  totalFrames: 1800,
+  duration: 30,
+  totalFrames: 900,
 } as const;

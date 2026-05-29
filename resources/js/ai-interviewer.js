@@ -44,6 +44,8 @@ document.addEventListener('alpine:init', () => {
         },
 
         async init() {
+            console.log('[Interview] Alpine aiInterviewer initialized');
+
             const result = await this.$wire.getDeepgramKey();
             if (result.key) {
                 this.dgApiKey = result.key;
@@ -196,20 +198,45 @@ document.addEventListener('alpine:init', () => {
 
             if (!content.trim()) return;
 
+            console.log('[Interview] Text:', role, '|', content);
             this.transcript.push({ role, content });
-            this.scrollTranscript();
-            this.$wire.saveMessage(role, content);
+
+            // Build full accumulated text for this role to detect phrases split across chunks
+            const fullText = this.transcript
+                .filter(t => t.role === role)
+                .map(t => t.content)
+                .join(' ')
+                .toLowerCase();
 
             if (role === 'candidate') {
                 this.turnCount++;
             }
 
-            if (role === 'interviewer') {
-                const lower = content.toLowerCase();
-                if (lower.includes('concludes') || lower.includes('conclude') || lower.includes('end of') || lower.includes('wrap up') || lower.includes('that completes') || lower.includes('thank you for your time')) {
+            // Check concluding phrases BEFORE calling Livewire (Livewire re-render kills this scope)
+            if (role === 'interviewer' && !this.interviewConcluding) {
+                if (fullText.includes('this concludes our interview') || fullText.includes('concludes our interview') || fullText.includes('end of the interview') || fullText.includes('wrap up') || fullText.includes('thank you for your time') || fullText.includes('that completes')) {
+                    console.log('[Interview] Concluding phrase detected in full transcript');
                     this.interviewConcluding = true;
+                    setTimeout(() => {
+                        if (this.interviewConcluding) {
+                            console.log('[Interview] Safety timeout — forcing end');
+                            this.finalizeInterview();
+                        }
+                    }, 8000);
                 }
             }
+
+            if (role === 'candidate') {
+                if (fullText.includes('end the interview') || fullText.includes('stop the interview') || fullText.includes('that\'s all') || fullText.includes('i\'m done') || fullText.includes('let\'s end') || fullText.includes('finish the interview') || fullText.includes('we can stop') || fullText.includes('that\'s it')) {
+                    console.log('[Interview] Candidate end phrase detected:', content);
+                    this.interviewConcluding = true;
+                    setTimeout(() => this.finalizeInterview(), 2000);
+                }
+            }
+
+            // Livewire call LAST — the re-render destroys the current Alpine scope
+            this.scrollTranscript();
+            this.$wire.saveMessage(role, content);
         },
 
         handleAudioChunk(data) {
@@ -256,37 +283,56 @@ document.addEventListener('alpine:init', () => {
         },
 
         async finalizeInterview() {
-            if (!this.interviewConcluding) return;
-
+            console.log('[Interview] finalizeInterview triggered');
             this.interviewConcluding = false;
             this.isListening = false;
             this.isAiSpeaking = false;
-            this.disconnectVoiceAgent();
 
-            await new Promise(r => setTimeout(r, 500));
-            this.$wire.endInterview();
+            console.log('[Interview] Calling $wire.endInterview()...');
+            try {
+                this.$wire.endInterview();
+                console.log('[Interview] $wire.endInterview() sent successfully');
+            } catch (e) {
+                console.error('[Interview] endInterview call failed:', e);
+            }
+
+            this.cleanup();
         },
 
         async endCall() {
+            console.log('[Interview] endCall button clicked');
             this.stopPlayback();
-            this.disconnectVoiceAgent();
             this.isListening = false;
             this.isAiSpeaking = false;
             this.isProcessing = false;
             this.isConnecting = false;
             this.interviewConcluding = false;
-            await this.$wire.endInterview();
+
+            console.log('[Interview] Calling $wire.endInterview()...');
+            try {
+                this.$wire.endInterview();
+                console.log('[Interview] $wire.endInterview() sent successfully');
+            } catch (e) {
+                console.error('[Interview] endInterview call failed:', e);
+            }
+
+            this.cleanup();
         },
 
-        disconnectVoiceAgent() {
-            this.isListening = false;
+        cleanup() {
+            console.log('[Interview] Cleanup started');
             if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
 
-            if (this.voiceSocket) { try { this.voiceSocket.close(); } catch (e) {} this.voiceSocket = null; }
+            if (this.voiceSocket) {
+                this.voiceSocket.onclose = null;
+                try { this.voiceSocket.close(); } catch (e) {}
+                this.voiceSocket = null;
+            }
             if (this.workletNode) { try { this.workletNode.disconnect(); } catch (e) {} this.workletNode = null; }
             if (this.audioContext) { try { this.audioContext.close(); } catch (e) {} this.audioContext = null; }
             if (this.mediaStream) { this.mediaStream.getTracks().forEach(t => t.stop()); this.mediaStream = null; }
             if (this.playbackCtx) { try { this.playbackCtx.close(); } catch (e) {} this.playbackCtx = null; }
+            console.log('[Interview] Cleanup done');
         },
     }));
 });

@@ -8,6 +8,7 @@
     "build-1080": "npx remotion render SeratyAd out/seratyai-ad.mp4 --scale=1"
   },
   "dependencies": {
+    "@andresaya/edge-tts": "^1.8.0",
     "@remotion/cli": "4.0.242",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

@@ -146,7 +146,7 @@
                     <div class="flex items-center gap-3">
                         <span x-show="isConnecting" class="text-xs text-yellow-400">Connecting...</span>
                         <span x-show="connectionError" class="text-xs text-red-400" x-text="connectionError"></span>
-                        <button @click="endCall()" class="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition border border-red-500/20">
+                        <button x-on:click="endCall()" x-bind:disabled="isConnecting" class="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition border border-red-500/20">
                             End Interview
                         </button>
                     </div>
