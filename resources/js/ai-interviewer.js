@@ -60,13 +60,14 @@ document.addEventListener('alpine:init', () => {
                     const interviewType = this.$wire.interviewType;
                     const greeting = this.$wire.greeting;
                     const jobDesc = this.$wire.jobDescription;
-                    console.log('Interview started, JD:', jobDesc ? jobDesc.substring(0, 100) + '...' : 'No JD provided');
-                    this.connectVoiceAgent(systemPrompt, interviewType, greeting);
+                    const voiceModel = this.$wire.selectedVoice;
+                    console.log('Interview started, voice:', voiceModel);
+                    this.connectVoiceAgent(systemPrompt, interviewType, greeting, voiceModel);
                 }
             });
         },
 
-        async connectVoiceAgent(systemPrompt, interviewType, greeting) {
+        async connectVoiceAgent(systemPrompt, interviewType, greeting, voiceModel) {
             this.isConnecting = true;
             this.connectionError = '';
 
@@ -101,7 +102,7 @@ document.addEventListener('alpine:init', () => {
                                 prompt: systemPrompt
                             },
                             speak: {
-                                provider: { type: 'deepgram', model: 'aura-2-orion-en' }
+                                provider: { type: 'deepgram', model: voiceModel || 'aura-2-orion-en' }
                             },
                             greeting: greeting || "Hello! I'm your AI interviewer today. Let's get started."
                         }
@@ -234,9 +235,9 @@ document.addEventListener('alpine:init', () => {
                 }
             }
 
-            // Livewire call LAST — the re-render destroys the current Alpine scope
             this.scrollTranscript();
-            this.$wire.saveMessage(role, content);
+            // Messages are saved in bulk when endInterview() is called, not per-message,
+            // because Livewire re-renders destroy the Alpine scope mid-interview.
         },
 
         handleAudioChunk(data) {
@@ -290,7 +291,7 @@ document.addEventListener('alpine:init', () => {
 
             console.log('[Interview] Calling $wire.endInterview()...');
             try {
-                this.$wire.endInterview();
+                this.$wire.endInterview(this.transcript);
                 console.log('[Interview] $wire.endInterview() sent successfully');
             } catch (e) {
                 console.error('[Interview] endInterview call failed:', e);
@@ -310,7 +311,7 @@ document.addEventListener('alpine:init', () => {
 
             console.log('[Interview] Calling $wire.endInterview()...');
             try {
-                this.$wire.endInterview();
+                this.$wire.endInterview(this.transcript);
                 console.log('[Interview] $wire.endInterview() sent successfully');
             } catch (e) {
                 console.error('[Interview] endInterview call failed:', e);

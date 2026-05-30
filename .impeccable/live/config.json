@@ -1,0 +1,7 @@
+{
+  "files": ["resources/views/layouts/app/sidebar.blade.php"],
+  "exclude": [],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

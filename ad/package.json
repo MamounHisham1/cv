@@ -5,6 +5,7 @@
   "scripts": {
     "start": "npx remotion studio",
     "build": "npx remotion render SeratyAd out/seratyai-ad.mp4",
+    "build-arabic": "npx remotion render SeratyAdArabic out/seratyai-ad_arabic.mp4",
     "build-1080": "npx remotion render SeratyAd out/seratyai-ad.mp4 --scale=1"
   },
   "dependencies": {

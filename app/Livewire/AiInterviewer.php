@@ -2,8 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Ai\Agents\InterviewEvaluatorAgent;
+use App\Jobs\EvaluateInterview;
 use App\Models\Cv;
+use App\Models\InterviewEvaluation;
 use App\Models\InterviewSession;
 use App\Services\CreditManager;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,15 @@ class AiInterviewer extends Component
 
     public string $interviewType = 'mixed';
 
+    public string $selectedVoice = 'aura-2-orion-en';
+
+    public array $voices = [
+        'aura-2-orion-en' => ['name' => 'Orion', 'accent' => 'American', 'gender' => 'Male', 'tone' => 'Calm & Approachable'],
+        'aura-2-aurora-en' => ['name' => 'Aurora', 'accent' => 'American', 'gender' => 'Female', 'tone' => 'Cheerful & Energetic'],
+        'aura-2-draco-en' => ['name' => 'Draco', 'accent' => 'British', 'gender' => 'Male', 'tone' => 'Warm & Trustworthy'],
+        'aura-2-pandora-en' => ['name' => 'Pandora', 'accent' => 'British', 'gender' => 'Female', 'tone' => 'Smooth & Calm'],
+    ];
+
     // Active session properties
     public ?InterviewSession $session = null;
 
@@ -38,6 +48,12 @@ class AiInterviewer extends Component
 
     // Evaluation properties
     public ?array $evaluation = null;
+
+    public bool $shouldPoll = false;
+
+    public ?string $evalErrorMessage = null;
+
+    public ?int $pendingEvaluationId = null;
 
     // System prompt built from CV data for the Deepgram Voice Agent
     public string $systemPrompt = '';
@@ -55,6 +71,39 @@ class AiInterviewer extends Component
     {
         if ($this->cvs()->isNotEmpty()) {
             $this->selectedCvId = $this->cvs()->first()->id;
+        }
+
+        // If a specific session was requested (e.g. from history page), load that one
+        $requestedSessionId = request('session');
+
+        $sessionQuery = InterviewSession::where('user_id', Auth::id())
+            ->where('status', 'completed')
+            ->has('evaluation');
+
+        if ($requestedSessionId) {
+            $sessionQuery->where('id', (int) $requestedSessionId);
+        }
+
+        $session = $sessionQuery->latest()->first();
+
+        if ($session) {
+            $evaluation = $session->evaluation;
+
+            if ($evaluation && $evaluation->isCompleted()) {
+                $this->session = $session;
+                $this->evaluation = $evaluation->toArray();
+                $this->state = 'results';
+            } elseif ($evaluation && $evaluation->isFailed()) {
+                $this->session = $session;
+                $this->pendingEvaluationId = $evaluation->id;
+                $this->evalErrorMessage = $evaluation->error_message ?? 'Evaluation failed.';
+                $this->state = 'evaluating';
+            } elseif ($evaluation && ($evaluation->isPending() || $evaluation->isProcessing())) {
+                $this->session = $session;
+                $this->pendingEvaluationId = $evaluation->id;
+                $this->shouldPoll = true;
+                $this->state = 'evaluating';
+            }
         }
     }
 
@@ -106,10 +155,26 @@ class AiInterviewer extends Component
         $this->addMessage($role, $content);
     }
 
-    public function endInterview(CreditManager $creditManager)
+    public function endInterview(CreditManager $creditManager, ?array $transcript = null)
     {
         if (! $this->session || $this->state !== 'active') {
             return;
+        }
+
+        // Save any accumulated transcript messages that weren't saved during the call
+        if ($transcript && count($transcript) > 0) {
+            $existingCount = $this->session->messages()->count();
+            foreach ($transcript as $i => $msg) {
+                $role = ($msg['role'] ?? 'candidate');
+                $content = $msg['content'] ?? '';
+                if ($content && in_array($role, ['interviewer', 'candidate'])) {
+                    $this->session->messages()->create([
+                        'role' => $role,
+                        'content' => $content,
+                        'sort_order' => $existingCount + $i,
+                    ]);
+                }
+            }
         }
 
         $this->session->update([
@@ -127,43 +192,74 @@ class AiInterviewer extends Component
             logger()->error('Credit deduction failed on interview end: '.$e->getMessage());
         }
 
+        // Create pending evaluation and dispatch job
+        $evaluation = $this->session->evaluation()->create([
+            'overall_score' => 0,
+            'grade' => '',
+            'summary' => '',
+            'criteria' => [],
+            'strengths' => [],
+            'improvements' => [],
+            'status' => InterviewEvaluation::STATUS_PENDING,
+        ]);
+
+        $this->pendingEvaluationId = $evaluation->id;
+        $this->shouldPoll = true;
+        $this->evalErrorMessage = null;
         $this->state = 'evaluating';
+
+        EvaluateInterview::dispatch(Auth::id(), $this->session->id);
     }
 
-    public function generateEvaluation()
+    public function checkEvaluationStatus(): void
     {
-        if ($this->state !== 'evaluating' || ! $this->session) {
+        if (! $this->pendingEvaluationId || $this->state !== 'evaluating') {
             return;
         }
 
-        $this->session->load('messages');
+        $evaluation = InterviewEvaluation::find($this->pendingEvaluationId);
 
-        $agent = new InterviewEvaluatorAgent(
-            $this->session->cv,
-            $this->session->messages()->orderBy('sort_order')->get()->map(fn ($msg) => [
-                'role' => $msg->role,
-                'content' => $msg->content,
-            ])->all(),
-            $this->session->job_description
-        );
+        if (! $evaluation) {
+            $this->shouldPoll = false;
+            $this->evalErrorMessage = 'Evaluation not found.';
 
-        try {
-            $response = $agent->prompt('Evaluate the interview transcript.');
+            return;
+        }
 
-            $evaluation = $this->session->evaluation()->create([
-                'overall_score' => $response['overall_score'],
-                'grade' => $response['grade'],
-                'summary' => $response['summary'],
-                'criteria' => $response['criteria'],
-                'strengths' => $response['strengths'],
-                'improvements' => $response['improvements'],
-            ]);
-
+        if ($evaluation->isCompleted()) {
+            $this->shouldPoll = false;
             $this->evaluation = $evaluation->toArray();
             $this->state = 'results';
-        } catch (\Exception $e) {
-            $this->addError('eval', 'Failed to generate evaluation. '.$e->getMessage());
+        } elseif ($evaluation->isFailed()) {
+            $this->shouldPoll = false;
+            $this->evalErrorMessage = $evaluation->error_message ?? 'Evaluation failed. Please try again.';
         }
+    }
+
+    public function retryEvaluation(): void
+    {
+        if (! $this->session || $this->state !== 'evaluating') {
+            return;
+        }
+
+        $this->evalErrorMessage = null;
+        $this->shouldPoll = true;
+
+        $this->session->evaluation?->delete();
+
+        $evaluation = $this->session->evaluation()->create([
+            'overall_score' => 0,
+            'grade' => '',
+            'summary' => '',
+            'criteria' => [],
+            'strengths' => [],
+            'improvements' => [],
+            'status' => InterviewEvaluation::STATUS_PENDING,
+        ]);
+
+        $this->pendingEvaluationId = $evaluation->id;
+
+        EvaluateInterview::dispatch(Auth::id(), $this->session->id);
     }
 
     public function getDeepgramKey()
@@ -185,6 +281,9 @@ class AiInterviewer extends Component
         $this->evaluation = null;
         $this->jobDescription = null;
         $this->systemPrompt = '';
+        $this->shouldPoll = false;
+        $this->evalErrorMessage = null;
+        $this->pendingEvaluationId = null;
     }
 
     public function addMessage(string $role, string $content)

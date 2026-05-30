@@ -1,10 +1,28 @@
-<div class="min-h-screen bg-zinc-950 text-zinc-300 py-12 px-4 sm:px-6 lg:px-8" x-data="aiInterviewer()">
-    <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-3xl font-bold text-white tracking-tight">AI Interviewer</h1>
-            @if($state !== 'setup')
-                <button wire:click="resetSession" class="text-sm text-zinc-400 hover:text-white transition">End & Start Over</button>
-            @endif
+<div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100" x-data="aiInterviewer()">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top_right,_rgba(16,185,129,0.15),_transparent_50%)]"></div>
+    <div class="h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700"></div>
+
+    <div class="relative mx-auto max-w-4xl px-4 py-10 md:px-6 lg:px-8">
+        <div class="mb-10 text-center">
+            <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
+                AI Powered
+            </div>
+            <h1 class="mb-3 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
+                AI <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">Interviewer</span>
+            </h1>
+            <p class="mx-auto max-w-lg text-base text-zinc-400">
+                Practice mock interviews with a voice-based AI recruiter. Get real-time questions tailored to your CV and experience.
+            </p>
+            <div class="mt-4 flex items-center justify-center gap-3">
+                <a href="{{ route('interview.history') }}" wire:navigate class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                    <x-ui::icon name="clock" class="h-4 w-4" /> Interview History
+                </a>
+                @if($state !== 'setup')
+                    <button @click="cleanup(); $wire.resetSession()" class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
+                        <x-ui::icon name="arrow-path" class="h-4 w-4" /> End & Start Over
+                    </button>
+                @endif
+            </div>
         </div>
 
         @if (session()->has('error'))
@@ -44,10 +62,33 @@
                     </div>
 
                     <div>
+                        <label class="block text-sm font-medium text-zinc-300 mb-2">Interviewer Voice</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            @foreach($voices as $model => $voice)
+                                <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
+                                    <input type="radio" wire:model.live="selectedVoice" value="{{ $model }}" class="sr-only">
+                                    <span class="flex flex-1">
+                                        <span class="flex flex-col">
+                                            <span class="block text-sm font-medium text-white">{{ $voice['name'] }}</span>
+                                            <span class="mt-1 flex items-center gap-1 text-xs text-zinc-400">
+                                                <span>{{ $voice['accent'] }}</span>
+                                                <span>·</span>
+                                                <span>{{ $voice['gender'] }}</span>
+                                            </span>
+                                            <span class="mt-0.5 text-xs text-zinc-500">{{ $voice['tone'] }}</span>
+                                        </span>
+                                    </span>
+                                    <svg class="h-5 w-5 text-emerald-500 {{ $selectedVoice === $model ? 'block' : 'hidden' }}" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div>
                         <label class="block text-sm font-medium text-zinc-300 mb-2">Interview Focus</label>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
-                                <input type="radio" wire:model="interviewType" value="behavioral" class="sr-only">
+                                <input type="radio" wire:model.live="interviewType" value="behavioral" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
                                         <span class="block text-sm font-medium text-white">Behavioral</span>
@@ -58,7 +99,7 @@
                             </label>
 
                             <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
-                                <input type="radio" wire:model="interviewType" value="technical" class="sr-only">
+                                <input type="radio" wire:model.live="interviewType" value="technical" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
                                         <span class="block text-sm font-medium text-white">Technical</span>
@@ -69,7 +110,7 @@
                             </label>
 
                             <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
-                                <input type="radio" wire:model="interviewType" value="mixed" class="sr-only">
+                                <input type="radio" wire:model.live="interviewType" value="mixed" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
                                         <span class="block text-sm font-medium text-white">Mixed</span>
@@ -228,16 +269,34 @@
 
         <!-- EVALUATING STATE -->
         @if ($state === 'evaluating')
-            <div class="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl p-16 text-center" wire:init="generateEvaluation">
-                <div class="relative flex justify-center items-center h-24 w-24 mx-auto mb-8">
-                    <svg class="animate-spin text-emerald-500 w-16 h-16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+            @if($evalErrorMessage)
+                <!-- Error state -->
+                <div class="bg-zinc-900/50 backdrop-blur-xl border border-red-500/20 rounded-2xl shadow-2xl p-16 text-center">
+                    <div class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10">
+                        <svg class="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Evaluation Failed</h2>
+                    <p class="text-zinc-400 mb-8">{{ $evalErrorMessage }}</p>
+                    <button wire:click="retryEvaluation" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-zinc-900 bg-emerald-500 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 focus:ring-offset-zinc-950 transition-colors">
+                        Retry Evaluation
+                    </button>
                 </div>
-                <h2 class="text-2xl font-bold text-white mb-2">Analyzing Your Performance</h2>
-                <p class="text-zinc-400">The AI is reviewing the transcript to provide structured feedback and a final grade.</p>
-            </div>
+            @else
+                <!-- Processing state with polling -->
+                <div class="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl shadow-2xl p-16 text-center"
+                     @if($shouldPoll)
+                         wire:poll.5000ms.keep-alive="checkEvaluationStatus"
+                     @endif>
+                    <div class="relative flex justify-center items-center h-24 w-24 mx-auto mb-8">
+                        <svg class="animate-spin text-emerald-500 w-16 h-16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-2">Analyzing Your Performance</h2>
+                    <p class="text-zinc-400">The AI is reviewing the transcript to provide structured feedback and a final grade. You can navigate away and come back later.</p>
+                </div>
+            @endif
         @endif
 
         <!-- RESULTS STATE -->
@@ -331,5 +390,6 @@
                 </div>
             </div>
         @endif
+    </div>
     </div>
 </div>

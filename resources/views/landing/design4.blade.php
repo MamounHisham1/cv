@@ -17,7 +17,7 @@
                 <div class="text-center max-w-4xl mx-auto">
                     <div class="animate-slide-up inline-flex items-center gap-2 bg-white/5 backdrop-blur-xl text-emerald-300 text-sm font-medium px-5 py-2.5 rounded-full mb-10 border border-white/10">
                         <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        AI-Powered Resume Platform
+                        AI-Powered Resume & Mock Interview Platform
                     </div>
 
                     <h1 class="animate-slide-up delay-100 text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-8">
@@ -26,7 +26,7 @@
                     </h1>
 
                     <p class="animate-slide-up delay-200 text-lg md:text-xl text-zinc-400 leading-relaxed mb-12 max-w-2xl mx-auto">
-                        Build professional, ATS-optimized CVs with the power of AI. Land your dream job faster.
+                        Build professional, ATS-optimized CVs & practice interactive voice mock interviews with the power of AI. Land your dream job faster.
                     </p>
 
                     <div class="animate-slide-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -349,7 +349,7 @@
                         ['icon' => 'shield-check', 'title' => 'ATS Optimization', 'desc' => 'Ensure your CV passes Applicant Tracking Systems with keyword analysis, formatting checks, and real-time scoring.', 'color' => 'blue', 'glow' => 'blue'],
                         ['icon' => 'document-text', 'title' => 'Professional Templates', 'desc' => 'Choose from five distinct resume templates, from ATS-first layouts to creative and executive styles.', 'color' => 'purple', 'glow' => 'purple'],
                         ['icon' => 'eye', 'title' => 'Real-Time Preview', 'desc' => 'See exactly how your CV will look as you edit. Live preview updates instantly.', 'color' => 'amber', 'glow' => 'amber'],
-                        ['icon' => 'lightbulb', 'title' => 'Smart Suggestions', 'desc' => 'Intelligent recommendations for skills, action verbs, and content improvements based on hiring trends.', 'color' => 'pink', 'glow' => 'pink'],
+                        ['icon' => 'microphone', 'title' => 'Voice Mock Interviews', 'desc' => 'Practice speaking with realistic voice AI customized to your CV and target job description, and get instant detailed grading.', 'color' => 'pink', 'glow' => 'pink'],
                         ['icon' => 'arrow-down-tray', 'title' => 'Export Ready', 'desc' => 'Download polished CVs in PDF format, perfectly formatted and ready to submit.', 'color' => 'teal', 'glow' => 'teal']
                     ] as $feature)
                     <div class="group relative h-full">
@@ -381,11 +381,12 @@
                     <p class="text-lg text-zinc-400">From blank page to interview-ready in minutes.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     @foreach([
                         ['step' => 1, 'title' => 'Upload or Build', 'desc' => 'Start from scratch with our guided builder or upload your existing CV to get started instantly.', 'color' => 'emerald'],
                         ['step' => 2, 'title' => 'AI Evaluates & Enhances', 'desc' => 'Get scored across 10 criteria and receive AI-powered improvements with actionable feedback.', 'color' => 'blue'],
-                        ['step' => 3, 'title' => 'Download & Apply', 'desc' => 'Export your polished, ATS-optimized CV and start landing interviews.', 'color' => 'purple']
+                        ['step' => 3, 'title' => 'AI Mock Interview', 'desc' => 'Practice speaking with realistic voice AI customized to your CV and target job description.', 'color' => 'pink'],
+                        ['step' => 4, 'title' => 'Download & Apply', 'desc' => 'Export your polished, ATS-optimized CV and start applying with maximum confidence.', 'color' => 'purple']
                     ] as $item)
                     <div class="group text-center">
                         <div class="relative mb-8">
@@ -410,7 +411,7 @@
                     @foreach([
                         ['icon' => 'document-text', 'value' => '5', 'label' => 'Professional Templates', 'desc' => 'From classic to creative, find the right format for your industry', 'color' => 'emerald'],
                         ['icon' => 'chart-bar', 'value' => '10', 'label' => 'AI Evaluation Criteria', 'desc' => 'Comprehensive scoring with actionable feedback and letter grades', 'color' => 'blue'],
-                        ['icon' => 'chat-bubble-left-right', 'value' => 'AI', 'label' => 'Chat Assistant', 'desc' => 'Real-time help writing, editing, and optimizing your CV content', 'color' => 'purple'],
+                        ['icon' => 'microphone', 'value' => 'Voice', 'label' => 'AI Mock Interviews', 'desc' => 'Interactive behavioral and technical interview prep customized to your CV', 'color' => 'purple'],
                         ['icon' => 'database', 'value' => '17K+', 'label' => 'Resume Benchmarks', 'desc' => 'RAG-powered analysis compares your CV against real-world samples', 'color' => 'amber']
                     ] as $cap)
                     <div class="group bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-{{ $cap['color'] }}-500/30 transition-all duration-300 hover:-translate-y-1 text-center">
@@ -701,9 +702,9 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach([
-                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['30 credits/month', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
-                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['100 credits/month', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => true],
-                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['500 credits/month', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => true]
+                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['30 credits/month', 'AI voice mock interviews', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
+                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['100 credits/month', 'AI voice mock interviews', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => true],
+                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['500 credits/month', 'AI voice mock interviews', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => true]
                     ] as $plan)
                     <div class="relative group {{ $plan['popular'] ? 'md:-mt-4 md:mb-[-1rem]' : '' }}">
                         @if($plan['popular'])
@@ -767,12 +768,13 @@
                     @foreach([
                         ['id' => 'd4q1', 'q' => 'What is SeratyAI?', 'a' => 'SeratyAI is an AI-powered CV builder that creates professional, ATS-optimized resumes. It includes an AI chat assistant, real-time compatibility scoring, smart CV parsing, and 10 beautifully designed templates.'],
                         ['id' => 'd4q2', 'q' => 'Is SeratyAI free to use?', 'a' => 'Yes! The free plan gives you 30 credits per month and 5 AI builder messages — no credit card required. You can also earn more credits through our referral program.'],
-                        ['id' => 'd4q3', 'q' => 'What can I spend credits on?', 'a' => 'Each credit can be used for an AI evaluation, AI CV parsing, or an AI builder message. Your credits reset monthly based on your plan.'],
+                        ['id' => 'd4q3', 'q' => 'What can I spend credits on?', 'a' => 'Each credit can be used for an AI evaluation, AI CV parsing, an AI mock interview, or an AI builder message. Your credits reset monthly based on your plan.'],
                         ['id' => 'd4q4', 'q' => 'How does the referral program work?', 'a' => 'Share your referral link and earn 10 credits when someone signs up (they get 8 too). If they upgrade to a paid plan, you both earn an additional 15 credits.'],
                         ['id' => 'd4q5', 'q' => 'How many CV templates are available?', 'a' => 'SeratyAI offers 10 professionally designed templates including Professional Classic, Modern Minimal, Swiss, Executive, Creative, Bold, Compact, Timeline, Warm, and Technical ATS.'],
                         ['id' => 'd4q6', 'q' => 'What export formats are supported?', 'a' => 'You can export your CV as a high-quality PDF, ready for printing or submitting to job applications.'],
                         ['id' => 'd4q7', 'q' => 'Can I import an existing CV?', 'a' => 'Yes! You can paste your existing CV content and our AI will intelligently parse it into structured sections — saving you from starting from scratch.'],
-                        ['id' => 'd4q8', 'q' => 'Is my data secure?', 'a' => 'Absolutely. Your data is encrypted at rest and in transit. We never sell or share your personal information.']
+                        ['id' => 'd4q8', 'q' => 'Is my data secure?', 'a' => 'Absolutely. Your data is encrypted at rest and in transit. We never sell or share your personal information.'],
+                        ['id' => 'd4q9', 'q' => 'How does the AI Mock Interview feature work?', 'a' => 'Our AI interviewer uses real-time voice streaming to conduct a realistic behavioral or technical mock interview customized to your CV and target job description. At the end, you get a detailed, comprehensive evaluation with an overall score, letter grade, and actionable suggestions for improvement.']
                     ] as $faq)
                     <div class="overflow-hidden rounded-xl border bg-white/5 backdrop-blur-xl transition-all duration-300" x-bind:class="open === '{{ $faq['id'] }}' ? 'border-emerald-500/30 bg-emerald-500/5 shadow-lg shadow-emerald-500/10' : 'border-white/10 hover:border-emerald-500/20'">
                         <button type="button" @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'" x-bind:aria-expanded="open === '{{ $faq['id'] }}'" class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-white/5">
