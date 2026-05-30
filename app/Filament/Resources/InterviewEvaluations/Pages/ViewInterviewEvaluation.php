@@ -32,7 +32,7 @@ class ViewInterviewEvaluation extends ViewRecord
                                     ->label('Interview Type')
                                     ->badge(),
                             ]),
-                        TextEntry::make('session.durationFormatted')
+                        TextEntry::make('session.formatted_duration')
                             ->label('Duration'),
                     ]),
                 Section::make('Evaluation Result')

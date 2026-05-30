@@ -40,7 +40,7 @@ class InterviewSessionsTable
                 TextColumn::make('total_questions')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('durationFormatted')
+                TextColumn::make('formatted_duration')
                     ->label('Duration')
                     ->sortable(query: fn ($query) => $query->orderBy('duration_seconds', 'desc')),
                 TextColumn::make('messages_count')

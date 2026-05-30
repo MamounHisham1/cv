@@ -43,7 +43,7 @@ class ViewInterviewSession extends ViewRecord
                                     ->badge(),
                                 TextEntry::make('total_questions')
                                     ->numeric(),
-                                TextEntry::make('durationFormatted')
+                                TextEntry::make('formatted_duration')
                                     ->label('Duration'),
                             ]),
                         TextEntry::make('started_at')

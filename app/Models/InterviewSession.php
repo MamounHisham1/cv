@@ -75,7 +75,7 @@ class InterviewSession extends Model
     /**
      * Format the duration for display.
      */
-    public function durationFormatted(): string
+    public function getFormattedDurationAttribute(): string
     {
         if (! $this->duration_seconds) {
             return '0:00';

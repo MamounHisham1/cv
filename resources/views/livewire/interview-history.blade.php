@@ -103,7 +103,7 @@
                         <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
                             <span>{{ $session->completed_at->format('M j, Y') }}</span>
                             <span>·</span>
-                            <span>{{ $session->durationFormatted() }}</span>
+                            <span>{{ $session->formatted_duration }}</span>
                             <span>·</span>
                             <span>{{ $session->total_questions }} questions</span>
                         </div>
