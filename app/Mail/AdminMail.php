@@ -20,6 +20,7 @@ class AdminMail extends Mailable implements ShouldQueue
     public function __construct(
         public string $emailSubject,
         public string $emailBody,
+        public ?string $template = null,
     ) {}
 
     /**
@@ -35,10 +36,18 @@ class AdminMail extends Mailable implements ShouldQueue
     /**
      * Get the message content definition.
      */
+    /**
+     * Get the message content definition.
+     */
     public function content(): Content
     {
-        return new Content(
-            view: 'mail.admin-email',
-        );
+        $view = match ($this->template) {
+            'announcement' => 'mail.admin-email-announcement',
+            'notice' => 'mail.admin-email-notice',
+            'update' => 'mail.admin-email-update',
+            default => 'mail.admin-email',
+        };
+
+        return new Content(view: $view);
     }
 }

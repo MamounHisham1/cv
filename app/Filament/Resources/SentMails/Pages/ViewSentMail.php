@@ -27,6 +27,15 @@ class ViewSentMail extends ViewRecord
                                     ->default('-'),
                                 TextEntry::make('recipient_email')
                                     ->label('Recipient'),
+                                TextEntry::make('template')
+                                    ->label('Template')
+                                    ->badge()
+                                    ->color(fn ($state): string => match ($state) {
+                                        'announcement' => 'success',
+                                        'notice' => 'warning',
+                                        'update' => 'gray',
+                                        default => 'gray',
+                                    }),
                                 TextEntry::make('status')
                                     ->badge()
                                     ->color(fn ($state): string => match ($state) {

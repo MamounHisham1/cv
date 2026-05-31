@@ -19,6 +19,8 @@ class SentMailForm
                     ->disabled(),
                 TextInput::make('subject')
                     ->disabled(),
+                TextInput::make('template')
+                    ->disabled(),
                 TextInput::make('status')
                     ->disabled(),
                 Textarea::make('body')

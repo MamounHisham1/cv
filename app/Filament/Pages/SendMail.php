@@ -71,6 +71,13 @@ class SendMail extends Page
                         ->required()
                         ->maxLength(255),
 
+                    Select::make('template')
+                        ->label('Template')
+                        ->options(SentMail::TEMPLATE_OPTIONS)
+                        ->required()
+                        ->live()
+                        ->selectablePlaceholder(false),
+
                     RichEditor::make('body')
                         ->label('Email Body')
                         ->required()
@@ -79,13 +86,16 @@ class SendMail extends Page
                 ->action(function (array $data): void {
                     $body = is_array($data['body']) ? ($data['body']['body'] ?? '') : $data['body'];
                     $subject = $data['subject'];
+                    $template = $data['template'] ?? null;
+
                     $mailable = new AdminMail(
                         emailSubject: $subject,
                         emailBody: $body,
+                        template: $template,
                     );
 
                     if ($data['recipientType'] === 'all') {
-                        User::chunk(100, function ($users) use ($mailable, $subject, $body) {
+                        User::chunk(100, function ($users) use ($mailable, $subject, $body, $template) {
                             foreach ($users as $user) {
                                 Mail::to($user)->send($mailable);
 
@@ -94,6 +104,7 @@ class SendMail extends Page
                                     'recipient_email' => $user->email,
                                     'subject' => $subject,
                                     'body' => $body,
+                                    'template' => $template,
                                     'status' => SentMail::STATUS_SENT,
                                 ]);
                             }
@@ -107,6 +118,7 @@ class SendMail extends Page
                             'recipient_email' => $user->email,
                             'subject' => $subject,
                             'body' => $body,
+                            'template' => $template,
                             'status' => SentMail::STATUS_SENT,
                         ]);
                     }

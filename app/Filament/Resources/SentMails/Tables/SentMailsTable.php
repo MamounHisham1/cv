@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SentMails\Tables;
 
+use App\Models\SentMail;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
@@ -27,6 +28,14 @@ class SentMailsTable
                 TextColumn::make('subject')
                     ->searchable()
                     ->limit(50),
+                BadgeColumn::make('template')
+                    ->label('Template')
+                    ->colors([
+                        'success' => 'announcement',
+                        'warning' => 'notice',
+                        'gray' => 'update',
+                    ])
+                    ->sortable(),
                 BadgeColumn::make('status')
                     ->colors([
                         'success' => 'sent',
@@ -45,6 +54,8 @@ class SentMailsTable
                         'pending' => 'Pending',
                         'failed' => 'Failed',
                     ]),
+                SelectFilter::make('template')
+                    ->options(SentMail::TEMPLATE_OPTIONS),
             ])
             ->recordActions([
                 ViewAction::make(),

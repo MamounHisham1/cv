@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width=device-scale,1.0">
+    <title>Update — Email Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #fafafa; font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; padding: 40px 20px; }
+        .container { max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05); }
+        .header { padding: 28px 32px; border-bottom: 1px solid #f4f4f5; display: flex; align-items: center; gap: 12px; }
+        .header img { width: 36px; height: 36px; border-radius: 8px; }
+        .header .brand .name { color: #18181b; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+        .header .brand .tagline { color: #71717a; font-size: 12px; font-weight: 400; }
+        .tag { display: inline-block; background: #ecfdf5; color: #065f46; font-size: 10px; font-weight:600; padding: 3px 10px; border-radius: 20px; }
+        .body { padding: 32px; }
+        .greeting { font-size: 20px; font-weight: 600; color: #18181b; margin-bottom: 16px; }
+        .message { font-size: 15px; color: #3f3f46; line-height: 1.7; }
+        .message p { margin-bottom: 14px; }
+        .message ul { padding-left: 20px; margin-bottom: 14px; }
+        .message ul li { margin-bottom: 6px; color: #52525b; }
+        .message em { font-style: normal; color: #059669; font-weight: 500; }
+        .update-card { background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 10px; padding: 20px; margin: 16px 0; }
+        .update-card .label { font-size: 11px; font-weight: 600; color: #71717a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .update-card .title { font-size: 16px; font-weight: 600; color: #18181b; margin-bottom: 6px; }
+        .update-card .desc { font-size: 14px; color: #52525b; line-height: 1.6; }
+        .cta { text-align: center; margin: 24px 0; }
+        .cta a { display: inline-block; background: #18181b; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 28px; border-radius: 10px; text-decoration: none; }
+        .footer { border-top: 1px solid #e4e4e7; padding: 20px 32px; text-align: center; }
+        .footer p { font-size: 12px; color: #a1a1aa; margin-bottom: 4px; }
+        .footer a { color: #10b981; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://localhost:8000/favicon.svg" alt="SeratyAI">
+            <div class="brand">
+                <div class="name">SeratyAI</div>
+                <div class="tagline">AI-Powered Resume Builder</div>
+            </div>
+        </div>
+        <div class="body">
+            <span class="tag">Update</span>
+            <div class="greeting">Hello, [User Name]</div>
+            <div class="message">
+                <p>This is the <strong>Update</strong> template — a clean, newsletter-style format perfect for product updates, changelogs, and ongoing communications. The update card gives structure to what's new.</p>
+                <div class="update-card">
+                    <div class="label">What's New — June 2026</div>
+                    <div class="title">AI Resume Scoring Now Available</div>
+                    <div class="desc">We've added real-time compatibility scoring powered by AI. Upload your CV and get instant feedback on how well it matches job descriptions, with specific improvement suggestions.</div>
+                </div>
+                <p>You can list multiple updates to keep users informed. Use <em>emerald-colored links</em> for key action items within the body text.</p>
+            </div>
+            <div class="cta">
+                <a href="#">View Dashboard →</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>&copy; 2026 SeratyAI. All rights reserved.</p>
+            <p><a href="#">Manage Preferences</a> · <a href="#">Unsubscribe</a></p>
+        </div>
+    </div>
+</body>
+</html>
