@@ -57,7 +57,7 @@ class AiInterviewer extends Component
 
     public bool $isFreeTrial = false;
 
-    public int $freeTrialSeconds = 300;
+    public int $freeTrialSeconds = 180;
 
     public bool $gracePeriodActive = false;
 
@@ -154,7 +154,7 @@ class AiInterviewer extends Component
             'started_at' => now(),
             'conversation_id' => Str::uuid()->toString(),
             'is_free_trial' => $isFreeTrial,
-            'time_limit_at' => $isFreeTrial ? now()->addMinutes(5) : null,
+            'time_limit_at' => $isFreeTrial ? now()->addMinutes(3) : null,
         ]);
 
         if ($isFreeTrial) {
@@ -162,7 +162,7 @@ class AiInterviewer extends Component
         }
 
         $this->isFreeTrial = $isFreeTrial;
-        $this->freeTrialSeconds = 60; // 1 minute (testing — change back to 300 for prod)
+        $this->freeTrialSeconds = 60; // 1 minute (testing — change back to 180 for prod)
         $this->gracePeriodActive = false;
 
         $this->state = 'active';
@@ -318,7 +318,7 @@ class AiInterviewer extends Component
         $this->evalErrorMessage = null;
         $this->pendingEvaluationId = null;
         $this->isFreeTrial = false;
-        $this->freeTrialSeconds = 300;
+        $this->freeTrialSeconds = 180;
         $this->gracePeriodActive = false;
     }
 
@@ -357,7 +357,7 @@ class AiInterviewer extends Component
         $firstName = $pi['first_name'] ?? 'there';
         $title = $cv->title ? " as a {$cv->title}" : '';
 
-        return "Hello {$firstName}! Welcome to your free practice interview{$title}. You have 5 minutes to experience how our AI interviews work. Let's get started — could you tell me a bit about yourself?";
+        return "Hello {$firstName}! Welcome to your free practice interview{$title}. You have 3 minutes to experience how our AI interviews work. Let's get started — could you tell me a bit about yourself?";
     }
 
     public function handleTimeLimitReached(): void
