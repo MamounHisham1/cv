@@ -8,6 +8,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -47,6 +48,16 @@ class UsersTable
                     ->badge()
                     ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
                     ->sortable(),
+                TextColumn::make('plan')
+                    ->label('Plan')
+                    ->state(fn ($record) => ucfirst($record->creditBalance?->plan ?? 'free'))
+                    ->badge()
+                    ->color(fn ($state) => match ($state) {
+                        'Pro' => 'info',
+                        'Enterprise' => 'warning',
+                        default => 'gray',
+                    })
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime('M j, Y')
                     ->sortable()
@@ -63,6 +74,40 @@ class UsersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                Action::make('change_plan')
+                    ->label('Change Plan')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('info')
+                    ->schema([
+                        Select::make('plan')
+                            ->label('New Plan')
+                            ->options([
+                                'free' => 'Free',
+                                'pro' => 'Pro',
+                                'enterprise' => 'Enterprise',
+                            ])
+                            ->required()
+                            ->default(fn ($record) => $record->creditBalance?->plan ?? 'free'),
+                        TextInput::make('reason')
+                            ->label('Reason')
+                            ->placeholder('Admin plan change — complimentary upgrade')
+                            ->required(),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $oldPlan = $record->creditBalance?->plan ?? 'free';
+                        $record->creditBalance()->update([
+                            'plan' => $data['plan'],
+                        ]);
+
+                        logger()->info('Admin plan change', [
+                            'user_id' => $record->id,
+                            'old_plan' => $oldPlan,
+                            'new_plan' => $data['plan'],
+                            'reason' => $data['reason'],
+                            'admin_id' => auth()->id(),
+                        ]);
+                    })
+                    ->successNotificationTitle('Plan updated successfully'),
                 Action::make('add_credits')
                     ->label('Add Credits')
                     ->icon('heroicon-o-plus-circle')

@@ -8,6 +8,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -37,11 +38,44 @@ class UserForm
                         ->label('Credit Balance')
                         ->content(fn ($record) => $record ? app(CreditManager::class)->getBalance($record) : 0)
                         ->columnSpan(1),
-                    Placeholder::make('credit_plan')
-                        ->label('Plan')
-                        ->content(fn ($record) => $record?->creditBalance?->plan ?? 'free')
+                    Placeholder::make('credit_plan_display')
+                        ->label('Current Plan')
+                        ->content(fn ($record) => ucfirst($record?->creditBalance?->plan ?? 'free'))
                         ->columnSpan(1),
                     Actions::make([
+                        Action::make('change_plan')
+                            ->label('Change Plan')
+                            ->icon('heroicon-o-arrow-up-tray')
+                            ->color('info')
+                            ->schema([
+                                Select::make('plan')
+                                    ->label('New Plan')
+                                    ->options([
+                                        'free' => 'Free',
+                                        'pro' => 'Pro',
+                                        'enterprise' => 'Enterprise',
+                                    ])
+                                    ->required()
+                                    ->default(fn ($record) => $record?->creditBalance?->plan ?? 'free'),
+                                TextInput::make('reason')
+                                    ->label('Reason')
+                                    ->placeholder('Admin plan change — complimentary upgrade')
+                                    ->required(),
+                            ])
+                            ->action(function ($record, array $data) {
+                                $record->creditBalance()->update([
+                                    'plan' => $data['plan'],
+                                ]);
+
+                                logger()->info('Admin plan change', [
+                                    'user_id' => $record->id,
+                                    'old_plan' => $record->creditBalance->getOriginal('plan'),
+                                    'new_plan' => $data['plan'],
+                                    'reason' => $data['reason'],
+                                    'admin_id' => auth()->id(),
+                                ]);
+                            })
+                            ->successNotificationTitle('Plan updated successfully'),
                         Action::make('add_credits')
                             ->label('Add Credits')
                             ->icon('heroicon-o-plus-circle')
