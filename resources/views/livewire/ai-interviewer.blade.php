@@ -130,20 +130,35 @@
 
                     <div class="pt-4 border-t border-white/5 flex items-center justify-between">
                         <div class="text-sm text-zinc-500">
-                            <span class="flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                                Costs 3 credits
-                            </span>
+                            @if(!($this->interviewAccess['allowed'] ?? true))
+                                <span class="text-amber-400">Free trial used</span>
+                            @else
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                    @if($this->interviewAccess['is_free_trial'] ?? true)
+                                        Free trial — 5 minutes
+                                    @else
+                                        Costs {{ config('credits.minimum_charge.ai_interview', 3) }} credits
+                                    @endif
+                                </span>
+                            @endif
                         </div>
                         <button
                             wire:click="startInterview"
                             class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-zinc-900 bg-emerald-500 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 focus:ring-offset-zinc-950 transition-colors disabled:opacity-50"
-                            {{ $this->cvs->isEmpty() ? 'disabled' : '' }}
+                            {{ ($this->cvs->isEmpty() || !($this->interviewAccess['allowed'] ?? true)) ? 'disabled' : '' }}
                         >
                             <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
                             Start Voice Interview
                         </button>
                     </div>
+
+                    @if(!($this->interviewAccess['allowed'] ?? true))
+                        <div class="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-300">
+                            <p>{{ $this->interviewAccess['reason'] }}</p>
+                            <a href="{{ route('home') }}#pricing" class="mt-1 inline-block font-medium text-amber-200 underline hover:text-amber-100">Upgrade your plan &rarr;</a>
+                        </div>
+                    @endif
                 </div>
             </div>
         @endif
@@ -183,6 +198,14 @@
                         <span class="text-xs font-mono text-zinc-400" x-text="formattedTime">0:00</span>
                         <span class="text-xs text-zinc-600">|</span>
                         <span class="text-xs text-zinc-500" x-text="turnCount > 0 ? turnCount + ' answered' : ''"></span>
+                        @if($isFreeTrial)
+                            <span class="text-xs text-zinc-600">|</span>
+                            <span class="text-xs font-mono"
+                                  :class="freeTrialRemaining <= 60 ? 'text-amber-400' : 'text-emerald-400'"
+                                  x-show="!gracePeriodActive"
+                                  x-text="formattedFreeTrialTime"></span>
+                            <span x-show="gracePeriodActive" class="text-xs text-amber-400">Wrapping up...</span>
+                        @endif
                     </div>
                     <div class="flex items-center gap-3">
                         <span x-show="isConnecting" class="text-xs text-yellow-400">Connecting...</span>

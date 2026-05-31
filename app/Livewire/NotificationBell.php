@@ -67,7 +67,8 @@ class NotificationBell extends Component
     public function getNotificationIcon(string $type): string
     {
         return match ($type) {
-            'App\Notifications\EvaluationCompletedNotification' => 'check-circle',
+            'App\Notifications\EvaluationCompletedNotification',
+            'App\Notifications\InterviewEvaluationCompletedNotification' => 'check-circle',
             'App\Notifications\CreditsLowNotification' => 'alert-triangle',
             'App\Notifications\CreditsGrantedNotification' => 'star',
             'App\Notifications\CvParsedNotification' => 'document-text',
@@ -80,7 +81,8 @@ class NotificationBell extends Component
     public function getNotificationTitle(array $data, string $type): string
     {
         return match ($type) {
-            'App\Notifications\EvaluationCompletedNotification' => "Evaluation complete: {$data['score']}/100 ({$data['grade']})",
+            'App\Notifications\EvaluationCompletedNotification',
+            'App\Notifications\InterviewEvaluationCompletedNotification' => "Evaluation complete: {$data['score']}/100 ({$data['grade']})",
             'App\Notifications\CreditsLowNotification' => "Low credits: {$data['remaining_credits']} remaining",
             'App\Notifications\CreditsGrantedNotification' => "+{$data['amount']} credits added",
             'App\Notifications\CvParsedNotification' => "CV imported: {$data['cv_title']}",

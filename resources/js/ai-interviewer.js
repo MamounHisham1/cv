@@ -19,10 +19,22 @@ document.addEventListener('alpine:init', () => {
         maxTurns: 12,
         elapsedSeconds: 0,
         timerInterval: null,
+        freeTrial: false,
+        freeTrialSeconds: 300,
+        freeTrialRemaining: 300,
+        freeTrialInterval: null,
+        gracePeriodActive: false,
+        timeLimitGraceTimer: null,
 
         get formattedTime() {
             const m = Math.floor(this.elapsedSeconds / 60);
             const s = this.elapsedSeconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        },
+
+        get formattedFreeTrialTime() {
+            const m = Math.floor(this.freeTrialRemaining / 60);
+            const s = this.freeTrialRemaining % 60;
             return `${m}:${s.toString().padStart(2, '0')}`;
         },
 
@@ -44,13 +56,11 @@ document.addEventListener('alpine:init', () => {
         },
 
         async init() {
-            console.log('[Interview] Alpine aiInterviewer initialized');
-
             const result = await this.$wire.getDeepgramKey();
             if (result.key) {
                 this.dgApiKey = result.key;
             } else {
-                console.error('Deepgram init failed:', result.error);
+                this.connectionError = result.error || 'Failed to get API key';
             }
 
             // Watch for state changes from Livewire
@@ -61,7 +71,6 @@ document.addEventListener('alpine:init', () => {
                     const greeting = this.$wire.greeting;
                     const jobDesc = this.$wire.jobDescription;
                     const voiceModel = this.$wire.selectedVoice;
-                    console.log('Interview started, voice:', voiceModel);
                     this.connectVoiceAgent(systemPrompt, interviewType, greeting, voiceModel);
                 }
             });
@@ -72,6 +81,12 @@ document.addEventListener('alpine:init', () => {
             this.connectionError = '';
 
             try {
+                // Read free trial state from Livewire (available after startInterview)
+                this.freeTrial = this.$wire.isFreeTrial;
+                this.freeTrialSeconds = this.$wire.freeTrialSeconds;
+                this.freeTrialRemaining = this.freeTrialSeconds;
+                this.gracePeriodActive = false;
+
                 this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 this.audioContext = new AudioContext({ sampleRate: 24000 });
 
@@ -112,6 +127,28 @@ document.addEventListener('alpine:init', () => {
                     this.isListening = true;
                     this.elapsedSeconds = 0;
                     this.timerInterval = setInterval(() => this.elapsedSeconds++, 1000);
+
+                    if (this.freeTrial) {
+                        this.freeTrialRemaining = this.freeTrialSeconds;
+                        this.freeTrialInterval = setInterval(() => {
+                            this.freeTrialRemaining--;
+                            if (this.freeTrialRemaining <= 0) {
+                                clearInterval(this.freeTrialInterval);
+                                this.freeTrialInterval = null;
+                                this.gracePeriodActive = true;
+                                try {
+                                    this.$wire.handleTimeLimitReached();
+                                } catch(e) {}
+                                // Tell the AI to wrap up immediately, then start grace period
+                                this.injectWrapUp();
+                                this.timeLimitGraceTimer = setTimeout(() => {
+                                    if (this.gracePeriodActive) {
+                                        this.finalizeInterview();
+                                    }
+                                }, 30000);
+                            }
+                        }, 1000);
+                    }
                 };
 
                 this.voiceSocket.onmessage = (event) => {
@@ -142,7 +179,6 @@ document.addEventListener('alpine:init', () => {
                 };
 
             } catch (e) {
-                console.error('Voice Agent setup failed:', e);
                 this.isConnecting = false;
                 this.connectionError = e.message || 'Failed to start';
             }
@@ -151,10 +187,8 @@ document.addEventListener('alpine:init', () => {
         handleAgentMessage(msg) {
             switch (msg.type) {
                 case 'Welcome':
-                    console.log('Voice Agent connected:', msg.request_id);
                     break;
                 case 'SettingsApplied':
-                    console.log('Settings applied');
                     break;
                 case 'ConversationText':
                     this.handleConversationText(msg);
@@ -181,13 +215,32 @@ document.addEventListener('alpine:init', () => {
                             this.nextPlayTime = 0;
                             this.finalizeInterview();
                         }, remainingMs + 300);
+                    } else if (this.gracePeriodActive) {
+                        // AI finished speaking during grace period — end the interview
+                        this.isAiSpeaking = false;
+                        this.nextPlayTime = 0;
+                        this.interviewConcluding = true;
+                        this.finalizeInterview();
                     } else {
                         this.isAiSpeaking = false;
                         this.nextPlayTime = 0;
                     }
                     break;
+                case 'UserStoppedSpeaking':
+                    // Good moment to inject wrap-up message if we're in grace period and haven't yet
+                    if (this.gracePeriodActive && !this.interviewConcluding) {
+                        this.injectGoodbyeMessage();
+                    }
+                    break;
+                case 'PromptUpdated':
+                    break;
+                case 'InjectionRefused':
+                    // Retry the goodbye injection after a short delay
+                    if (this.gracePeriodActive && !this.interviewConcluding) {
+                        setTimeout(() => this.injectGoodbyeMessage(), 2000);
+                    }
+                    break;
                 case 'Error':
-                    console.error('Voice Agent error:', msg.code, msg.description);
                     this.connectionError = msg.description || 'Agent error';
                     break;
             }
@@ -199,7 +252,6 @@ document.addEventListener('alpine:init', () => {
 
             if (!content.trim()) return;
 
-            console.log('[Interview] Text:', role, '|', content);
             this.transcript.push({ role, content });
 
             // Build full accumulated text for this role to detect phrases split across chunks
@@ -216,11 +268,9 @@ document.addEventListener('alpine:init', () => {
             // Check concluding phrases BEFORE calling Livewire (Livewire re-render kills this scope)
             if (role === 'interviewer' && !this.interviewConcluding) {
                 if (fullText.includes('this concludes our interview') || fullText.includes('concludes our interview') || fullText.includes('end of the interview') || fullText.includes('wrap up') || fullText.includes('thank you for your time') || fullText.includes('that completes')) {
-                    console.log('[Interview] Concluding phrase detected in full transcript');
                     this.interviewConcluding = true;
                     setTimeout(() => {
                         if (this.interviewConcluding) {
-                            console.log('[Interview] Safety timeout — forcing end');
                             this.finalizeInterview();
                         }
                     }, 8000);
@@ -229,15 +279,12 @@ document.addEventListener('alpine:init', () => {
 
             if (role === 'candidate') {
                 if (fullText.includes('end the interview') || fullText.includes('stop the interview') || fullText.includes('that\'s all') || fullText.includes('i\'m done') || fullText.includes('let\'s end') || fullText.includes('finish the interview') || fullText.includes('we can stop') || fullText.includes('that\'s it')) {
-                    console.log('[Interview] Candidate end phrase detected:', content);
                     this.interviewConcluding = true;
                     setTimeout(() => this.finalizeInterview(), 2000);
                 }
             }
 
             this.scrollTranscript();
-            // Messages are saved in bulk when endInterview() is called, not per-message,
-            // because Livewire re-renders destroy the Alpine scope mid-interview.
         },
 
         handleAudioChunk(data) {
@@ -284,24 +331,18 @@ document.addEventListener('alpine:init', () => {
         },
 
         async finalizeInterview() {
-            console.log('[Interview] finalizeInterview triggered');
             this.interviewConcluding = false;
             this.isListening = false;
             this.isAiSpeaking = false;
 
-            console.log('[Interview] Calling $wire.endInterview()...');
             try {
                 this.$wire.endInterview(this.transcript);
-                console.log('[Interview] $wire.endInterview() sent successfully');
-            } catch (e) {
-                console.error('[Interview] endInterview call failed:', e);
-            }
+            } catch (e) {}
 
             this.cleanup();
         },
 
         async endCall() {
-            console.log('[Interview] endCall button clicked');
             this.stopPlayback();
             this.isListening = false;
             this.isAiSpeaking = false;
@@ -309,20 +350,42 @@ document.addEventListener('alpine:init', () => {
             this.isConnecting = false;
             this.interviewConcluding = false;
 
-            console.log('[Interview] Calling $wire.endInterview()...');
             try {
                 this.$wire.endInterview(this.transcript);
-                console.log('[Interview] $wire.endInterview() sent successfully');
-            } catch (e) {
-                console.error('[Interview] endInterview call failed:', e);
-            }
+            } catch (e) {}
 
             this.cleanup();
         },
 
+        injectWrapUp() {
+            if (!this.voiceSocket || this.voiceSocket.readyState !== WebSocket.OPEN) return;
+
+            // 1. Update the system prompt — tell the AI to stop asking questions NOW
+            this.voiceSocket.send(JSON.stringify({
+                type: 'UpdatePrompt',
+                prompt: `\n\nIMPORTANT: The time for this interview has run out. STOP asking questions immediately. Do NOT ask any more follow-up questions. Say a brief closing statement: "Thank you for your time. This concludes our interview. We've reached the end of our session." Keep it to 1-2 sentences maximum. Do not wait for the candidate to respond.`
+            }));
+
+            // 2. If the AI isn't currently speaking, try to inject the goodbye immediately
+            if (!this.isAiSpeaking && !this.isProcessing) {
+                this.injectGoodbyeMessage();
+            }
+        },
+
+        injectGoodbyeMessage() {
+            if (!this.voiceSocket || this.voiceSocket.readyState !== WebSocket.OPEN) return;
+            if (this.interviewConcluding) return; // Already finalizing
+
+            this.voiceSocket.send(JSON.stringify({
+                type: 'InjectAgentMessage',
+                message: 'Thank you for your time. This concludes our interview.'
+            }));
+        },
+
         cleanup() {
-            console.log('[Interview] Cleanup started');
             if (this.timerInterval) { clearInterval(this.timerInterval); this.timerInterval = null; }
+            if (this.freeTrialInterval) { clearInterval(this.freeTrialInterval); this.freeTrialInterval = null; }
+            if (this.timeLimitGraceTimer) { clearTimeout(this.timeLimitGraceTimer); this.timeLimitGraceTimer = null; }
 
             if (this.voiceSocket) {
                 this.voiceSocket.onclose = null;
@@ -333,7 +396,6 @@ document.addEventListener('alpine:init', () => {
             if (this.audioContext) { try { this.audioContext.close(); } catch (e) {} this.audioContext = null; }
             if (this.mediaStream) { this.mediaStream.getTracks().forEach(t => t.stop()); this.mediaStream = null; }
             if (this.playbackCtx) { try { this.playbackCtx.close(); } catch (e) {} this.playbackCtx = null; }
-            console.log('[Interview] Cleanup done');
         },
     }));
 });

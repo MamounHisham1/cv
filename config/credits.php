@@ -3,13 +3,13 @@
 return [
     'token_rate' => 1,
     'token_unit' => 1000,
-    'markup' => 3,
+    'low_balance_threshold' => 5,
 
     'minimum_charge' => [
         'ai_evaluation' => 1,
         'ai_parse' => 1,
         'ai_builder_message' => 1,
-        'ai_interview' => 3,
+        'ai_interview' => 5,
     ],
 
     'plans' => [

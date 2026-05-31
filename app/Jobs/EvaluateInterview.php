@@ -26,6 +26,13 @@ class EvaluateInterview implements ShouldQueue
         public int $sessionId,
     ) {}
 
+    /**
+     * Evaluate the interview transcript and generate a scored assessment.
+     *
+     * Note: Credit charging for interviews happens in AiInterviewer::endInterview()
+     * as a flat charge (config credits.minimum_charge.ai_interview). The evaluation
+     * cost is bundled into that single charge — no separate deduction happens here.
+     */
     public function handle(): void
     {
         $session = InterviewSession::with(['messages', 'cv', 'user'])->find($this->sessionId);
@@ -101,6 +108,14 @@ class EvaluateInterview implements ShouldQueue
                 'strengths' => $evaluationData['strengths'],
                 'improvements' => $evaluationData['improvements'],
             ]);
+
+            // --- Usage-based charging (currently disabled — flat charge is used instead) ---
+            // To switch to usage-based charging for evaluations, add the evaluation agent's
+            // Usage object response and calculate credits with:
+            //   $credits = $creditManager->calculateFromUsage($usage, 'ai_interview_evaluation');
+            // Then add 'ai_interview_evaluation' to config/credits.minimum_charge.
+            // For now, the flat charge in config('credits.minimum_charge.ai_interview') covers both
+            // the interview session and its evaluation.
 
             $user = User::find($this->userId);
 

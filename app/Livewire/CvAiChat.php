@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Ai\Agents\CvBuilderAgent;
+use App\Livewire\Concerns\RequiresCredits;
 use App\Models\Cv;
 use App\Services\CreditManager;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,8 @@ use Livewire\Component;
 
 class CvAiChat extends Component
 {
+    use RequiresCredits;
+
     public ?Cv $cv = null;
 
     public array $messages = [];
@@ -109,12 +112,11 @@ class CvAiChat extends Component
     {
         try {
             $creditManager = app(CreditManager::class);
-            $user = Auth::user();
 
-            $freeMessagesRemaining = $creditManager->getFreeBuilderMessagesRemaining($user, $this->conversationId);
+            $freeMessagesRemaining = $this->freeBuilderMessagesRemaining($this->conversationId);
             $isFreeMessage = $freeMessagesRemaining > 0;
 
-            if (! $isFreeMessage && ! $creditManager->hasCredits($user)) {
+            if (! $isFreeMessage && ! $this->hasAnyCredits()) {
                 $this->messages[] = [
                     'role' => 'assistant',
                     'content' => "You're out of credits. Invite friends to earn more, or upgrade your plan to continue building your CV.",
@@ -122,7 +124,7 @@ class CvAiChat extends Component
                     'is_error' => true,
                 ];
 
-                $this->dispatch('insufficient-credits');
+                $this->dispatchInsufficientCredits();
 
                 return;
             }
@@ -150,8 +152,8 @@ class CvAiChat extends Component
             ];
 
             if (! $isFreeMessage && $response->usage) {
-                $credits = $creditManager->calculateFromUsage($response->usage, 'ai_builder_message');
-                $creditManager->deduct($user, $credits, 'ai_builder_message', null, [
+                $credits = $this->calculateCreditsFromUsage($response->usage, 'ai_builder_message');
+                $creditManager->deduct(Auth::user(), $credits, 'ai_builder_message', null, [
                     'prompt_tokens' => $response->usage->promptTokens,
                     'completion_tokens' => $response->usage->completionTokens,
                     'conversation_id' => $this->conversationId,

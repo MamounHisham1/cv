@@ -16,6 +16,7 @@ class CreditBalance extends Model
         'balance',
         'plan',
         'monthly_credits_reset_at',
+        'free_trial_interview_used',
     ];
 
     protected function casts(): array
@@ -23,6 +24,7 @@ class CreditBalance extends Model
         return [
             'balance' => 'integer',
             'monthly_credits_reset_at' => 'datetime',
+            'free_trial_interview_used' => 'boolean',
         ];
     }
 
@@ -41,5 +43,15 @@ class CreditBalance extends Model
     public function transactions(): HasMany
     {
         return $this->hasMany(CreditTransaction::class, 'user_id', 'user_id');
+    }
+
+    public function hasUsedFreeTrialInterview(): bool
+    {
+        return $this->free_trial_interview_used;
+    }
+
+    public function hasPaidSubscription(): bool
+    {
+        return in_array($this->plan, ['pro', 'enterprise']);
     }
 }

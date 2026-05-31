@@ -55,6 +55,12 @@ class AiInterviewer extends Component
 
     public ?int $pendingEvaluationId = null;
 
+    public bool $isFreeTrial = false;
+
+    public int $freeTrialSeconds = 300;
+
+    public bool $gracePeriodActive = false;
+
     // System prompt built from CV data for the Deepgram Voice Agent
     public string $systemPrompt = '';
 
@@ -65,6 +71,14 @@ class AiInterviewer extends Component
     public function cvs()
     {
         return Auth::user()->cvs()->latest()->get();
+    }
+
+    #[Computed]
+    public function interviewAccess(): array
+    {
+        $creditManager = app(CreditManager::class);
+
+        return $creditManager->canStartInterview(Auth::user());
     }
 
     public function mount()
@@ -120,11 +134,16 @@ class AiInterviewer extends Component
             abort(403);
         }
 
-        if (! $creditManager->canPerformOperation(Auth::user(), 'ai_interview')) {
-            $this->addError('credits', 'Not enough credits to start an interview.');
+        // Check if user can start an interview (free trial or paid)
+        $interviewCheck = $creditManager->canStartInterview(Auth::user());
+
+        if (! $interviewCheck['allowed']) {
+            $this->addError('credits', $interviewCheck['reason']);
 
             return;
         }
+
+        $isFreeTrial = $interviewCheck['is_free_trial'];
 
         $this->session = InterviewSession::create([
             'user_id' => Auth::id(),
@@ -134,12 +153,24 @@ class AiInterviewer extends Component
             'status' => 'active',
             'started_at' => now(),
             'conversation_id' => Str::uuid()->toString(),
+            'is_free_trial' => $isFreeTrial,
+            'time_limit_at' => $isFreeTrial ? now()->addMinutes(5) : null,
         ]);
+
+        if ($isFreeTrial) {
+            $creditManager->markFreeTrialUsed(Auth::user());
+        }
+
+        $this->isFreeTrial = $isFreeTrial;
+        $this->freeTrialSeconds = 60; // 1 minute (testing — change back to 300 for prod)
+        $this->gracePeriodActive = false;
 
         $this->state = 'active';
         $this->messages = [];
         $this->systemPrompt = $this->buildSystemPrompt($cv);
-        $this->greeting = $this->buildGreeting($cv);
+        $this->greeting = $isFreeTrial
+            ? $this->buildFreeTrialGreeting($cv)
+            : $this->buildGreeting($cv);
     }
 
     public function saveMessage(string $role, string $content)
@@ -185,9 +216,11 @@ class AiInterviewer extends Component
         ]);
 
         try {
-            $creditManager->deduct(Auth::user(), config('credits.minimum_charge.ai_interview', 3), 'ai_interview', clone $this->session, [
-                'interview_type' => $this->session->interview_type,
-            ]);
+            if (! $this->session->is_free_trial) {
+                $creditManager->deduct(Auth::user(), config('credits.minimum_charge.ai_interview', 3), 'ai_interview', clone $this->session, [
+                    'interview_type' => $this->session->interview_type,
+                ]);
+            }
         } catch (\Throwable $e) {
             logger()->error('Credit deduction failed on interview end: '.$e->getMessage());
         }
@@ -284,6 +317,9 @@ class AiInterviewer extends Component
         $this->shouldPoll = false;
         $this->evalErrorMessage = null;
         $this->pendingEvaluationId = null;
+        $this->isFreeTrial = false;
+        $this->freeTrialSeconds = 300;
+        $this->gracePeriodActive = false;
     }
 
     public function addMessage(string $role, string $content)
@@ -313,6 +349,24 @@ class AiInterviewer extends Component
             : '';
 
         return "Hello {$firstName}! Welcome to your mock interview{$title}.{$experienceContext} Let's jump right in — could you tell me a bit about yourself and what you're looking for in your next role?";
+    }
+
+    protected function buildFreeTrialGreeting(Cv $cv): string
+    {
+        $pi = $cv->personal_info;
+        $firstName = $pi['first_name'] ?? 'there';
+        $title = $cv->title ? " as a {$cv->title}" : '';
+
+        return "Hello {$firstName}! Welcome to your free practice interview{$title}. You have 5 minutes to experience how our AI interviews work. Let's get started — could you tell me a bit about yourself?";
+    }
+
+    public function handleTimeLimitReached(): void
+    {
+        if (! $this->session || $this->state !== 'active' || ! $this->session->is_free_trial) {
+            return;
+        }
+
+        $this->gracePeriodActive = true;
     }
 
     protected function buildSystemPrompt(Cv $cv): string

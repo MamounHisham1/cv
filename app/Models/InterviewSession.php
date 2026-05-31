@@ -23,6 +23,8 @@ class InterviewSession extends Model
         'total_questions',
         'duration_seconds',
         'conversation_id',
+        'is_free_trial',
+        'time_limit_at',
         'started_at',
         'completed_at',
     ];
@@ -34,6 +36,8 @@ class InterviewSession extends Model
             'completed_at' => 'datetime',
             'total_questions' => 'integer',
             'duration_seconds' => 'integer',
+            'is_free_trial' => 'boolean',
+            'time_limit_at' => 'datetime',
         ];
     }
 
@@ -70,6 +74,20 @@ class InterviewSession extends Model
     public function isSetup(): bool
     {
         return $this->status === 'setup';
+    }
+
+    public function isFreeTrial(): bool
+    {
+        return $this->is_free_trial;
+    }
+
+    public function isTimeLimitReached(): bool
+    {
+        if (! $this->time_limit_at) {
+            return false;
+        }
+
+        return now()->isAfter($this->time_limit_at);
     }
 
     /**
