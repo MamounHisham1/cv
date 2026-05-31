@@ -162,7 +162,7 @@ class AiInterviewer extends Component
         }
 
         $this->isFreeTrial = $isFreeTrial;
-        $this->freeTrialSeconds = 60; // 1 minute (testing — change back to 180 for prod)
+        $this->freeTrialSeconds = 180;
         $this->gracePeriodActive = false;
 
         $this->state = 'active';
