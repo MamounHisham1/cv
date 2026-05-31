@@ -27,3 +27,4 @@ yarn-error.log
 resume_dataset.csv
 master_resumes.jsonl
 *.pdf
+.claude/worktrees/

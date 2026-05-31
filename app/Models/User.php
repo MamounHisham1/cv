@@ -91,6 +91,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(CreditTransaction::class);
     }
 
+    public function sentMails(): HasMany
+    {
+        return $this->hasMany(SentMail::class);
+    }
+
     public function referralCode(): HasOne
     {
         return $this->hasOne(ReferralCode::class);

@@ -21,11 +21,14 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()
+                    ->label('User')
+                    ->state(fn ($record) => "{$record->name} — {$record->email}")
+                    ->searchable(['name', 'email'])
                     ->sortable(),
                 TextColumn::make('email')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('email_verified_at')
                     ->label('Verified')
                     ->boolean()

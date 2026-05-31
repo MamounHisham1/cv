@@ -33,6 +33,22 @@ export const FONT = {
   mono: "ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace",
 } as const;
 
+export const LAYOUT_V2_AR = {
+  width: 1080,
+  height: 1920,
+  fps: 30,
+  duration: 97,
+  totalFrames: 2910,
+} as const;
+
+export const LAYOUT_V2 = {
+  width: 1080,
+  height: 1920,
+  fps: 30,
+  duration: 88,
+  totalFrames: 2640,
+} as const;
+
 export const LAYOUT = {
   width: 1080,
   height: 1920,
