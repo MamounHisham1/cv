@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('recipient_email');
             $table->string('subject');
             $table->longText('body');
-            $table->string('template')->nullable();
             $table->string('status')->default('sent');
             $table->string('failed_reason')->nullable();
             $table->timestamps();

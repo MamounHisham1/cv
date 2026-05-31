@@ -88,30 +88,16 @@ class SendMail extends Page
                     $subject = $data['subject'];
                     $template = $data['template'] ?? null;
 
-                    $mailable = new AdminMail(
-                        emailSubject: $subject,
-                        emailBody: $body,
-                        template: $template,
-                    );
+                    $users = $data['recipientType'] === 'all'
+                        ? User::all()
+                        : collect([User::findOrFail($data['userId'])]);
 
-                    if ($data['recipientType'] === 'all') {
-                        User::chunk(100, function ($users) use ($mailable, $subject, $body, $template) {
-                            foreach ($users as $user) {
-                                Mail::to($user)->send($mailable);
-
-                                SentMail::create([
-                                    'user_id' => $user->id,
-                                    'recipient_email' => $user->email,
-                                    'subject' => $subject,
-                                    'body' => $body,
-                                    'template' => $template,
-                                    'status' => SentMail::STATUS_SENT,
-                                ]);
-                            }
-                        });
-                    } else {
-                        $user = User::findOrFail($data['userId']);
-                        Mail::to($user)->send($mailable);
+                    foreach ($users as $user) {
+                        Mail::to($user)->send(new AdminMail(
+                            emailSubject: $subject,
+                            emailBody: $body,
+                            template: $template,
+                        ));
 
                         SentMail::create([
                             'user_id' => $user->id,
