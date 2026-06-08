@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\VfcashWebhookController;
 use App\Livewire\AiInterviewer;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
@@ -10,6 +11,7 @@ use App\Livewire\CvEvaluator;
 use App\Livewire\EvaluationHistory;
 use App\Livewire\InterviewHistory;
 use App\Livewire\ReferralDashboard;
+use App\Livewire\Upgrade;
 use App\Models\Cv;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,6 +41,8 @@ Route::get('/otp/verify', function () {
 
     return view('auth.otp-verify');
 })->name('otp.verify');
+
+Route::post('/webhooks/vfcash', VfcashWebhookController::class)->name('webhooks.vfcash');
 
 Route::middleware(['auth', 'impersonate'])->group(function () {
     Route::get('/impersonate/{user}', [ImpersonateController::class, 'start'])
@@ -71,6 +75,7 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
     Route::get('/evaluations/history', EvaluationHistory::class)->name('evaluations.history');
     Route::get('/referrals', ReferralDashboard::class)->name('referrals');
     Route::get('/credits', CreditHistory::class)->name('credits.history');
+    Route::get('/upgrade', Upgrade::class)->name('upgrade');
     Route::get('/preview/{cv}', function (Cv $cv) {
         if ($cv->user_id !== auth()->id()) {
             abort(403);
