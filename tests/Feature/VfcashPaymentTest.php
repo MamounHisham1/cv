@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 describe('VfcashService', function () {
     beforeEach(function () {
         $this->service = app(VfcashService::class);
-        config(['vfcash.api_key' => 'test_key']);
+        config(['vfcash.api_key' => 'test_key', 'vfcash.webhook_secret' => 'test_secret']);
     });
 
     describe('createPayment', function () {
@@ -25,7 +25,7 @@ describe('VfcashService', function () {
                 ->and($payment->type)->toBe('credit_topup')
                 ->and($payment->item_key)->toBe('topup_50')
                 ->and($payment->credits_granted)->toBe(50)
-                ->and((float) $payment->amount_egp)->toBe(60.0)
+                ->and((float) $payment->amount_egp)->toBe(250.0)
                 ->and($payment->customer_phone)->toBe('01012345678')
                 ->and($payment->vfcash_payment_id)->toBe(42);
         });
@@ -198,13 +198,13 @@ describe('VfcashService', function () {
 
 describe('VfcashWebhookController', function () {
     beforeEach(function () {
-        config(['vfcash.api_key' => 'test_key']);
+        config(['vfcash.api_key' => 'test_key', 'vfcash.webhook_secret' => 'test_secret']);
     });
 
     it('accepts a valid payment.confirmed webhook', function () {
         $user = User::factory()->create();
         CreditBalance::factory()->create(['user_id' => $user->id, 'balance' => 0, 'plan' => 'free']);
-        $payment = VfcashPayment::factory()->create(['user_id' => $user->id, 'credits_granted' => 50, 'amount_egp' => 60, 'status' => 'pending']);
+        $payment = VfcashPayment::factory()->create(['user_id' => $user->id, 'credits_granted' => 50, 'amount_egp' => 250, 'status' => 'pending']);
 
         $payload = [
             'event' => 'payment.confirmed',

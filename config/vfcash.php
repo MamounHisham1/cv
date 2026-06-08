@@ -33,19 +33,19 @@ return [
     'topups' => [
         'topup_50' => [
             'name' => 'Starter',
-            'price_egp' => 60,
+            'price_egp' => 250,
             'credits' => 50,
             'badge' => null,
         ],
         'topup_120' => [
             'name' => 'Standard',
-            'price_egp' => 120,
+            'price_egp' => 480,
             'credits' => 120,
             'badge' => 'Popular',
         ],
         'topup_300' => [
             'name' => 'Pro Pack',
-            'price_egp' => 250,
+            'price_egp' => 1050,
             'credits' => 300,
             'badge' => 'Best Value',
         ],

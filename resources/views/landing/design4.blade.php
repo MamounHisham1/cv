@@ -702,35 +702,26 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach([
-                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['30 credits/month', 'AI voice mock interviews', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
-                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['100 credits/month', 'AI voice mock interviews', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => true],
-                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Coming Soon', 'features' => ['500 credits/month', 'AI voice mock interviews', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => true]
+                        ['name' => 'Free', 'price' => '0', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Get Started', 'btn_href' => route('register'), 'features' => ['30 credits/month', 'AI voice mock interviews', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
+                        ['name' => 'Pro', 'price' => '300', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Upgrade to Pro', 'btn_href' => route('upgrade'), 'features' => ['100 credits/month', 'AI voice mock interviews', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => false],
+                        ['name' => 'Enterprise', 'price' => '1,000', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Upgrade to Enterprise', 'btn_href' => route('upgrade'), 'features' => ['500 credits/month', 'AI voice mock interviews', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false]
                     ] as $plan)
                     <div class="relative group {{ $plan['popular'] ? 'md:-mt-4 md:mb-[-1rem]' : '' }}">
                         @if($plan['popular'])
                         <div class="absolute inset-0 bg-gradient-to-b from-emerald-500/20 to-emerald-500/5 rounded-2xl blur-xl"></div>
                         @endif
-                        <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 border {{ $plan['popular'] ? 'border-emerald-500/30' : 'border-white/10' }} hover:border-emerald-500/30 transition-all duration-500 {{ !$plan['coming_soon'] ? 'hover:-translate-y-2' : 'opacity-90' }} h-full flex flex-col">
-                            @if($plan['popular'] && !$plan['coming_soon'])
+                        <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 border {{ $plan['popular'] ? 'border-emerald-500/30' : 'border-white/10' }} hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
+                            @if($plan['popular'])
                             <div class="absolute -top-3 left-1/2 -translate-x-1/2">
                                 <span class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">Most Popular</span>
-                            </div>
-                            @endif
-                            @if($plan['coming_soon'])
-                            <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                                <span class="bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-purple-500/30">Coming Soon</span>
                             </div>
                             @endif
                             <h3 class="text-xl font-bold text-white mb-1">{{ $plan['name'] }}</h3>
                             <div class="mt-4 mb-8">
                                 <span class="text-5xl font-extrabold text-white">{{ $plan['price'] }}</span>
-                                <span class="text-zinc-500">{{ $plan['period'] }}</span>
+                                <span class="text-zinc-500">{{ $plan['currency'] }}{{ $plan['period'] }}</span>
                             </div>
-                            @if($plan['coming_soon'])
-                            <div class="w-full mb-8 py-3 text-center text-sm font-semibold text-zinc-500 rounded-lg border border-white/10 bg-white/5 cursor-not-allowed">{{ $plan['btn'] }}</div>
-                            @else
-                            <x-ui::button variant="primary" :href="route('register')" class="w-full mb-8 py-3">{{ $plan['btn'] }}</x-ui::button>
-                            @endif
+                            <x-ui::button variant="primary" :href="$plan['btn_href']" class="w-full mb-8 py-3">{{ $plan['btn'] }}</x-ui::button>
                             <ul class="space-y-3 mt-auto">
                                 @foreach($plan['features'] as $f)
                                 <li class="flex items-start gap-3 text-sm text-zinc-300">
