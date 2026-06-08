@@ -96,7 +96,7 @@
         <div>
             <h2 class="mb-2 text-lg font-semibold text-white">Credit Top-ups</h2>
             <p class="mb-6 text-sm text-zinc-500">One-time purchase. Credits are added instantly. No plan change required.</p>
-            <div class="grid gap-4 sm:grid-cols-3">
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($topups as $key => $topup)
                     @php $hasPending = $pendingPaymentId !== null; @endphp
                     <div class="relative rounded-xl border {{ $topup['badge'] === 'Best Value' ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-white/10 bg-white/5' }} p-6 backdrop-blur-xl transition-colors hover:border-white/20">

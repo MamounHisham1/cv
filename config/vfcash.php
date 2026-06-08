@@ -31,6 +31,12 @@ return [
     ],
 
     'topups' => [
+        'topup_4' => [
+            'name' => 'Quick',
+            'price_egp' => 20,
+            'credits' => 4,
+            'badge' => null,
+        ],
         'topup_50' => [
             'name' => 'Starter',
             'price_egp' => 250,
