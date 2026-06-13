@@ -39,11 +39,7 @@ class VfcashService
             'expires_at' => now()->addHours(24),
         ]);
 
-        $response = Http::baseUrl(config('vfcash.api_url'))
-            ->withToken(config('vfcash.api_key'))
-            ->acceptJson()
-            ->contentType('application/json')
-            ->post('/payments', [
+        $response = $this->createHttp()->post('/payments', [
                 'amount' => (float) $item['price_egp'],
                 'customer_phone' => $customerPhone,
                 'customer_name' => $user->name,
@@ -77,14 +73,7 @@ class VfcashService
      */
     public function handleConfirmed(array $data): ?VfcashPayment
     {
-        $metadata = $data['metadata'] ?? [];
-        $paymentId = $metadata['vfcash_payment_id'] ?? null;
-
-        if (! $paymentId) {
-            return null;
-        }
-
-        $payment = VfcashPayment::find($paymentId);
+        $payment = $this->resolvePendingPayment($data);
 
         if (! $payment || ! $payment->isPending()) {
             return $payment;
@@ -128,14 +117,7 @@ class VfcashService
      */
     public function handleExpired(array $data): ?VfcashPayment
     {
-        $metadata = $data['metadata'] ?? [];
-        $paymentId = $metadata['vfcash_payment_id'] ?? null;
-
-        if (! $paymentId) {
-            return null;
-        }
-
-        $payment = VfcashPayment::find($paymentId);
+        $payment = $this->resolvePendingPayment($data);
 
         if ($payment && $payment->isPending()) {
             $payment->update(['status' => 'expired']);
@@ -149,20 +131,30 @@ class VfcashService
      */
     public function handleCancelled(array $data): ?VfcashPayment
     {
-        $metadata = $data['metadata'] ?? [];
-        $paymentId = $metadata['vfcash_payment_id'] ?? null;
-
-        if (! $paymentId) {
-            return null;
-        }
-
-        $payment = VfcashPayment::find($paymentId);
+        $payment = $this->resolvePendingPayment($data);
 
         if ($payment && $payment->isPending()) {
             $payment->update(['status' => 'cancelled']);
         }
 
         return $payment;
+    }
+
+    /**
+     * Resolve the pending payment referenced by a webhook payload.
+     *
+     * @return ?VfcashPayment The payment if a valid id was present, null otherwise.
+     *                       Does NOT check isPending() — callers decide that.
+     */
+    private function resolvePendingPayment(array $data): ?VfcashPayment
+    {
+        $paymentId = $data['metadata']['vfcash_payment_id'] ?? null;
+
+        if (! $paymentId) {
+            return null;
+        }
+
+        return VfcashPayment::find($paymentId);
     }
 
     /**
