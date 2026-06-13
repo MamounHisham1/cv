@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
 use Laravel\Ai\Embeddings;
 use Laravel\Ai\Enums\Lab;
-use Qdrant\Config;
-use Qdrant\Http\Transport;
 use Qdrant\Models\Filter\Condition\MatchString;
 use Qdrant\Models\Filter\Filter;
 use Qdrant\Models\PointsStruct;
@@ -15,32 +12,14 @@ use Qdrant\Models\Request\CreateCollection;
 use Qdrant\Models\Request\SearchRequest;
 use Qdrant\Models\Request\VectorParams;
 use Qdrant\Models\VectorStruct;
-use Qdrant\Qdrant;
 
-class ResumeVectorStore
+class ResumeVectorStore extends VectorStore
 {
     private const COLLECTION = 'resume_samples';
 
     private const VECTOR_SIZE = 768;
 
     private const EMBEDDING_MODEL = 'mxbai-embed-large';
-
-    private ?Qdrant $client = null;
-
-    public function __construct(
-        private readonly ?string $qdrantUrl = null,
-        private readonly ?string $qdrantApiKey = null,
-    ) {}
-
-    private function getUrl(): string
-    {
-        return $this->qdrantUrl ?? config('services.qdrant.url', 'http://localhost:6333');
-    }
-
-    private function getApiKey(): string
-    {
-        return $this->qdrantApiKey ?? config('services.qdrant.api_key', '');
-    }
 
     public function ensureCollectionExists(): void
     {
@@ -102,43 +81,35 @@ class ResumeVectorStore
      */
     public function searchByEmbedding(array $embedding, int $limit = 5, ?string $role = null, ?string $source = null): array
     {
-        try {
-            $searchRequest = new SearchRequest(new VectorStruct($embedding));
-            $searchRequest->setLimit($limit);
-            $searchRequest->setWithPayload(true);
+        $searchRequest = new SearchRequest(new VectorStruct($embedding));
+        $searchRequest->setLimit($limit);
+        $searchRequest->setWithPayload(true);
 
-            $filter = new Filter;
-            if ($role) {
-                $filter->addMust(new MatchString('role', $role));
-            }
-            if ($source) {
-                $filter->addMust(new MatchString('source', $source));
-            }
-            if ($role || $source) {
-                $searchRequest->setFilter($filter);
-            }
-
-            $response = $this->client()
-                ->collections(self::COLLECTION)
-                ->points()
-                ->search($searchRequest);
-
-            $data = $response->__toArray();
-            $results = $data['result'] ?? [];
-
-            return collect($results)->map(fn (array $result): array => [
-                'role' => $result['payload']['role'] ?? '',
-                'source' => $result['payload']['source'] ?? '',
-                'content' => $result['payload']['content'] ?? '',
-                'score' => round($result['score'], 4),
-            ])->values()->toArray();
-        } catch (\Throwable $e) {
-            Log::warning('ResumeVectorStore: Search by embedding failed', [
-                'message' => $e->getMessage(),
-            ]);
-
-            return [];
+        $filter = new Filter;
+        if ($role) {
+            $filter->addMust(new MatchString('role', $role));
         }
+        if ($source) {
+            $filter->addMust(new MatchString('source', $source));
+        }
+        if ($role || $source) {
+            $searchRequest->setFilter($filter);
+        }
+
+        $response = $this->client()
+            ->collections(self::COLLECTION)
+            ->points()
+            ->search($searchRequest);
+
+        $data = $response->__toArray();
+        $results = $data['result'] ?? [];
+
+        return collect($results)->map(fn (array $result): array => [
+            'role' => $result['payload']['role'] ?? '',
+            'source' => $result['payload']['source'] ?? '',
+            'content' => $result['payload']['content'] ?? '',
+            'score' => round($result['score'], 4),
+        ])->values()->toArray();
     }
 
     public function search(string $query, int $limit = 5, ?string $role = null, ?string $source = null): array
@@ -190,29 +161,5 @@ class ResumeVectorStore
         $response = $this->client()->collections(self::COLLECTION)->info();
 
         return $response->__toArray()['result'] ?? null;
-    }
-
-    private function client(): Qdrant
-    {
-        if ($this->client) {
-            return $this->client;
-        }
-
-        $config = new Config($this->getUrl());
-
-        if ($this->getApiKey()) {
-            $config->setApiKey($this->getApiKey());
-        }
-
-        $httpClient = new Client;
-        $transport = new Transport($httpClient, $config);
-        $this->client = new Qdrant($transport);
-
-        return $this->client;
-    }
-
-    private function hashId(string $id): int
-    {
-        return abs(crc32($id));
     }
 }
