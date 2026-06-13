@@ -40,18 +40,18 @@ class VfcashService
         ]);
 
         $response = $this->createHttp()->post('/payments', [
-                'amount' => (float) $item['price_egp'],
-                'customer_phone' => $customerPhone,
-                'customer_name' => $user->name,
-                'description' => $item['name'].($type === 'plan_upgrade' ? ' Plan Upgrade' : ' Credit Pack'),
-                'metadata' => [
-                    'vfcash_payment_id' => $payment->id,
-                    'user_id' => (string) $user->id,
-                    'type' => $type,
-                    'item_key' => $itemKey,
-                ],
-                'expires_in' => 86400,
-            ]);
+            'amount' => (float) $item['price_egp'],
+            'customer_phone' => $customerPhone,
+            'customer_name' => $user->name,
+            'description' => $item['name'].($type === 'plan_upgrade' ? ' Plan Upgrade' : ' Credit Pack'),
+            'metadata' => [
+                'vfcash_payment_id' => $payment->id,
+                'user_id' => (string) $user->id,
+                'type' => $type,
+                'item_key' => $itemKey,
+            ],
+            'expires_in' => 86400,
+        ]);
 
         if ($response->successful()) {
             $data = $response->json();
@@ -117,13 +117,7 @@ class VfcashService
      */
     public function handleExpired(array $data): ?VfcashPayment
     {
-        $payment = $this->resolvePendingPayment($data);
-
-        if ($payment && $payment->isPending()) {
-            $payment->update(['status' => 'expired']);
-        }
-
-        return $payment;
+        return $this->markPendingPayment($data, 'expired');
     }
 
     /**
@@ -131,10 +125,21 @@ class VfcashService
      */
     public function handleCancelled(array $data): ?VfcashPayment
     {
+        return $this->markPendingPayment($data, 'cancelled');
+    }
+
+    /**
+     * Resolve the pending payment referenced by a webhook payload and,
+     * if it is still pending, mark it with the given status.
+     *
+     * @return ?VfcashPayment The payment if a valid id was present, null otherwise.
+     */
+    private function markPendingPayment(array $data, string $status): ?VfcashPayment
+    {
         $payment = $this->resolvePendingPayment($data);
 
         if ($payment && $payment->isPending()) {
-            $payment->update(['status' => 'cancelled']);
+            $payment->update(['status' => $status]);
         }
 
         return $payment;
@@ -144,7 +149,7 @@ class VfcashService
      * Resolve the pending payment referenced by a webhook payload.
      *
      * @return ?VfcashPayment The payment if a valid id was present, null otherwise.
-     *                       Does NOT check isPending() — callers decide that.
+     *                        Does NOT check isPending() — callers decide that.
      */
     private function resolvePendingPayment(array $data): ?VfcashPayment
     {
