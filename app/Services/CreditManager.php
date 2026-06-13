@@ -27,11 +27,7 @@ class CreditManager
     public function add(User $user, int $credits, string $type, array $metadata = []): CreditTransaction
     {
         return DB::transaction(function () use ($user, $credits, $type, $metadata) {
-            $balance = CreditBalance::where('user_id', $user->id)->lockForUpdate()->first();
-
-            if (! $balance) {
-                $balance = $this->createBalance($user);
-            }
+            $balance = $this->lockedBalance($user);
 
             $balance->increment('balance', $credits);
 
@@ -55,11 +51,7 @@ class CreditManager
     public function deduct(User $user, int $credits, string $type, ?object $reference = null, array $metadata = []): CreditTransaction
     {
         $transaction = DB::transaction(function () use ($user, $credits, $type, $reference, $metadata) {
-            $balance = CreditBalance::where('user_id', $user->id)->lockForUpdate()->first();
-
-            if (! $balance) {
-                $balance = $this->createBalance($user);
-            }
+            $balance = $this->lockedBalance($user);
 
             $actualDeduction = min($credits, $balance->balance);
             $balance->decrement('balance', $actualDeduction);
@@ -91,11 +83,7 @@ class CreditManager
     public function reserve(User $user, int $amount, string $operationType, ?object $reference = null, array $metadata = []): CreditTransaction
     {
         return DB::transaction(function () use ($user, $amount, $operationType, $reference, $metadata) {
-            $balance = CreditBalance::where('user_id', $user->id)->lockForUpdate()->first();
-
-            if (! $balance) {
-                $balance = $this->createBalance($user);
-            }
+            $balance = $this->lockedBalance($user);
 
             if ($balance->balance < $amount) {
                 throw new InsufficientCreditsException(
@@ -308,11 +296,7 @@ class CreditManager
     public function grantMonthlyCredits(User $user): CreditTransaction
     {
         return DB::transaction(function () use ($user) {
-            $balance = CreditBalance::where('user_id', $user->id)->lockForUpdate()->first();
-
-            if (! $balance) {
-                $balance = $this->createBalance($user);
-            }
+            $balance = $this->lockedBalance($user);
 
             $planConfig = config("credits.plans.{$balance->plan}", config('credits.plans.free'));
             $monthlyCredits = $planConfig['monthly_credits'] ?? 0;
@@ -369,6 +353,21 @@ class CreditManager
             'plan' => 'free',
             'monthly_credits_reset_at' => now(),
         ]);
+    }
+
+    /**
+     * Lock the user's credit balance row for update within a transaction,
+     * creating it on the fly if it does not yet exist.
+     */
+    private function lockedBalance(User $user): CreditBalance
+    {
+        $balance = CreditBalance::where('user_id', $user->id)->lockForUpdate()->first();
+
+        if (! $balance) {
+            $balance = $this->createBalance($user);
+        }
+
+        return $balance;
     }
 
     private function getPlanFreeBuilderMessages(User $user): ?int
