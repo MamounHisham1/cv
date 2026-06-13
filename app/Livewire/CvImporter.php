@@ -5,11 +5,8 @@ namespace App\Livewire;
 use App\Ai\Agents\CvParser;
 use App\Jobs\ExtractCvText;
 use App\Models\Cv;
-use App\Models\CvCertification;
-use App\Models\CvEducation;
-use App\Models\CvExperience;
-use App\Models\CvSkill;
 use App\Services\CreditManager;
+use App\Services\CvDataHydrator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -159,6 +156,7 @@ class CvImporter extends Component
             $response = $agent->prompt("Extract all data from this CV into the exact schema fields (first_name, last_name, email, phone, location, linkedin, github, website, title, summary, experiences, skills, educations, certifications). Return ONLY valid JSON with these exact keys:\n\n{$text}");
 
             $data = $response->structured;
+            $data = app(CvDataHydrator::class)->normalize($data);
 
             $personalInfo = [
                 'first_name' => $data['first_name'] ?? '',
@@ -183,10 +181,7 @@ class CvImporter extends Component
                 'status' => 'draft',
             ]);
 
-            $this->importExperiences($cv, $data['experiences'] ?? '[]');
-            $this->importSkills($cv, $data['skills'] ?? '[]');
-            $this->importEducations($cv, $data['educations'] ?? '[]');
-            $this->importCertifications($cv, $data['certifications'] ?? '[]');
+            app(CvDataHydrator::class)->import($cv, $data);
 
             $credits = $creditManager->calculateFromUsage($response->usage, 'ai_parse');
             $creditManager->deduct(Auth::user(), $credits, 'ai_parse', $cv, [
@@ -222,93 +217,6 @@ class CvImporter extends Component
         if ($this->tempFilePath) {
             Storage::delete($this->tempFilePath);
             $this->tempFilePath = null;
-        }
-    }
-
-    private function importExperiences(Cv $cv, string $json): void
-    {
-        $experiences = json_decode($json, true);
-
-        if (! is_array($experiences)) {
-            return;
-        }
-
-        foreach ($experiences as $index => $exp) {
-            CvExperience::create([
-                'cv_id' => $cv->id,
-                'company' => $exp['company'] ?? '',
-                'title' => $exp['title'] ?? '',
-                'location' => $exp['location'] ?? '',
-                'start_date' => $exp['start_date'] ?? null,
-                'end_date' => $exp['end_date'] ?? null,
-                'is_current' => $exp['is_current'] ?? false,
-                'description' => $exp['description'] ?? '',
-                'achievements' => $exp['achievements'] ?? [],
-                'sort_order' => $index,
-            ]);
-        }
-    }
-
-    private function importSkills(Cv $cv, string $json): void
-    {
-        $skills = json_decode($json, true);
-
-        if (! is_array($skills)) {
-            return;
-        }
-
-        foreach ($skills as $index => $skill) {
-            CvSkill::create([
-                'cv_id' => $cv->id,
-                'name' => $skill['name'] ?? '',
-                'category' => $skill['category'] ?? 'general',
-                'level' => $skill['level'] ?? 'intermediate',
-                'sort_order' => $index,
-            ]);
-        }
-    }
-
-    private function importEducations(Cv $cv, string $json): void
-    {
-        $educations = json_decode($json, true);
-
-        if (! is_array($educations)) {
-            return;
-        }
-
-        foreach ($educations as $index => $edu) {
-            CvEducation::create([
-                'cv_id' => $cv->id,
-                'institution' => $edu['institution'] ?? '',
-                'degree' => $edu['degree'] ?? '',
-                'field_of_study' => $edu['field_of_study'] ?? '',
-                'location' => $edu['location'] ?? '',
-                'start_date' => $edu['start_date'] ?? null,
-                'end_date' => $edu['end_date'] ?? null,
-                'is_current' => $edu['is_current'] ?? false,
-                'sort_order' => $index,
-            ]);
-        }
-    }
-
-    private function importCertifications(Cv $cv, string $json): void
-    {
-        $certifications = json_decode($json, true);
-
-        if (! is_array($certifications)) {
-            return;
-        }
-
-        foreach ($certifications as $index => $cert) {
-            CvCertification::create([
-                'cv_id' => $cv->id,
-                'name' => $cert['name'] ?? '',
-                'issuing_organization' => $cert['issuing_organization'] ?? '',
-                'issue_date' => $cert['issue_date'] ?? null,
-                'expiration_date' => $cert['expiration_date'] ?? null,
-                'credential_id' => $cert['credential_id'] ?? '',
-                'sort_order' => $index,
-            ]);
         }
     }
 
