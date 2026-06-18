@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
@@ -22,7 +23,7 @@ use NotificationChannels\WebPush\PushSubscription;
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
-    use HasDatabaseNotifications, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasDatabaseNotifications, HasFactory, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -37,6 +38,7 @@ class User extends Authenticatable implements FilamentUser
             'otp_expires_at' => 'datetime',
             'otp_verified_at' => 'datetime',
             'notification_preferences' => 'array',
+            'deleted_at' => 'datetime',
         ];
     }
 

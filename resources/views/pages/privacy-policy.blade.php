@@ -39,10 +39,15 @@
                             When you use SeratyAI, we collect the following types of information:
                         </p>
                         <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                            <li><strong class="text-zinc-900 dark:text-white">Account Information:</strong> Your name, email address, and authentication details when you create an account.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">CV Content:</strong> The resume data you enter, including work experience, education, skills, and personal details.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Account Information:</strong> Your name, email address, password (hashed), and authentication details when you create an account. If you register via Google OAuth, we also store your Google ID and avatar.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">CV Content:</strong> The resume data you enter, including work experience, education, skills, projects, certifications, languages, and personal details. CV text may be stored as embeddings in a vector database for AI-powered evaluation features.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Voice Data:</strong> When you use the AI voice interview feature, your speech is transcribed by Deepgram (a third-party speech-to-text service). We do not store voice recordings after transcription.</li>
                             <li><strong class="text-zinc-900 dark:text-white">Usage Data:</strong> Information about how you interact with our platform, including features used and actions taken.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Device Information:</strong> Browser type, operating system, and IP address for security and analytics purposes.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Device Information:</strong> Browser type, operating system, and IP address for security and fraud prevention purposes.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Referral Tracking:</strong> If you arrive via a referral link, a 6-character referral code is used to credit your referrer at registration.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">OTP Codes:</strong> During registration, a one-time password is generated and stored temporarily (expiring after 10 minutes) for email verification.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Communication Records:</strong> If you contact us via the contact form, we receive your name, email, and message. We also store records of emails sent to you for service delivery purposes.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">Push Subscriptions:</strong> If you enable browser notifications, your push subscription endpoint and encryption keys are stored to deliver those notifications.</li>
                         </ul>
                     </div>
 
@@ -63,7 +68,7 @@
                     <div>
                         <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Data Security</h2>
                         <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We take the security of your data seriously. All personal information is encrypted at rest and in transit using industry-standard protocols. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.
+                            We take the security of your data seriously. Data transmitted between your browser and our servers is encrypted using TLS/HTTPS. Session data is encrypted before storage. Passwords are hashed using bcrypt. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.
                         </p>
                     </div>
 
@@ -96,9 +101,16 @@
                     </div>
 
                     <div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Internal Access to Your Data</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            Our administrators have the ability to access user accounts for support, troubleshooting, and abuse prevention purposes. This access is logged and restricted to authorized personnel. Administrators may view CV data, account details, and usage history only when necessary to maintain the platform or respond to your requests.
+                        </p>
+                    </div>
+
+                    <div>
                         <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Changes to This Policy</h2>
                         <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on this page and updating the effective date. We encourage you to review this policy periodically.
+                            We may update this Privacy Policy from time to time. Significant changes will be posted on this page with an updated effective date. We encourage you to review this policy periodically.
                         </p>
                     </div>
                 </div>

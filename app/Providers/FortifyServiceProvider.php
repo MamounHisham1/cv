@@ -73,5 +73,17 @@ class FortifyServiceProvider extends ServiceProvider
 
             return Limit::perMinute(5)->by($throttleKey);
         });
+
+        // The custom OTP verification endpoint is a 6-digit code that would
+        // otherwise be brute-forceable. Cap attempts per pending-registration
+        // email + IP, and per IP globally (catches email-rotation attacks).
+        RateLimiter::for('otp-verify', function (Request $request) {
+            $email = $request->session()->get('pending_registration.email', 'guest');
+
+            return [
+                Limit::perMinutes(10, 5)->by('otp:'.$email.'|'.$request->ip()),
+                Limit::perMinute(15)->by('otp-ip:'.$request->ip()),
+            ];
+        });
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Mail\AdminMail;
+use App\Models\ContactSubmission;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class ContactForm extends Component
@@ -29,6 +32,19 @@ class ContactForm extends Component
     public function submit(): void
     {
         $validated = $this->validate();
+
+        $submission = ContactSubmission::create($validated);
+
+        // Notify the site admin at the configured admin email address.
+        // Uses raw Mail::to so this works regardless of whether the admin has
+        // a local user account.
+        Mail::to(
+            config('services.telegram.admin_email', 'mamounprogrammer@gmail.com')
+        )->send(new AdminMail(
+            emailSubject: 'Contact Form: '.$submission->subject,
+            emailBody: "From: {$submission->name} ({$submission->email})\n\n{$submission->message}",
+            template: null,
+        ));
 
         $this->sent = true;
 

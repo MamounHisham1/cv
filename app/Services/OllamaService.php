@@ -25,7 +25,9 @@ class OllamaService
     public function __construct()
     {
         $this->baseUrl = config('services.ollama.url', 'http://localhost:11434');
-        $this->model = config('services.ollama.model', env('OLLAMA_MODEL', 'llama3.1:8b'));
+        // Read the default model only from config; the config file may itself
+        // read env(), but env() outside config breaks under `config:cache`.
+        $this->model = config('services.ollama.model', 'llama3.1:8b');
         $this->timeout = config('services.ollama.timeout', 300);
     }
 
@@ -77,7 +79,7 @@ class OllamaService
         $this->prompt = '';
         $this->maxTokens = 1000;
         $this->temperature = 0.3;
-        $this->model = config('services.ollama.model', env('OLLAMA_MODEL', 'llama3.1:8b'));
+        $this->model = config('services.ollama.model', 'llama3.1:8b');
 
         return $this;
     }

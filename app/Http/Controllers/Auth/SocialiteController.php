@@ -48,9 +48,13 @@ class SocialiteController extends Controller
                     'google_id' => $googleUser->getId(),
                     'avatar' => $googleUser->getAvatar(),
                     'password' => bcrypt(Str::random(32)),
-                    'email_verified_at' => now(),
                     'otp_verified_at' => now(),
                 ]);
+
+                // email_verified_at is intentionally NOT mass-assignable, so
+                // set it explicitly after creation to mark the verified email
+                // Google vouched for.
+                $user->forceFill(['email_verified_at' => now()])->save();
 
                 // Grant credits for new Google OAuth users
                 app(ReferralService::class)->processReferralOnRegistration($user, null);

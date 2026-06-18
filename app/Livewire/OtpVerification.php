@@ -6,6 +6,7 @@ use App\Mail\OtpMail;
 use App\Models\User;
 use App\Services\ReferralService;
 use Carbon\Carbon;
+use Illuminate\Cache\RateLimiter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -72,8 +73,25 @@ class OtpVerification extends Component
         $this->dispatch('otp-sent');
     }
 
-    public function verify(): void
+    public function verify(RateLimiter $limiter): void
     {
+        // Rate-limit brute-force attempts against the 6-digit code.
+        // Keyed by pending email + IP, plus a per-IP global cap.
+        $email = Session::get('pending_registration.email', 'guest');
+        $emailKey = 'otp:'.$email.'|'.request()->ip();
+        $ipKey = 'otp-ip:'.request()->ip();
+
+        if ($limiter->tooManyAttempts($emailKey, 5) || $limiter->tooManyAttempts($ipKey, 15)) {
+            $seconds = max(
+                $limiter->availableIn($emailKey),
+                $limiter->availableIn($ipKey),
+            );
+
+            $this->addError('otp', 'Too many attempts. Try again in '.ceil($seconds / 60).' minute(s).');
+
+            return;
+        }
+
         $this->validate([
             'otp' => ['required', 'string', 'size:6'],
         ]);
@@ -90,6 +108,9 @@ class OtpVerification extends Component
         $otpExpiresAt = Session::get('otp_expires_at');
 
         if ($storedOtp !== $this->otp) {
+            $limiter->hit($emailKey, 600);   // 10-minute decay window
+            $limiter->hit($ipKey, 60);
+
             $this->addError('otp', 'Invalid verification code.');
 
             return;
@@ -100,6 +121,10 @@ class OtpVerification extends Component
 
             return;
         }
+
+        // Successful verification — clear any throttling state for this email.
+        $limiter->clear($emailKey);
+        $limiter->clear($ipKey);
 
         // Create the user now that OTP is verified
         // OTP verification also serves as email verification

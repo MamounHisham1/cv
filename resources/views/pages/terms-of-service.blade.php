@@ -71,7 +71,14 @@
                     <div>
                         <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Subscriptions and Payments</h2>
                         <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            Certain features of SeratyAI require a paid subscription. Subscription fees are billed in advance on a recurring basis. You may cancel your subscription at any time, and your access will continue until the end of the current billing period. Refunds are handled on a case-by-case basis at our discretion.
+                            Certain features of SeratyAI require a paid subscription or credit purchases. Subscription fees are billed in advance on a recurring basis. You may cancel your subscription by contacting us, and your access will continue until the end of the current billing period. Refunds are handled on a case-by-case basis at our discretion. Credit top-ups are non-refundable but do not expire.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Internal Data Access</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                            Our administrators may access user accounts for support, troubleshooting, abuse prevention, and platform maintenance. This access is logged and restricted to authorized personnel.
                         </p>
                     </div>
 
@@ -92,7 +99,7 @@
                     <div>
                         <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Changes to Terms</h2>
                         <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We reserve the right to modify these terms at any time. We will notify users of significant changes via email or through the platform. Continued use of the service after changes constitutes acceptance of the updated terms.
+                            We reserve the right to modify these terms at any time. Significant changes will be posted on this page with an updated effective date. Continued use of the service after changes constitutes acceptance of the updated terms.
                         </p>
                     </div>
                 </div>

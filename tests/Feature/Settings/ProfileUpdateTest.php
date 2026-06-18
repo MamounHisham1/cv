@@ -56,7 +56,9 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
+    // Deletion is now soft (30-day grace period per the Privacy Policy).
+    // The row must be trashed but still present until the daily sweeper runs.
+    expect($user->fresh()->deleted_at)->not->toBeNull();
     expect(auth()->check())->toBeFalse();
 });
 
