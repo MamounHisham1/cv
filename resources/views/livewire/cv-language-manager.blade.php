@@ -72,46 +72,28 @@
             </form>
         @endif
 
-        <div class="space-y-0">
+        <div class="space-y-2">
             @forelse($languages as $language)
-                <div class="timeline-item group">
-                    <div class="timeline-dot">
-                        <x-ui::icon name="globe" class="w-3 h-3 text-white" />
+                <div class="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-emerald-400/20 bg-emerald-500/10">
+                        <x-ui::icon name="globe" class="w-5 h-5 text-emerald-300" />
                     </div>
-                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4 transition-all duration-300 hover:border-emerald-400/30 hover:bg-white/10 md:p-5">
-                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-3">
-                                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
-                                        <x-ui::icon name="globe" class="w-5 h-5 text-emerald-300" />
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white">{{ $language['language'] }}</h4>
-                                        <p class="text-sm text-zinc-400 capitalize">{{ $language['proficiency'] }}</p>
-                                    </div>
-                                </div>
-                                <div class="mt-2 ml-[52px]">
-                                    <div class="h-1.5 w-48 overflow-hidden rounded-full bg-zinc-900/80">
-                                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500" style="width: {{ $levelWidths[$language['proficiency']] ?? 50 }}%"></div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div class="flex lg:flex-col gap-2 lg:shrink-0">
-                                <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $language['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Up</span>
-                                </x-ui::button>
-                                <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $language['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Down</span>
-                                </x-ui::button>
-                                <x-ui::button variant="ghost" size="sm" wire:click="editLanguage({{ $language['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only lg:not-sr-only">Edit</span>
-                                </x-ui::button>
-                                <x-ui::button variant="ghost" size="sm" wire:click="deleteLanguage({{ $language['id'] }})" wire:confirm="Are you sure you want to delete this language?" icon="trash-2" class="flex-1 border border-red-400/20 bg-red-500/10 text-red-300 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
-                                    <span class="sr-only lg:not-sr-only">Delete</span>
-                                </x-ui::button>
-                            </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-baseline gap-2">
+                            <h4 class="truncate text-sm font-semibold text-white">{{ $language['language'] }}</h4>
+                            <span class="text-xs capitalize text-zinc-400">{{ $language['proficiency'] }}</span>
                         </div>
+                        <div class="mt-1.5 h-1.5 max-w-[10rem] overflow-hidden rounded-full bg-zinc-900/80">
+                            <div class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-500" style="width: {{ $levelWidths[$language['proficiency']] ?? 50 }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex shrink-0 items-center gap-1">
+                        <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $language['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} h-9 w-9 px-0" aria-label="Move up" />
+                        <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $language['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} h-9 w-9 px-0" aria-label="Move down" />
+                        <x-ui::button variant="ghost" size="sm" wire:click="editLanguage({{ $language['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} h-9 w-9 px-0" aria-label="Edit" />
+                        <x-ui::button variant="ghost" size="sm" wire:click="deleteLanguage({{ $language['id'] }})" wire:confirm="Are you sure you want to delete this language?" icon="trash-2" class="h-9 w-9 border border-red-400/20 bg-red-500/10 px-0 text-red-300 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200" aria-label="Delete" />
                     </div>
                 </div>
             @empty

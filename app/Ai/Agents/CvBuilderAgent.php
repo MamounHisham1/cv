@@ -2,12 +2,19 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Tools\AddCvCertification;
 use App\Ai\Tools\AddCvEducation;
 use App\Ai\Tools\AddCvExperience;
 use App\Ai\Tools\AddCvLanguage;
 use App\Ai\Tools\AddCvProject;
 use App\Ai\Tools\AddCvSkill;
 use App\Ai\Tools\AnalyzeJobDescription;
+use App\Ai\Tools\DeleteCvCertification;
+use App\Ai\Tools\DeleteCvEducation;
+use App\Ai\Tools\DeleteCvExperience;
+use App\Ai\Tools\DeleteCvLanguage;
+use App\Ai\Tools\DeleteCvProject;
+use App\Ai\Tools\DeleteCvSkill;
 use App\Ai\Tools\GenerateProfessionalSummary;
 use App\Ai\Tools\ImproveProjectDescription;
 use App\Ai\Tools\OptimizeForAts;
@@ -15,7 +22,13 @@ use App\Ai\Tools\ReadCvData;
 use App\Ai\Tools\SearchResumes;
 use App\Ai\Tools\SelectBestTemplate;
 use App\Ai\Tools\SuggestKeywords;
+use App\Ai\Tools\UpdateCvCertification;
+use App\Ai\Tools\UpdateCvEducation;
+use App\Ai\Tools\UpdateCvExperience;
+use App\Ai\Tools\UpdateCvLanguage;
 use App\Ai\Tools\UpdateCvPersonalInfo;
+use App\Ai\Tools\UpdateCvProject;
+use App\Ai\Tools\UpdateCvSkill;
 use App\Ai\Tools\UpdateCvSummary;
 use App\Models\Cv;
 use App\Services\ResumeVectorStore;
@@ -42,14 +55,42 @@ class CvBuilderAgent implements Agent, Conversational, HasTools
     private function cvTools(): array
     {
         return [
+            // Read
             (new ReadCvData)->setCv($this->cv),
+
+            // Personal info + summary
             (new UpdateCvPersonalInfo)->setCv($this->cv),
             (new UpdateCvSummary)->setCv($this->cv),
+
+            // Experience
             (new AddCvExperience)->setCv($this->cv),
+            (new UpdateCvExperience)->setCv($this->cv),
+            (new DeleteCvExperience)->setCv($this->cv),
+
+            // Skills
             (new AddCvSkill)->setCv($this->cv),
+            (new UpdateCvSkill)->setCv($this->cv),
+            (new DeleteCvSkill)->setCv($this->cv),
+
+            // Education
             (new AddCvEducation)->setCv($this->cv),
+            (new UpdateCvEducation)->setCv($this->cv),
+            (new DeleteCvEducation)->setCv($this->cv),
+
+            // Projects
             (new AddCvProject)->setCv($this->cv),
+            (new UpdateCvProject)->setCv($this->cv),
+            (new DeleteCvProject)->setCv($this->cv),
+
+            // Certifications
+            (new AddCvCertification)->setCv($this->cv),
+            (new UpdateCvCertification)->setCv($this->cv),
+            (new DeleteCvCertification)->setCv($this->cv),
+
+            // Languages
             (new AddCvLanguage)->setCv($this->cv),
+            (new UpdateCvLanguage)->setCv($this->cv),
+            (new DeleteCvLanguage)->setCv($this->cv),
         ];
     }
 

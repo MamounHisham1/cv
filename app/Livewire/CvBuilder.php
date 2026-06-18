@@ -69,8 +69,6 @@ class CvBuilder extends Component
     public string $selectedTemplate = 'professional-classic';
 
     // Form states
-    public bool $showAiChat = false;
-
     public bool $showPreview = true;
 
     // Onboarding modal state
@@ -561,11 +559,6 @@ class CvBuilder extends Component
             ]);
         } catch (ValidationException $e) {
         }
-    }
-
-    public function toggleAiChat(): void
-    {
-        $this->showAiChat = ! $this->showAiChat;
     }
 
     public function togglePreview(): void

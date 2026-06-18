@@ -980,26 +980,51 @@
 
     </div>
 
-    <div class="fixed bottom-6 right-6 z-50">
-        <x-ui::button
-            wire:click="toggleAiChat"
-            variant="primary"
-            icon="sparkles"
-            class="h-14 w-14 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-emerald-500"
-        />
-    </div>
+    {{-- AI chat popup: client-side toggle (Alpine) + lazy-loaded component.
+         Toggle is instant (no roundtrip); the chat stays mounted after first
+         open, so reopening is instant and you can navigate the builder while
+         it's open. Desktop = floating right sidebar (no page-blocking scrim);
+         mobile = full-screen overlay. --}}
+    <div
+        x-data="{ chatOpen: false }"
+        x-on:keydown.escape.window="chatOpen = false"
+        class="contents"
+    >
+        {{-- Floating action button --}}
+        <div class="fixed bottom-6 right-6 z-50">
+            <button
+                type="button"
+                @click="chatOpen = !chatOpen"
+                aria-label="Open AI assistant"
+                class="inline-flex h-14 w-14 items-center justify-center rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/30 transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-emerald-500"
+            >
+                <x-ui::icon name="sparkles" class="w-6 h-6" />
+            </button>
+        </div>
 
-    @if($showAiChat)
-        {{-- Scrim — full viewport, z-[55] overlays the z-50 nav --}}
-        <div class="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm" wire:click="toggleAiChat"></div>
+        {{-- Mobile-only scrim (full-screen mode on < sm). Desktop has no scrim so
+             the page stays interactive while the chat is open. --}}
+        <div
+            x-show="chatOpen"
+            x-cloak
+            x-transition.opacity
+            @click="chatOpen = false"
+            class="fixed inset-0 z-[55] bg-black/50 backdrop-blur-sm sm:hidden"
+        ></div>
 
-        {{-- Chat panel — full-height right sidebar
-             z-[60] sits above scrim (z-[55]) and nav (z-50).
-             Mobile  → full-screen overlay
-             Desktop → 420px sidebar pinned to the right edge
-        --}}
-        <div class="fixed inset-0 z-[60] flex flex-col border-l border-white/10 bg-zinc-950/90 shadow-2xl shadow-black/40 backdrop-blur-xl
-                    sm:inset-y-0 sm:left-auto sm:right-0 sm:w-[420px]">
+        {{-- Chat panel: mobile full-screen, desktop floating right sidebar --}}
+        <div
+            x-show="chatOpen"
+            x-cloak
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-x-4 sm:translate-x-0"
+            x-transition:enter-end="opacity-100 translate-x-0"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-x-0"
+            x-transition:leave-end="opacity-0 translate-x-4 sm:translate-x-0"
+            class="fixed inset-0 z-[60] flex flex-col border-l border-white/10 bg-zinc-950/90 shadow-2xl shadow-black/40 backdrop-blur-xl
+                   sm:inset-y-0 sm:left-auto sm:right-0 sm:w-[420px]"
+        >
             {{-- Panel header --}}
             <div class="flex shrink-0 items-center justify-between border-b border-white/10 p-4">
                 <div class="flex items-center gap-3">
@@ -1011,14 +1036,22 @@
                         <x-ui::text size="sm" class="text-zinc-400">Always here to help</x-ui::text>
                     </div>
                 </div>
-                <x-ui::button variant="ghost" size="sm" wire:click="toggleAiChat" icon="x" class="{{ $secondaryButtonClasses }} h-9 w-9 px-0 text-zinc-400 hover:text-white" />
+                <button
+                    type="button"
+                    @click="chatOpen = false"
+                    aria-label="Close AI assistant"
+                    class="{{ $secondaryButtonClasses }} inline-flex h-9 w-9 items-center justify-center rounded-lg px-0 text-zinc-400 hover:text-white"
+                >
+                    <x-ui::icon name="x" class="w-4 h-4" />
+                </button>
             </div>
 
-            {{-- Scrollable chat body + input — min-h-0 enables flex shrink for overflow --}}
+            {{-- Scrollable chat body + input — min-h-0 enables flex shrink for overflow.
+                 Lazy: mounts once on first open, then stays alive across toggles. --}}
             <div class="min-h-0 flex-1 overflow-hidden">
-                <livewire:cv-ai-chat :cv="$cv" />
+                <livewire:cv-ai-chat :cv="$cv" lazy />
             </div>
         </div>
-    @endif
+    </div>
     @endif {{-- end @else (builder stage) --}}
 </div>

@@ -69,7 +69,7 @@
                                 <span class="text-[11px] font-medium text-emerald-300">AI Assistant</span>
                             </div>
                         @endif
-                        <div class="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown($message['content']) !!}</div>
+                        <div class="text-sm leading-relaxed prose prose-sm dark:prose-invert max-w-none">{!! Illuminate\Support\Str::markdown(mb_convert_encoding((string) $message['content'], 'UTF-8', 'UTF-8')) !!}</div>
                         <div class="mt-1 border-t border-white/10 pt-1 text-[11px] {{ $message['role'] === 'user' ? 'text-emerald-100' : 'text-zinc-500' }}">
                             {{ \Carbon\Carbon::parse($message['timestamp'])->format('g:i A') }}
                         </div>

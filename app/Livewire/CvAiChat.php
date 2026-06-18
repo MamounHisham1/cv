@@ -204,6 +204,11 @@ class CvAiChat extends Component
         $this->conversationId = null;
     }
 
+    public function placeholder()
+    {
+        return view('livewire.partials.cv-ai-chat-skeleton');
+    }
+
     public function render()
     {
         return view('livewire.cv-ai-chat');

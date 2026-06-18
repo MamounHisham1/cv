@@ -89,13 +89,15 @@
                 <div>
                     <x-ui::label class="mb-3 block text-zinc-200">Key Achievements</x-ui::label>
                     @foreach($form['achievements'] as $index => $achievement)
-                        <div class="flex gap-2 mb-2">
-                            <x-ui::input
-                                wire:model="form.achievements.{{ $index }}"
-                                placeholder="e.g., Reduced costs by 30% through optimization"
-                                class="{{ $fieldClasses }} flex-1"
-                            />
-                            <x-ui::button type="button" variant="ghost" size="sm" wire:click="removeAchievement({{ $index }})" icon="x" class="{{ $ghostButtonClasses }} shrink-0" />
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="flex-1">
+                                <x-ui::input
+                                    wire:model="form.achievements.{{ $index }}"
+                                    placeholder="e.g., Reduced costs by 30% through optimization"
+                                    class="{{ $fieldClasses }}"
+                                />
+                            </div>
+                            <x-ui::button type="button" variant="ghost" size="icon" wire:click="removeAchievement({{ $index }})" icon="x" class="{{ $ghostButtonClasses }} shrink-0" aria-label="Remove achievement" />
                         </div>
                     @endforeach
                     <x-ui::button type="button" variant="ghost" size="sm" wire:click="addAchievement" icon="plus" class="{{ $ghostButtonClasses }} mt-2">
