@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\NotifyTelegramNewUserListener;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,6 +29,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::anonymousComponentPath(resource_path('views/components/ui'), 'ui');
         $this->configureDefaults();
+
+        Event::listen(Registered::class, NotifyTelegramNewUserListener::class);
     }
 
     /**

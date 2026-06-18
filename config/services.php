@@ -57,4 +57,11 @@ return [
         'key' => env('DEEPGRAM_API_KEY'),
     ],
 
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'webhook_secret' => env('TELEGRAM_WEBHOOK_SECRET'),
+        'webhook_url' => env('TELEGRAM_WEBHOOK_URL'),
+        'admin_email' => env('TELEGRAM_ADMIN_EMAIL', 'mamounprogrammer@gmail.com'),
+    ],
+
 ];

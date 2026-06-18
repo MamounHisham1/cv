@@ -27,9 +27,9 @@ class CvExperienceFactory extends Factory
             'end_date' => $isCurrent ? null : $this->faker->dateTimeBetween($startDate, 'now'),
             'is_current' => $isCurrent,
             'description' => $this->faker->paragraphs(2, true),
-            'aws_services' => $this->faker->randomElements([
-                'EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB', 'CloudFormation',
-                'ECS', 'EKS', 'CloudWatch', 'IAM', 'VPC', 'API Gateway',
+            'technologies' => $this->faker->randomElements([
+                'PHP', 'Laravel', 'JavaScript', 'Vue', 'MySQL', 'Redis',
+                'Docker', 'AWS', 'PostgreSQL', 'TypeScript', 'Node.js', 'Tailwind',
             ], $this->faker->numberBetween(2, 5)),
             'achievements' => [
                 'Reduced infrastructure costs by 40% through optimization',
@@ -45,7 +45,7 @@ class CvExperienceFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'title' => 'AWS Cloud Engineer',
             'description' => 'Designed and implemented highly available, fault-tolerant AWS infrastructure supporting 1M+ daily active users. Architected serverless solutions using Lambda, API Gateway, and DynamoDB.',
-            'aws_services' => ['EC2', 'Lambda', 'S3', 'DynamoDB', 'CloudFormation', 'CloudWatch', 'IAM'],
+            'technologies' => ['AWS', 'Lambda', 'S3', 'DynamoDB', 'CloudFormation', 'CloudWatch', 'IAM'],
         ]);
     }
 }

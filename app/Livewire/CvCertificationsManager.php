@@ -97,13 +97,14 @@ class CvCertificationsManager extends Component
 
         $data = array_merge($this->form, [
             'cv_id' => $this->cv->id,
-            'sort_order' => $this->editingId ? null : count($this->certifications),
         ]);
 
         if ($this->editingId) {
+            // sort_order is a position field managed only by reordering, never by edits.
             CvCertification::find($this->editingId)->update($data);
             $this->dispatch('notify', message: 'Certification updated successfully!', type: 'success');
         } else {
+            $data['sort_order'] = count($this->certifications);
             CvCertification::create($data);
             $this->dispatch('notify', message: 'Certification added successfully!', type: 'success');
         }

@@ -106,15 +106,14 @@ class CvEducationManager extends Component
 
         $data = array_merge($this->form, [
             'cv_id' => $this->cv->id,
-            'sort_order' => $this->editingId ? null : count($this->educations),
         ]);
 
         if ($this->editingId) {
-            $updateData = $data;
-            unset($updateData['sort_order']);
-            CvEducation::find($this->editingId)->update($updateData);
+            // sort_order is a position field managed only by reordering, never by edits.
+            CvEducation::find($this->editingId)->update($data);
             $this->dispatch('notify', message: 'Education updated successfully!', type: 'success');
         } else {
+            $data['sort_order'] = count($this->educations);
             CvEducation::create($data);
             $this->dispatch('notify', message: 'Education added successfully!', type: 'success');
         }

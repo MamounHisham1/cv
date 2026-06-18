@@ -113,13 +113,14 @@ class CvExperienceManager extends Component
 
         $data = array_merge($this->form, [
             'cv_id' => $this->cv->id,
-            'sort_order' => $this->editingId ? null : count($this->experiences),
         ]);
 
         if ($this->editingId) {
+            // sort_order is a position field managed only by reordering, never by edits.
             CvExperience::find($this->editingId)->update($data);
             $this->dispatch('notify', message: 'Experience updated successfully!', type: 'success');
         } else {
+            $data['sort_order'] = count($this->experiences);
             CvExperience::create($data);
             $this->dispatch('notify', message: 'Experience added successfully!', type: 'success');
         }
