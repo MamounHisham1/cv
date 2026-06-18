@@ -1108,9 +1108,10 @@
             {{-- Live preview pane: shown when showPreview is toggled on.
                  Renders the CV template in an iframe so the light CV theme
                  is isolated from the dark builder shell. Reloads on every
-                 content/template/pack change so the preview tracks edits
-                 live — and preserves the scroll position across reloads so
-                 the user doesn't snap back to the top. --}}
+                 content/template/pack change — debounced so rapid saves
+                 coalesce into one reload, with a subtle "updating" overlay
+                 so the iframe never visibly flashes blank. Scroll position
+                 is preserved across reloads. --}}
             @if($showPreview && $cv->exists)
             <div
                 class="hidden xl:flex xl:flex-col xl:w-[420px] xl:shrink-0 rounded-2xl border border-white/10 bg-zinc-900/50 backdrop-blur-xl overflow-hidden"
@@ -1118,25 +1119,29 @@
                     base: {{ json_encode(route('cv.preview', $cv)) }},
                     bump: 0,
                     savedScroll: 0,
-                    refresh() {
-                        // Capture scroll before swapping src so we can restore it.
-                        try {
-                            this.savedScroll = this.$refs.previewFrame.contentWindow.scrollY ?? 0;
-                        } catch (e) { this.savedScroll = 0; }
+                    reloading: false,
+                    pending: false,
+                    timer: null,
+                    doReload() {
+                        this.reloading = true;
+                        try { this.savedScroll = this.$refs.previewFrame.contentWindow.scrollY ?? 0; } catch (e) { this.savedScroll = 0; }
                         this.bump++;
                         this.$refs.previewFrame.src = this.base + '?p=' + this.bump;
                     },
+                    scheduleRefresh() {
+                        // Coalesce rapid successive saves (typing bursts) into a
+                        // single reload 600ms after the last change.
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(() => this.doReload(), 600);
+                    },
                     restoreScroll() {
-                        // Same-origin iframe — restore after the new document loads.
-                        try {
-                            this.$refs.previewFrame.contentWindow.scrollTo(0, this.savedScroll);
-                        } catch (e) {}
+                        this.reloading = false;
+                        try { this.$refs.previewFrame.contentWindow.scrollTo(0, this.savedScroll); } catch (e) {}
                     }
                 }"
                 x-init="() => {
-                    // Refresh on any edit (cv-updated), template swap, or industry-pack change.
                     ['cv-updated', 'template-changed', 'industry-pack-changed'].forEach((evt) => {
-                        Livewire.on(evt, () => refresh());
+                        Livewire.on(evt, () => scheduleRefresh());
                     });
                 }"
             >
@@ -1144,11 +1149,20 @@
                     <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">
                         <x-ui::icon name="eye" class="h-4 w-4" />
                         Live preview
+                        <span x-show="reloading" x-cloak class="text-emerald-400">· updating…</span>
                     </div>
                     <a href="{{ route('cv.preview', $cv) }}" target="_blank"
                        class="text-xs text-zinc-400 hover:text-white">Open in new tab →</a>
                 </div>
-                <div class="min-h-0 flex-1 overflow-auto bg-gray-100">
+                <div class="relative min-h-0 flex-1 overflow-auto bg-gray-100">
+                    {{-- Overlay shown only during reload so the old frame stays
+                         visible (no white flash) until the new one is ready. --}}
+                    <div x-show="reloading" x-cloak class="absolute inset-0 z-10 flex items-start justify-center bg-gray-100/60 backdrop-blur-[1px]">
+                        <div class="mt-3 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-600 shadow">
+                            <svg class="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                            Updating…
+                        </div>
+                    </div>
                     <iframe
                         x-ref="previewFrame"
                         src="{{ route('cv.preview', $cv) }}"

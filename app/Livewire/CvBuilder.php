@@ -638,6 +638,10 @@ class CvBuilder extends Component
                 'personal_info' => $this->personalInfo,
                 'summary' => $this->summary,
             ]);
+
+            // Notify the live preview (and anything else listening) that the
+            // CV changed, so it refreshes without a manual save button.
+            $this->dispatch('cv-updated', cvId: $this->cv->id);
         } catch (ValidationException $e) {
         }
     }

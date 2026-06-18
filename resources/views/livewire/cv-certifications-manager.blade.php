@@ -103,12 +103,17 @@
                         wire:click="cancelEdit"
                         class="{{ $ghostButtonClasses }}"
                     >
-                        Cancel
+                        {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
+                    @if(! $editingId)
                     <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        {{ $editingId ? 'Update' : 'Add' }} Certification
+                        Add Certification
                     </x-ui::button>
+                    @endif
                 </div>
+                @if($editingId)
+                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                @endif
             </form>
         @endif
 

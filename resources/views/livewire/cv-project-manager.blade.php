@@ -117,12 +117,17 @@
 
                 <div class="flex flex-col justify-end gap-2 border-t border-white/10 pt-4 sm:flex-row">
                     <x-ui::button type="button" variant="ghost" wire:click="cancelEdit" class="{{ $ghostButtonClasses }}">
-                        Cancel
+                        {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
+                    @if(! $editingId)
                     <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        {{ $editingId ? 'Update' : 'Add' }} Project
+                        Add Project
                     </x-ui::button>
+                    @endif
                 </div>
+                @if($editingId)
+                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                @endif
             </form>
         @endif
 
