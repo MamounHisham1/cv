@@ -618,6 +618,16 @@ class CvBuilder extends Component
             return;
         }
 
+        // Normalize URL-style fields so users can type "linkedin.com/in/john"
+        // without a scheme. We prepend https:// to anything that looks like a
+        // bare domain. This happens before validation so the rules pass.
+        foreach (['linkedin', 'website', 'github'] as $field) {
+            $value = trim((string) ($this->personalInfo[$field] ?? ''));
+            if ($value !== '' && ! preg_match('#^https?://#i', $value)) {
+                $this->personalInfo[$field] = 'https://'.$value;
+            }
+        }
+
         try {
             $this->validate([
                 'personalInfo.first_name' => 'required|string|max:255',
@@ -643,6 +653,8 @@ class CvBuilder extends Component
             // CV changed, so it refreshes without a manual save button.
             $this->dispatch('cv-updated', cvId: $this->cv->id);
         } catch (ValidationException $e) {
+            // Validation errors surface on the fields via $errors; the save
+            // is simply skipped until the user corrects the input.
         }
     }
 
