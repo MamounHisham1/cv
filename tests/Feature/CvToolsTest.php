@@ -96,7 +96,7 @@ it('adds a certification', function () {
 
     expect($result)->toContain('AWS Certified Solutions Architect')
         ->and($cv->certifications()->count())->toBe(1)
-        ->and($cv->certifications()->first()->is_aws_certification)->toBeTrue();
+        ->and($cv->certifications()->first()->name)->toBe('AWS Certified Solutions Architect');
 });
 
 it('deletes a language', function () {

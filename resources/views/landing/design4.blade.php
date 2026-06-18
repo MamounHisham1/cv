@@ -72,48 +72,31 @@
         </section>
 
         @php
-            $templates = [
-                [
-                    'id' => 'professional-classic',
-                    'name' => 'Professional Classic',
-                    'description' => 'Traditional hierarchy for corporate and formal roles.',
-                    'tag' => 'Classic',
-                    'badge_classes' => 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300',
-                    'glow_classes' => 'from-emerald-500/15 via-emerald-500/5 to-transparent',
-                ],
-                [
-                    'id' => 'technical-ats',
-                    'name' => 'Technical ATS',
-                    'description' => 'Clean, structured formatting optimized for ATS scans.',
-                    'tag' => 'ATS',
-                    'badge_classes' => 'border-blue-500/20 bg-blue-500/10 text-blue-300',
-                    'glow_classes' => 'from-blue-500/15 via-blue-500/5 to-transparent',
-                ],
-                [
-                    'id' => 'modern-minimal',
-                    'name' => 'Modern Minimal',
-                    'description' => 'Airy spacing with a polished, contemporary feel.',
-                    'tag' => 'Minimal',
-                    'badge_classes' => 'border-purple-500/20 bg-purple-500/10 text-purple-300',
-                    'glow_classes' => 'from-purple-500/15 via-purple-500/5 to-transparent',
-                ],
-                [
-                    'id' => 'creative',
-                    'name' => 'Creative',
-                    'description' => 'Sidebar-driven layout for visual storytelling and portfolios.',
-                    'tag' => 'Creative',
-                    'badge_classes' => 'border-pink-500/20 bg-pink-500/10 text-pink-300',
-                    'glow_classes' => 'from-pink-500/15 via-pink-500/5 to-transparent',
-                ],
-                [
-                    'id' => 'executive',
-                    'name' => 'Executive',
-                    'description' => 'Centered presentation tailored to leadership profiles.',
-                    'tag' => 'Executive',
-                    'badge_classes' => 'border-amber-500/20 bg-amber-500/10 text-amber-300',
-                    'glow_classes' => 'from-amber-500/15 via-amber-500/5 to-transparent',
-                ],
+            // Single source of truth for names/descriptions is App\CvTemplates.
+            // Only the marketing-only chrome (preview, tag, color theme) is local.
+            $templateChrome = [
+                'professional-classic' => ['tag' => 'Classic', 'badge_classes' => 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300', 'glow_classes' => 'from-emerald-500/15 via-emerald-500/5 to-transparent'],
+                'technical-ats' => ['tag' => 'ATS', 'badge_classes' => 'border-blue-500/20 bg-blue-500/10 text-blue-300', 'glow_classes' => 'from-blue-500/15 via-blue-500/5 to-transparent'],
+                'modern-minimal' => ['tag' => 'Minimal', 'badge_classes' => 'border-purple-500/20 bg-purple-500/10 text-purple-300', 'glow_classes' => 'from-purple-500/15 via-purple-500/5 to-transparent'],
+                'creative' => ['tag' => 'Creative', 'badge_classes' => 'border-pink-500/20 bg-pink-500/10 text-pink-300', 'glow_classes' => 'from-pink-500/15 via-pink-500/5 to-transparent'],
+                'executive' => ['tag' => 'Executive', 'badge_classes' => 'border-amber-500/20 bg-amber-500/10 text-amber-300', 'glow_classes' => 'from-amber-500/15 via-amber-500/5 to-transparent'],
+                'bold' => ['tag' => 'Bold', 'badge_classes' => 'border-indigo-500/20 bg-indigo-500/10 text-indigo-300', 'glow_classes' => 'from-indigo-500/15 via-indigo-500/5 to-transparent'],
+                'timeline' => ['tag' => 'Timeline', 'badge_classes' => 'border-cyan-500/20 bg-cyan-500/10 text-cyan-300', 'glow_classes' => 'from-cyan-500/15 via-cyan-500/5 to-transparent'],
+                'swiss' => ['tag' => 'Swiss', 'badge_classes' => 'border-red-500/20 bg-red-500/10 text-red-300', 'glow_classes' => 'from-red-500/15 via-red-500/5 to-transparent'],
+                'warm' => ['tag' => 'Warm', 'badge_classes' => 'border-orange-500/20 bg-orange-500/10 text-orange-300', 'glow_classes' => 'from-orange-500/15 via-orange-500/5 to-transparent'],
+                'compact' => ['tag' => 'Compact', 'badge_classes' => 'border-zinc-500/20 bg-zinc-500/10 text-zinc-300', 'glow_classes' => 'from-zinc-500/15 via-zinc-500/5 to-transparent'],
             ];
+            $templates = collect(\App\CvTemplates::all())
+                ->map(fn (array $t, string $slug) => [
+                    'id' => $slug,
+                    'name' => $t['name'],
+                    'description' => $t['description'],
+                    'tag' => $templateChrome[$slug]['tag'] ?? ucfirst($slug),
+                    'badge_classes' => $templateChrome[$slug]['badge_classes'] ?? 'border-white/10 bg-white/5 text-zinc-300',
+                    'glow_classes' => $templateChrome[$slug]['glow_classes'] ?? 'from-white/10 via-white/5 to-transparent',
+                ])
+                ->values()
+                ->all();
         @endphp
 
         {{-- Templates showcase: Moving miniature previews --}}
@@ -130,13 +113,13 @@
                         </div>
                         <h2 class="text-3xl font-bold text-white md:text-4xl">Different resume templates for every career path</h2>
                         <p class="mt-4 text-lg leading-relaxed text-zinc-400">
-                            Explore <span class="font-semibold text-white">5 distinct resume templates</span> inspired by the real designs inside the builder — from classic and ATS-first layouts to modern, creative, and executive styles.
+                            Explore <span class="font-semibold text-white">10 distinct resume templates</span> inspired by the real designs inside the builder — from classic and ATS-first layouts to modern, creative, and executive styles.
                         </p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                         <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
-                            <div class="text-2xl font-bold text-emerald-400">5</div>
+                            <div class="text-2xl font-bold text-emerald-400">10</div>
                             <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">Live Templates</div>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">

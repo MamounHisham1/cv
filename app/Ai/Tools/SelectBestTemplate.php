@@ -2,6 +2,7 @@
 
 namespace App\Ai\Tools;
 
+use App\CvTemplates;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Contracts\Tool;
 use Laravel\Ai\Tools\Request;
@@ -10,12 +11,14 @@ use Stringable;
 class SelectBestTemplate implements Tool
 {
     /**
-     * Available CV templates with descriptions.
+     * Recommendation metadata per template.
+     *
+     * Display names and descriptions are sourced from {@see CvTemplates}
+     * (single source of truth); this constant only holds the recommendation-
+     * specific context (best_for, strengths, weaknesses, ideal_roles).
      */
-    private const TEMPLATES = [
+    private const TEMPLATE_META = [
         'professional-classic' => [
-            'name' => 'Professional Classic',
-            'description' => 'Traditional, corporate-friendly layout with clear section hierarchy',
             'best_for' => [
                 'Traditional industries (finance, healthcare, government)',
                 'Senior professionals seeking executive roles',
@@ -27,8 +30,6 @@ class SelectBestTemplate implements Tool
             'ideal_roles' => ['Solutions Architect', 'Cloud Consultant', 'IT Manager', 'Security Engineer'],
         ],
         'technical-ats' => [
-            'name' => 'Technical ATS',
-            'description' => 'Optimized for Applicant Tracking Systems with keyword-rich formatting',
             'best_for' => [
                 'Large companies with strict ATS filtering',
                 'Keyword-heavy technical roles',
@@ -40,8 +41,6 @@ class SelectBestTemplate implements Tool
             'ideal_roles' => ['Cloud Engineer', 'DevOps Engineer', 'Site Reliability Engineer', 'Platform Engineer'],
         ],
         'modern-minimal' => [
-            'name' => 'Modern Minimal',
-            'description' => 'Clean whitespace with contemporary typography and subtle accents',
             'best_for' => [
                 'Tech companies and startups',
                 'Creative tech roles',
@@ -53,8 +52,6 @@ class SelectBestTemplate implements Tool
             'ideal_roles' => ['Software Engineer', 'Full Stack Developer', 'Product Manager', 'Tech Lead'],
         ],
         'creative' => [
-            'name' => 'Creative',
-            'description' => 'Visual sidebar with skill bars and modern color scheme',
             'best_for' => [
                 'Portfolio-driven applications',
                 'Roles requiring visual presentation skills',
@@ -66,8 +63,6 @@ class SelectBestTemplate implements Tool
             'ideal_roles' => ['UI/UX Engineer', 'Frontend Developer', 'Technical Evangelist', 'Developer Advocate'],
         ],
         'executive' => [
-            'name' => 'Executive',
-            'description' => 'Leadership-focused layout with prominent executive summary',
             'best_for' => [
                 'Senior leadership positions (VP, Director, CTO)',
                 'Strategic roles requiring business impact focus',
@@ -77,6 +72,36 @@ class SelectBestTemplate implements Tool
             'strengths' => ['Highlights leadership', 'Emphasizes business impact', 'Professional authority'],
             'weaknesses' => ['Overkill for junior roles', 'May seem pretentious for technical-only roles'],
             'ideal_roles' => ['VP of Engineering', 'CTO', 'Head of Cloud', 'Principal Architect', 'Director of DevOps'],
+        ],
+        'bold' => [
+            'best_for' => ['Standout applications in competitive tech markets', 'Candidates wanting a strong visual identity'],
+            'strengths' => ['Eye-catching header', 'Clear skill categorization'],
+            'weaknesses' => ['Bold styling may not suit conservative fields'],
+            'ideal_roles' => ['Full-Stack Developer', 'Growth Engineer', 'Startup Engineer'],
+        ],
+        'timeline' => [
+            'best_for' => ['Candidates with a clear progression story', 'Career changers showing growth'],
+            'strengths' => ['Visualizes career progression', 'Engaging narrative'],
+            'weaknesses' => ['Heavier visual layout', 'Less ATS-friendly'],
+            'ideal_roles' => ['Engineering Manager', 'Senior Developer', 'Project Lead'],
+        ],
+        'swiss' => [
+            'best_for' => ['Design-conscious candidates', 'Roles valuing clarity and structure'],
+            'strengths' => ['Typographic clarity', 'Structured grid', 'Shows skill levels'],
+            'weaknesses' => ['Distinctive red accent may not suit all brands'],
+            'ideal_roles' => ['Product Designer', 'Frontend Engineer', 'Technical Writer'],
+        ],
+        'warm' => [
+            'best_for' => ['Approachable, people-focused roles', 'Candidates wanting a friendly, personal tone'],
+            'strengths' => ['Warm, personal feel', 'Photo + skill dots', 'Two-column readability'],
+            'weaknesses' => ['Less formal for conservative industries'],
+            'ideal_roles' => ['Customer Success', 'Educator', 'Community Manager', 'People Manager'],
+        ],
+        'compact' => [
+            'best_for' => ['Experienced professionals with dense experience', 'One-page constraint'],
+            'strengths' => ['Maximizes content density', 'Fits extensive experience'],
+            'weaknesses' => ['Tight spacing', 'Less whitespace'],
+            'ideal_roles' => ['Senior Engineer', 'Principal Engineer', 'Consultant'],
         ],
     ];
 
@@ -112,11 +137,13 @@ class SelectBestTemplate implements Tool
 
         // Get primary recommendation
         $recommendation = $this->getRecommendation($careerLevel, $targetRole, $experienceType, $companyType, $atsPriority);
-        $template = self::TEMPLATES[$recommendation];
+        $template = self::TEMPLATE_META[$recommendation];
+        $name = CvTemplates::name($recommendation);
+        $description = CvTemplates::all()[$recommendation]['description'];
 
-        $result .= "**Recommended: {$template['name']}**\n";
+        $result .= "**Recommended: {$name}**\n";
         $result .= "ID: {$recommendation}\n";
-        $result .= "{$template['description']}\n\n";
+        $result .= "{$description}\n\n";
 
         $result .= "**Why this template?**\n";
         foreach ($this->getWhyThisTemplate($recommendation, $careerLevel, $companyType, $atsPriority) as $reason) {
@@ -146,9 +173,10 @@ class SelectBestTemplate implements Tool
         $result .= "=== Alternative Options ===\n\n";
         $alternatives = $this->getAlternatives($recommendation, $careerLevel);
         foreach ($alternatives as $altId) {
-            $alt = self::TEMPLATES[$altId];
-            $result .= "**{$alt['name']}** ({$altId})\n";
-            $result .= "{$alt['description']}\n";
+            $alt = self::TEMPLATE_META[$altId];
+            $altName = CvTemplates::name($altId);
+            $result .= "**{$altName}** ({$altId})\n";
+            $result .= CvTemplates::all()[$altId]['description']."\n";
             $result .= 'Best for: '.implode(', ', array_slice($alt['ideal_roles'], 0, 2))."\n\n";
         }
 
@@ -246,8 +274,7 @@ class SelectBestTemplate implements Tool
             $reasons[] = 'Entry-level candidates should prioritize ATS compatibility to get past initial screening';
         }
 
-        $template = self::TEMPLATES[$templateId];
-        $reasons[] = "The {$template['name']} template aligns with industry standards for your profile";
+        $reasons[] = 'The '.CvTemplates::name($templateId).' template aligns with industry standards for your profile';
 
         return $reasons;
     }

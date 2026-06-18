@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Cv\IndustryPacks\IndustryPacks;
+use App\CvTemplates;
 use App\Jobs\ParseCvWithAi;
 use App\Models\Cv;
 use App\Services\CreditManager;
@@ -9,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use League\Flysystem\UnableToRetrieveMetadata;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
@@ -31,6 +34,10 @@ class CvBuilder extends Component
     public array $sections = [];
 
     public array $templates = [];
+
+    public array $industryPacks = [];
+
+    public ?string $selectedIndustryPack = null;
 
     // Personal Info Form
     public array $personalInfo = [
@@ -68,6 +75,12 @@ class CvBuilder extends Component
 
     public string $selectedTemplate = 'professional-classic';
 
+    /**
+     * Temporary Livewire file upload for the optional profile photo
+     * (used by templates that render an avatar: creative + warm).
+     */
+    public $photoUpload = null;
+
     // Form states
     public bool $showPreview = true;
 
@@ -89,7 +102,17 @@ class CvBuilder extends Component
     {
         if ($cv && $cv->exists) {
             $this->authorize('update', $cv);
-            $this->cv = $cv;
+            // Eager-load all section relations once — without this, every
+            // Livewire render of the builder page fires 5+ extra queries
+            // through the `getCvDataProperty` accessor and the preview pane.
+            $this->cv = $cv->load([
+                'experiences',
+                'educations',
+                'skills',
+                'certifications',
+                'projects',
+                'languages',
+            ]);
 
             if ($cv->title === 'Importing...') {
                 $this->importStatus = 'importing';
@@ -106,6 +129,7 @@ class CvBuilder extends Component
         }
 
         $this->templates = $this->getAvailableTemplates();
+        $this->industryPacks = IndustryPacks::options();
         $this->sections = $this->getSections();
     }
 
@@ -326,64 +350,14 @@ class CvBuilder extends Component
     {
         $this->title = $this->cv->title;
         $this->selectedTemplate = $this->cv->template_id;
+        $this->selectedIndustryPack = $this->cv->industry_pack;
         $this->summary = $this->cv->summary ?? '';
         $this->personalInfo = array_merge($this->personalInfo, $this->cv->personal_info ?? []);
     }
 
     public function getAvailableTemplates(): array
     {
-        return [
-            'professional-classic' => [
-                'name' => 'Professional Classic',
-                'description' => 'Traditional, corporate-friendly layout',
-                'icon' => 'document-text',
-            ],
-            'technical-ats' => [
-                'name' => 'Technical ATS',
-                'description' => 'Optimized for Applicant Tracking Systems',
-                'icon' => 'code-bracket',
-            ],
-            'modern-minimal' => [
-                'name' => 'Modern Minimal',
-                'description' => 'Clean, contemporary design',
-                'icon' => 'sparkles',
-            ],
-            'creative' => [
-                'name' => 'Creative',
-                'description' => 'Visual sidebar with skill highlights',
-                'icon' => 'paint-brush',
-            ],
-            'executive' => [
-                'name' => 'Executive',
-                'description' => 'Leadership-focused layout',
-                'icon' => 'briefcase',
-            ],
-            'bold' => [
-                'name' => 'Bold',
-                'description' => 'Eye-catching header with vibrant indigo tones and categorized skills',
-                'icon' => 'fire',
-            ],
-            'timeline' => [
-                'name' => 'Timeline',
-                'description' => 'Visual career timeline with connected dots and date axis',
-                'icon' => 'clock',
-            ],
-            'swiss' => [
-                'name' => 'Swiss',
-                'description' => 'Grid-based typographic design with bold red accents',
-                'icon' => 'grid',
-            ],
-            'warm' => [
-                'name' => 'Warm',
-                'description' => 'Approachable two-column layout with warm cream sidebar and amber accents',
-                'icon' => 'sun',
-            ],
-            'compact' => [
-                'name' => 'Compact',
-                'description' => 'Dense single-column layout for experienced professionals',
-                'icon' => 'arrows-pointing-in',
-            ],
-        ];
+        return CvTemplates::all();
     }
 
     public function savePersonalInfo()
@@ -432,6 +406,113 @@ class CvBuilder extends Component
         }
 
         $this->dispatch('template-changed', templateId: $templateId);
+    }
+
+    public function updateIndustryPack(string $packId): void
+    {
+        if (! IndustryPacks::exists($packId)) {
+            return;
+        }
+
+        $this->selectedIndustryPack = $packId;
+
+        if ($this->cv->exists) {
+            $this->cv->update(['industry_pack' => $packId]);
+        }
+
+        $this->dispatch('industry-pack-changed', packId: $packId);
+    }
+
+    /**
+     * Store an uploaded profile photo on the public disk and attach its URL
+     * to personal_info. Only rendered by photo-supporting templates.
+     */
+    public function savePhoto(): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            return;
+        }
+
+        $data = $this->validate([
+            'photoUpload' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $this->deleteStoredPhoto();
+
+        $path = $data['photoUpload']->store("cv-photos/cv-{$this->cv->id}", 'public');
+
+        $this->personalInfo['photo'] = Storage::url($path);
+        $this->cv->update(['personal_info' => $this->personalInfo]);
+        $this->photoUpload = null;
+
+        $this->dispatch('notify', message: 'Profile photo updated.', type: 'success');
+        $this->dispatch('cv-updated', cvId: $this->cv->id);
+    }
+
+    public function removePhoto(): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            return;
+        }
+
+        $this->deleteStoredPhoto();
+        unset($this->personalInfo['photo']);
+        $this->cv->update(['personal_info' => $this->personalInfo]);
+        $this->photoUpload = null;
+
+        $this->dispatch('notify', message: 'Profile photo removed.', type: 'success');
+        $this->dispatch('cv-updated', cvId: $this->cv->id);
+    }
+
+    private function deleteStoredPhoto(): void
+    {
+        if (empty($this->personalInfo['photo'])) {
+            return;
+        }
+
+        $relative = ltrim(parse_url($this->personalInfo['photo'], PHP_URL_PATH) ?? '', '/');
+        $onDisk = preg_replace('#^storage/#', '', $relative);
+
+        if ($onDisk && Storage::disk('public')->exists($onDisk)) {
+            Storage::disk('public')->delete($onDisk);
+        }
+    }
+
+    /**
+     * Contextual hint shown when the active template uses a feature the user
+     * hasn't fully filled (profile photo, skill levels). Returns null when
+     * there's nothing to hint about.
+     *
+     * @return array{icon: string, message: string, tab?: string}|null
+     */
+    #[Computed]
+    public function templateHint(): ?array
+    {
+        $slug = $this->selectedTemplate;
+        $name = CvTemplates::name($slug);
+
+        if (CvTemplates::supports($slug, CvTemplates::FEATURE_PHOTO)
+            && empty($this->personalInfo['photo'])
+        ) {
+            return [
+                'icon' => 'user',
+                'message' => "The {$name} template shows your photo. Add one under Personal Info (optional) — otherwise your initials are shown.",
+                'tab' => 'personal',
+            ];
+        }
+
+        if (CvTemplates::supports($slug, CvTemplates::FEATURE_SKILL_LEVELS)
+            && $this->cv && $this->cv->exists
+            && $this->cv->skills()->where(fn ($q) => $q->whereNull('level')->orWhere('level', ''))->exists()
+        ) {
+            return [
+                'icon' => 'zap',
+                'message' => "The {$name} template visualizes skill levels. Set a proficiency for each skill to make the most of it.",
+                'tab' => 'skills',
+            ];
+        }
+
+        return null;
     }
 
     public function setActiveSection(string $section): void

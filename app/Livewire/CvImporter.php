@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Ai\Agents\CvParser;
+use App\CvTemplates;
 use App\Jobs\ExtractCvText;
 use App\Models\Cv;
 use App\Services\CreditManager;
@@ -223,33 +224,7 @@ class CvImporter extends Component
     #[Computed]
     public function templates(): array
     {
-        return [
-            'professional-classic' => [
-                'name' => 'Professional Classic',
-                'description' => 'Traditional, corporate-friendly layout',
-                'icon' => 'document-text',
-            ],
-            'technical-ats' => [
-                'name' => 'Technical ATS',
-                'description' => 'Optimized for Applicant Tracking Systems',
-                'icon' => 'code-bracket',
-            ],
-            'modern-minimal' => [
-                'name' => 'Modern Minimal',
-                'description' => 'Clean, contemporary design',
-                'icon' => 'sparkles',
-            ],
-            'creative' => [
-                'name' => 'Creative',
-                'description' => 'Visual sidebar with skill highlights',
-                'icon' => 'paint-brush',
-            ],
-            'executive' => [
-                'name' => 'Executive',
-                'description' => 'Leadership-focused layout',
-                'icon' => 'briefcase',
-            ],
-        ];
+        return CvTemplates::all();
     }
 
     public function render()

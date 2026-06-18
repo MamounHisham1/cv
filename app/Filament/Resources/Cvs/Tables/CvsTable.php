@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Cvs\Tables;
 
+use App\CvTemplates;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -28,7 +29,7 @@ class CvsTable
                     ->label('Template')
                     ->badge()
                     ->color('gray')
-                    ->formatStateUsing(fn (string $state): string => str_replace('-', ' ', ucfirst($state))),
+                    ->formatStateUsing(fn (string $state): string => CvTemplates::name($state)),
                 BadgeColumn::make('status')
                     ->colors([
                         'warning' => 'draft',
@@ -62,13 +63,7 @@ class CvsTable
                     ]),
                 SelectFilter::make('template_id')
                     ->label('Template')
-                    ->options([
-                        'professional-classic' => 'Professional Classic',
-                        'modern-minimal' => 'Modern Minimal',
-                        'aws-engineer' => 'AWS Engineer',
-                        'technical' => 'Technical',
-                        'creative' => 'Creative',
-                    ]),
+                    ->options(CvTemplates::options()),
             ])
             ->recordActions([
                 ViewAction::make(),

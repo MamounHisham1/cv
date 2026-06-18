@@ -8,8 +8,12 @@
     @endphp
 
     <aside class="w-1/3 bg-amber-50 p-6" style="print-color-adjust: exact;">
-        <div class="w-20 h-20 bg-amber-200 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-amber-800">
-            {{ substr($cv->personal_info['first_name'] ?? '', 0, 1) }}{{ substr($cv->personal_info['last_name'] ?? '', 0, 1) }}
+        <div class="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden flex items-center justify-center text-2xl font-bold text-amber-800 {{ !empty($cv->personal_info['photo']) ? '' : 'bg-amber-200' }}" style="print-color-adjust: exact;">
+            @if(!empty($cv->personal_info['photo']))
+                <img src="{{ $cv->personal_info['photo'] }}" alt="{{ ($cv->personal_info['first_name'] ?? '') . ' ' . ($cv->personal_info['last_name'] ?? '') }}" class="h-full w-full object-cover" />
+            @else
+                {{ substr($cv->personal_info['first_name'] ?? '', 0, 1) }}{{ substr($cv->personal_info['last_name'] ?? '', 0, 1) }}
+            @endif
         </div>
 
         <h1 class="text-xl font-bold text-center mb-1">

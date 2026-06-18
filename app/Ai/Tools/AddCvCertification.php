@@ -31,8 +31,6 @@ class AddCvCertification implements Tool
 
         $maxSort = $this->cv->certifications()->max('sort_order') ?? 0;
 
-        $isAws = str_contains(strtolower($name), 'aws');
-
         $this->cv->certifications()->create([
             'name' => trim($name),
             'issuing_organization' => trim($organization),
@@ -40,7 +38,6 @@ class AddCvCertification implements Tool
             'expiration_date' => $request['expiration_date'] ?? null,
             'credential_id' => $request['credential_id'] ?? null,
             'credential_url' => $request['credential_url'] ?? null,
-            'is_aws_certification' => $isAws,
             'sort_order' => $maxSort + 1,
         ]);
 

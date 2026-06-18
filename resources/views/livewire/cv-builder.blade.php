@@ -38,6 +38,42 @@
 
     <div class="h-1 bg-gradient-to-r from-emerald-500 via-emerald-600 to-emerald-700"></div>
 
+    {{-- Template-feature hint banner: photo / skill levels. Dismissible,
+         re-appears when the template changes. Driven by $this->templateHint. --}}
+    @if($this->templateHint)
+        <div
+            x-data="{ dismissed: false }"
+            x-on:template-changed.window="dismissed = false"
+            x-show="!dismissed"
+            x-cloak
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+            class="fixed top-6 left-1/2 z-[55] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2"
+            style="display: none;"
+        >
+            <div class="flex items-start gap-3 rounded-2xl border border-amber-400/30 bg-zinc-950/95 px-4 py-3 text-white shadow-xl shadow-amber-500/10 backdrop-blur-xl">
+                <x-ui::icon name="{{ $this->templateHint['icon'] }}" class="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+                <p class="flex-1 text-sm leading-relaxed text-zinc-200">{{ $this->templateHint['message'] }}</p>
+                @if(!empty($this->templateHint['tab']))
+                    <button
+                        type="button"
+                        @click="$dispatch('switch-tab', { tab: '{{ $this->templateHint['tab'] }}' }); dismissed = true"
+                        class="shrink-0 cursor-pointer rounded-lg border border-emerald-400/20 bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-500/25 hover:text-emerald-200"
+                    >
+                        Go
+                    </button>
+                @endif
+                <button type="button" @click="dismissed = true" aria-label="Dismiss" class="shrink-0 cursor-pointer text-zinc-500 transition-colors hover:text-zinc-300">
+                    <x-ui::icon name="x" class="h-4 w-4" />
+                </button>
+            </div>
+        </div>
+    @endif
+
     {{-- ===================== ONBOARDING STAGE ===================== --}}
     @if($stage === 'onboarding')
     <div class="relative mx-auto max-w-5xl px-4 py-16 md:px-6 lg:px-8">
@@ -629,6 +665,7 @@
     <div
         x-data="cvBuilderTabs()"
         x-init="init()"
+        x-on:switch-tab.window="switchTab($event.detail.tab)"
         @if($cv && $cv->title === 'Importing...') wire:poll.3s="checkImportStatus" @endif
         data-active-section="{{ $activeSection }}"
         data-sections="{{ json_encode(array_keys($sections)) }}"
@@ -664,10 +701,32 @@
                             <span class="hidden sm:inline">Open Preview</span>
                             <span class="sm:hidden">Preview</span>
                         </x-ui::button>
-                        <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}?download=1" target="_blank" icon="download" class="{{ $secondaryButtonClasses }}">
-                            <span class="hidden sm:inline">Download PDF</span>
-                            <span class="sm:hidden">PDF</span>
-                        </x-ui::button>
+                        <div
+                            x-data="{ open: false }"
+                            @click.outside="open = false"
+                            class="relative"
+                        >
+                            <x-ui::button variant="ghost" icon="download" class="{{ $secondaryButtonClasses }}" @click="open = !open">
+                                <span class="hidden sm:inline">Download</span>
+                                <span class="sm:hidden">PDF</span>
+                            </x-ui::button>
+                            <div
+                                x-show="open"
+                                x-transition
+                                @keydown.escape.window="open = false"
+                                class="absolute right-0 z-20 mt-2 w-44 overflow-hidden rounded-xl border border-white/10 bg-zinc-900 py-1 shadow-xl"
+                                style="display: none;"
+                            >
+                                <a href="{{ route('cv.export', [$cv, 'pdf']) }}" class="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-white/5 hover:text-white">
+                                    <x-ui::icon name="file-text" class="h-4 w-4" />
+                                    PDF
+                                </a>
+                                <a href="{{ route('cv.export', [$cv, 'docx']) }}" class="flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-white/5 hover:text-white">
+                                    <x-ui::icon name="file-text" class="h-4 w-4" />
+                                    Word (.docx)
+                                </a>
+                            </div>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -690,6 +749,36 @@
                         </button>
                     @endforeach
                 </div>
+            </div>
+            <div class="mb-4" x-data="{ selected: @entangle('selectedIndustryPack').live }">
+                <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">Industry focus</div>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        type="button"
+                        @click="selected = null; $wire.updateIndustryPack('generic')"
+                        class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
+                        :class="!selected
+                            ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
+                            : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200'"
+                    >
+                        General
+                    </button>
+                    @foreach($industryPacks as $packId => $packName)
+                        @if($packId !== 'generic')
+                            <button
+                                type="button"
+                                @click="selected = '{{ $packId }}'; $wire.updateIndustryPack('{{ $packId }}')"
+                                class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
+                                :class="selected === '{{ $packId }}'
+                                    ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
+                                    : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200'"
+                            >
+                                {{ $packName }}
+                            </button>
+                        @endif
+                    @endforeach
+                </div>
+                <p class="mt-1.5 text-xs text-zinc-500">Tailors quick-add suggestions and AI advice to the chosen field.</p>
             </div>
             @endif
         </div>
@@ -897,6 +986,39 @@
                             <p class="text-sm text-zinc-400">Start with your basic contact details</p>
                         </div>
                         <div class="space-y-6">
+                            @php
+                                $templateSupportsPhoto = \App\CvTemplates::supports($this->selectedTemplate, 'photo');
+                            @endphp
+                            @if($templateSupportsPhoto)
+                                <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                    <div class="mb-3 flex items-center gap-2">
+                                        <x-ui::icon name="user" class="w-4 h-4 text-emerald-300" />
+                                        <h3 class="text-sm font-semibold text-white">Profile Photo <span class="font-normal text-zinc-500">(optional)</span></h3>
+                                    </div>
+                                    <p class="mb-3 text-xs text-zinc-400">The {{ \App\CvTemplates::name($this->selectedTemplate) }} template shows your photo. Without one, your initials are shown instead.</p>
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-white/10 bg-zinc-900">
+                                            @if(!empty($personalInfo['photo']))
+                                                <img src="{{ $personalInfo['photo'] }}" alt="Profile photo" class="h-full w-full object-cover" />
+                                            @else
+                                                <span class="text-lg font-bold text-zinc-500">{{ strtoupper(substr($personalInfo['first_name'] ?? '', 0, 1) . substr($personalInfo['last_name'] ?? '', 0, 1)) ?: '??' }}</span>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1">
+                                            <input type="file" wire:model="photoUpload" accept="image/png,image/jpeg,image/webp" class="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-1.5 file:text-emerald-300 hover:file:bg-emerald-500/30 file:cursor-pointer" />
+                                            <div wire:loading wire:target="photoUpload" class="mt-1 text-xs text-zinc-400">Uploading…</div>
+                                            @error('photoUpload')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
+                                            @if(!empty($personalInfo['photo']))
+                                                <button type="button" wire:click="removePhoto" wire:loading.attr="disabled" class="mt-2 text-xs text-red-300 hover:text-red-200">Remove photo</button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    @if(!empty($photoUpload))
+                                        <button type="button" wire:click="savePhoto" class="mt-3 rounded-lg border border-emerald-400/20 bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-500/25">Save photo</button>
+                                    @endif
+                                </div>
+                            @endif
+
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div class="form-field">
                                     <x-ui::input wire:model.live.debounce.1000ms="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />

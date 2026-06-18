@@ -22,8 +22,6 @@ class CvCertification extends Model
         'expiration_date',
         'credential_id',
         'credential_url',
-        'is_aws_certification',
-        'aws_level',
         'sort_order',
     ];
 
@@ -32,7 +30,6 @@ class CvCertification extends Model
         return [
             'issue_date' => 'date',
             'expiration_date' => 'date',
-            'is_aws_certification' => 'boolean',
         ];
     }
 
@@ -40,13 +37,6 @@ class CvCertification extends Model
     {
         return $this->belongsTo(Cv::class);
     }
-
-    public const AWS_LEVELS = [
-        'foundational' => 'Foundational',
-        'associate' => 'Associate',
-        'professional' => 'Professional',
-        'specialty' => 'Specialty',
-    ];
 
     public function getIsValidAttribute(): bool
     {
