@@ -44,7 +44,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => true,
                         'description' => 'Leading backend development for a SaaS platform serving 50K+ users. Architecting microservices with Laravel, Python, and AWS.',
                         'achievements' => ['Reduced API response time by 60% through caching and query optimization', 'Led migration from monolith to microservices architecture', 'Mentored 5 junior developers resulting in 2 promotions within the team'],
-                        'aws_services' => json_encode(['Laravel', 'Python', 'AWS', 'Docker', 'Redis', 'MySQL']),
+                        'technologies' => json_encode(['Laravel', 'Python', 'AWS', 'Docker', 'Redis', 'MySQL']),
                     ],
                     [
                         'title' => 'Software Engineer',
@@ -55,7 +55,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Full-stack development for enterprise clients in e-commerce and fintech sectors.',
                         'achievements' => ['Built payment processing system handling $2M+ monthly transactions', 'Implemented CI/CD pipeline reducing deployment time from 4 hours to 15 minutes', 'Received "Employee of the Quarter" award twice'],
-                        'aws_services' => json_encode(['Laravel', 'Vue.js', 'MySQL', 'Docker', 'Jenkins']),
+                        'technologies' => json_encode(['Laravel', 'Vue.js', 'MySQL', 'Docker', 'Jenkins']),
                     ],
                     [
                         'title' => 'Junior Developer',
@@ -66,7 +66,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Developed features for a ride-sharing application and internal management tools.',
                         'achievements' => ['Developed real-time tracking feature using WebSockets', 'Contributed to 30% increase in daily active users'],
-                        'aws_services' => json_encode(['PHP', 'JavaScript', 'MySQL', 'Redis']),
+                        'technologies' => json_encode(['PHP', 'JavaScript', 'MySQL', 'Redis']),
                     ],
                 ],
                 'skills' => [
@@ -136,7 +136,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => true,
                         'description' => 'Managing cloud infrastructure for a fintech company processing $500M+ in transactions. Leading the DevOps team and establishing SRE practices.',
                         'achievements' => ['Achieved 99.99% uptime for critical payment services', 'Reduced infrastructure costs by $200K/year through rightsizing and reserved instances', 'Implemented zero-downtime deployments reducing customer-facing incidents by 80%'],
-                        'aws_services' => json_encode(['AWS', 'Kubernetes', 'Terraform', 'Datadog', 'Prometheus']),
+                        'technologies' => json_encode(['AWS', 'Kubernetes', 'Terraform', 'Datadog', 'Prometheus']),
                     ],
                     [
                         'title' => 'Cloud Engineer',
@@ -147,7 +147,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Built and maintained cloud infrastructure for data processing pipelines and analytics platforms.',
                         'achievements' => ['Migrated 20+ services from on-premise to AWS', 'Designed disaster recovery plan reducing RPO from 24 hours to 15 minutes', 'Automated infrastructure provisioning with Terraform saving 40 hours/month'],
-                        'aws_services' => json_encode(['AWS', 'Terraform', 'Docker', 'Python', 'CloudFormation']),
+                        'technologies' => json_encode(['AWS', 'Terraform', 'Docker', 'Python', 'CloudFormation']),
                     ],
                 ],
                 'skills' => [
@@ -211,7 +211,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => true,
                         'description' => 'Building responsive web applications and design systems for clients in healthcare and education sectors.',
                         'achievements' => ['Built a component library with 50+ reusable components', 'Improved Lighthouse performance score from 45 to 95', 'Reduced bundle size by 60% through code splitting and lazy loading'],
-                        'aws_services' => json_encode(['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Storybook']),
+                        'technologies' => json_encode(['React', 'TypeScript', 'Next.js', 'Tailwind CSS', 'Storybook']),
                     ],
                     [
                         'title' => 'Junior Frontend Developer',
@@ -222,7 +222,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Developed responsive websites and landing pages for marketing campaigns and small businesses.',
                         'achievements' => ['Delivered 20+ client projects on time and within budget', 'Introduced component-based architecture improving development speed by 40%'],
-                        'aws_services' => json_encode(['Vue.js', 'JavaScript', 'SCSS', 'Bootstrap']),
+                        'technologies' => json_encode(['Vue.js', 'JavaScript', 'SCSS', 'Bootstrap']),
                     ],
                 ],
                 'skills' => [
@@ -292,7 +292,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => true,
                         'description' => 'Developing machine learning models for customer analytics, churn prediction, and recommendation systems.',
                         'achievements' => ['Built churn prediction model with 89% accuracy saving $1.2M annually', 'Developed recommendation engine increasing cross-sell revenue by 18%', 'Automated reporting pipeline saving 20 hours/week of manual analysis'],
-                        'aws_services' => json_encode(['Python', 'TensorFlow', 'SQL', 'Apache Spark', 'Tableau']),
+                        'technologies' => json_encode(['Python', 'TensorFlow', 'SQL', 'Apache Spark', 'Tableau']),
                     ],
                     [
                         'title' => 'Junior Data Analyst',
@@ -303,7 +303,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Conducted market research analysis and built dashboards for executive decision-making.',
                         'achievements' => ['Created interactive dashboards used by C-suite executives', 'Identified market trends leading to 2 new product launches', 'Processed and analyzed datasets of 10M+ records'],
-                        'aws_services' => json_encode(['Python', 'SQL', 'Pandas', 'Tableau', 'Excel']),
+                        'technologies' => json_encode(['Python', 'SQL', 'Pandas', 'Tableau', 'Excel']),
                     ],
                 ],
                 'skills' => [
@@ -382,7 +382,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => true,
                         'description' => 'Leading product strategy for a B2B fintech platform serving 500+ enterprise clients. Managing a team of 12 across engineering and design.',
                         'achievements' => ['Launched 3 new product features generating $3M ARR', 'Increased customer NPS from 32 to 67', 'Reduced time-to-market by 40% through process improvements'],
-                        'aws_services' => json_encode(['Jira', 'Figma', 'Mixpanel', 'SQL', 'Notion']),
+                        'technologies' => json_encode(['Jira', 'Figma', 'Mixpanel', 'SQL', 'Notion']),
                     ],
                     [
                         'title' => 'Product Manager',
@@ -393,7 +393,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Managed a telemedicine platform connecting patients with doctors across the MENA region.',
                         'achievements' => ['Grew user base from 10K to 200K in 18 months', 'Led pivot from B2C to B2B model increasing revenue by 250%', 'Established product-led growth strategy reducing CAC by 35%'],
-                        'aws_services' => json_encode(['Amplitude', 'Figma', 'Jira', 'Google Analytics']),
+                        'technologies' => json_encode(['Amplitude', 'Figma', 'Jira', 'Google Analytics']),
                     ],
                     [
                         'title' => 'Associate Product Manager',
@@ -404,7 +404,7 @@ class DemoCvSeeder extends Seeder
                         'is_current' => false,
                         'description' => 'Managed rider experience features including booking flow, ratings, and safety features.',
                         'achievements' => ['Improved booking completion rate by 20%', 'Launched safety feature reducing incidents by 45%', 'Conducted 100+ user interviews informing product roadmap'],
-                        'aws_services' => json_encode(['Mixpanel', 'Jira', 'Hotjar']),
+                        'technologies' => json_encode(['Mixpanel', 'Jira', 'Hotjar']),
                     ],
                 ],
                 'skills' => [

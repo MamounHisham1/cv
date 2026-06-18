@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Cvs\Schemas;
 
+use App\CvTemplates;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -21,13 +22,7 @@ class CvForm
                     ->searchable()
                     ->required(),
                 Select::make('template_id')
-                    ->options([
-                        'professional-classic' => 'Professional Classic',
-                        'modern-minimal' => 'Modern Minimal',
-                        'aws-engineer' => 'AWS Engineer',
-                        'technical' => 'Technical',
-                        'creative' => 'Creative',
-                    ])
+                    ->options(CvTemplates::options())
                     ->required()
                     ->default('professional-classic'),
                 Select::make('status')

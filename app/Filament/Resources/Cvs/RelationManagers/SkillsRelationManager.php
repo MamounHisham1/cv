@@ -10,11 +10,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -35,8 +33,6 @@ class SkillsRelationManager extends RelationManager
                 Select::make('level')
                     ->options(CvSkill::LEVELS)
                     ->required(),
-                Toggle::make('is_aws_service')
-                    ->label('AWS Service'),
                 TextInput::make('sort_order')
                     ->numeric()
                     ->default(0),
@@ -54,13 +50,11 @@ class SkillsRelationManager extends RelationManager
                     ->weight('bold'),
                 BadgeColumn::make('category')
                     ->colors([
-                        'info' => 'programming',
-                        'success' => 'cloud',
-                        'warning' => 'infrastructure',
-                        'danger' => 'security',
+                        'info' => 'technical',
+                        'success' => 'software',
+                        'warning' => 'industry',
                         'gray' => 'general',
-                        'purple' => 'data',
-                        'pink' => 'soft',
+                        'purple' => 'soft',
                     ])
                     ->sortable(),
                 BadgeColumn::make('level')
@@ -70,10 +64,6 @@ class SkillsRelationManager extends RelationManager
                         'warning' => 'advanced',
                         'success' => 'expert',
                     ])
-                    ->sortable(),
-                IconColumn::make('is_aws_service')
-                    ->label('AWS')
-                    ->boolean()
                     ->sortable(),
             ])
             ->filters([

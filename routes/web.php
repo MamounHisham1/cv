@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\CvExportController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\VfcashWebhookController;
 use App\Livewire\AiInterviewer;
@@ -88,6 +89,10 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
 
         return view('cv.preview', ['cv' => $cv]);
     })->name('cv.preview');
+
+    Route::get('/cv/{cv}/export/{format}', CvExportController::class)
+        ->where('format', 'pdf|docx')
+        ->name('cv.export');
 
     Route::get('/notifications/preferences', fn () => view('livewire.notification-preferences'))->name('notifications.preferences');
     Route::post('/notifications/mark-all-read', function () {

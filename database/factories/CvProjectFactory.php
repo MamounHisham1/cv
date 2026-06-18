@@ -19,14 +19,6 @@ class CvProjectFactory extends Factory
             'cv_id' => Cv::factory(),
             'name' => $this->faker->catchPhrase().' Platform',
             'description' => $this->faker->paragraph(3),
-            'aws_services_used' => $this->faker->randomElements([
-                'EC2', 'Lambda', 'S3', 'RDS', 'DynamoDB', 'CloudFormation',
-                'ECS', 'EKS', 'CloudWatch', 'IAM', 'VPC', 'API Gateway',
-                'SQS', 'SNS', 'Cognito', 'CloudFront', 'Route 53',
-            ], $this->faker->numberBetween(3, 6)),
-            'architecture_type' => $this->faker->randomElement([
-                'serverless', 'microservices', 'event-driven', 'containerized',
-            ]),
             'key_achievements' => [
                 'Processed 10M+ events daily with 99.99% uptime',
                 'Reduced latency by 60% through optimization',
@@ -38,13 +30,5 @@ class CvProjectFactory extends Factory
             'end_date' => $this->faker->optional(0.3)->dateTimeBetween('-3 months', 'now'),
             'sort_order' => 0,
         ];
-    }
-
-    public function serverless(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'architecture_type' => 'serverless',
-            'aws_services_used' => ['Lambda', 'API Gateway', 'DynamoDB', 'S3', 'CloudWatch', 'Step Functions'],
-        ]);
     }
 }

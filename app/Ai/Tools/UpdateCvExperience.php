@@ -91,7 +91,7 @@ class UpdateCvExperience implements Tool
             'is_current' => $schema->boolean()->description('Whether this is the current job'),
             'description' => $schema->string()->description('New job description'),
             'achievements' => $schema->array()->description('Replace the achievements list (e.g., ["Reduced costs by 30%"])'),
-            'technologies' => $schema->array()->description('Replace the technologies list (e.g., ["Python", "AWS"])'),
+            'technologies' => $schema->array()->description('Replace the technologies list (e.g., ["Python", "Docker"])'),
         ];
     }
 }

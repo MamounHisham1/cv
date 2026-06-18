@@ -58,7 +58,7 @@ class AddCvExperience implements Tool
             'is_current' => $schema->boolean()->description('Whether this is the current job'),
             'description' => $schema->string()->description('Job description with responsibilities and duties'),
             'achievements' => $schema->array()->description('List of key achievements (e.g., ["Reduced costs by 30%", "Led team of 5"])'),
-            'technologies' => $schema->array()->description('List of technologies used (e.g., ["Python", "AWS", "Docker"])'),
+            'technologies' => $schema->array()->description('List of technologies used (e.g., ["Python", "Docker", "SQL"])'),
         ];
     }
 }

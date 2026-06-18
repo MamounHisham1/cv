@@ -61,10 +61,10 @@ class AddCvSkill implements Tool
     public function schema(JsonSchema $schema): array
     {
         return [
-            'name' => $schema->string()->description('The skill name (e.g., "Python", "AWS Lambda", "Docker")'),
+            'name' => $schema->string()->description('The skill name (e.g., "Python", "Project Management", "Docker")'),
             'category' => $schema->string()
                 ->enum(array_keys(CvSkill::CATEGORIES))
-                ->description('Skill category: general, cloud, programming, infrastructure, data, security, soft'),
+                ->description('Skill category: general, technical, software, industry, soft'),
             'level' => $schema->string()
                 ->enum(array_keys(CvSkill::LEVELS))
                 ->description('Proficiency level: beginner, intermediate, advanced, expert'),

@@ -128,7 +128,7 @@ class SuggestKeywords implements Tool
         $tips = [
             "Use standard section headings: 'Work Experience', 'Education', 'Skills'",
             'Include keywords exactly as they appear in job descriptions',
-            "Use both acronyms and full terms (e.g., 'AWS (Amazon Web Services)')",
+            "Use both acronyms and full terms (e.g., 'SEO (Search Engine Optimization)')",
             'Avoid tables, headers/footers, and complex formatting',
             'Use a single-column layout for best ATS compatibility',
             'Save your CV as a .docx or .pdf file',

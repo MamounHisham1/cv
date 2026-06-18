@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Cv\IndustryPacks\IndustryPack;
+use App\Cv\IndustryPacks\IndustryPacks;
 use Database\Factories\CvFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +19,7 @@ class Cv extends Model
         'user_id',
         'title',
         'template_id',
+        'industry_pack',
         'status',
         'personal_info',
         'summary',
@@ -85,14 +88,14 @@ class Cv extends Model
         return $this->personal_info['first_name'].' '.$this->personal_info['last_name'];
     }
 
-    public function getAwsCertificationsAttribute()
+    /**
+     * Resolve this CV's active industry pack (defaults to GenericPack when
+     * unset). Drives skill categories, quick-add suggestions, certification
+     * suggestions, and AI prompt context.
+     */
+    public function industryPack(): IndustryPack
     {
-        return $this->certifications()->where('is_aws_certification', true)->get();
-    }
-
-    public function getAwsSkillsAttribute()
-    {
-        return $this->skills()->where('is_aws_service', true)->get();
+        return IndustryPacks::get($this->industry_pack);
     }
 
     public function toText(): string
@@ -249,12 +252,6 @@ class Cv extends Model
                         if (is_string($achievement) && trim($achievement)) {
                             $parts[] = '- '.$achievement;
                         }
-                    }
-                }
-                if (! empty($proj->aws_services_used)) {
-                    $services = is_array($proj->aws_services_used) ? implode(', ', $proj->aws_services_used) : (string) $proj->aws_services_used;
-                    if (trim($services)) {
-                        $parts[] = 'Services: '.$services;
                     }
                 }
                 $parts[] = '';

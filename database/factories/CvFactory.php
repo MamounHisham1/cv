@@ -41,11 +41,12 @@ class CvFactory extends Factory
         ];
     }
 
-    public function forAwsProfessional(): static
+    public function forCloudEngineer(): static
     {
         return $this->state(fn (array $attributes) => [
-            'title' => 'AWS Cloud Engineer CV',
-            'summary' => 'Results-driven AWS Cloud Engineer with 5+ years of experience designing, implementing, and managing scalable cloud infrastructure solutions. Proven expertise in AWS services, infrastructure as code, and DevOps practices.',
+            'title' => 'Cloud Engineer CV',
+            'industry_pack' => 'cloud',
+            'summary' => 'Results-driven Cloud Engineer with 5+ years of experience designing, implementing, and managing scalable cloud infrastructure solutions. Proven expertise in cloud platforms, infrastructure as code, and DevOps practices.',
         ]);
     }
 }

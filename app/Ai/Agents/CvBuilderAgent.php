@@ -135,6 +135,13 @@ INSTRUCTIONS;
             $instructions .= "\n\n=== THE USER'S CURRENT CV DATA ===\n{$cvContext}\n=== END OF CV DATA ===\n\nYou have full access to the user's current CV data above. Use this information when answering questions about their CV, making suggestions, or offering improvements. Always reference their actual data.";
         }
 
+        // Fold in any industry-pack-specific guidance (e.g. cloud career
+        // value propositions) when the CV targets a specialized field.
+        $packContext = $this->cv?->industryPack()?->promptContext();
+        if (! empty(trim((string) $packContext))) {
+            $instructions .= "\n\n=== INDUSTRY CONTEXT ===\n{$packContext}\n=== END OF INDUSTRY CONTEXT ===";
+        }
+
         return $instructions;
     }
 

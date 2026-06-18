@@ -34,8 +34,12 @@
                                     <x-ui::icon name="pencil" class="h-4 w-4" />
                                 </a>
                                 <a href="{{ route('cv.preview', $cv) }}" target="_blank"
-                                   class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white">
+                                   class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Preview">
                                     <x-ui::icon name="eye" class="h-4 w-4" />
+                                </a>
+                                <a href="{{ route('cv.export', [$cv, 'pdf']) }}"
+                                   class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Download PDF">
+                                    <x-ui::icon name="download" class="h-4 w-4" />
                                 </a>
                             </div>
                         </div>

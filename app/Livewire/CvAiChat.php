@@ -28,6 +28,12 @@ class CvAiChat extends Component
 
     public function mount(?Cv $cv = null): void
     {
+        // Enforce ownership before anything else — the AI tools operate on
+        // $this->cv directly, so the mount is the single trust boundary.
+        if ($cv && $cv->exists) {
+            $this->authorize('view', $cv);
+        }
+
         $this->cv = $cv;
 
         // Restore the last conversation for this user from the AI SDK store
@@ -177,9 +183,13 @@ class CvAiChat extends Component
 
     public function quickPrompt(string $type): void
     {
+        $info = $this->cv?->personal_info ?? [];
+        $title = $info['title'] ?? null;
+        $targetRole = trim((string) $title) ?: 'my target role';
+
         $prompts = [
             'improve_summary' => 'Help me write a compelling professional summary for a senior role in my industry.',
-            'keywords' => 'What keywords should I include for a software engineering position?',
+            'keywords' => "What keywords should I include for {$targetRole}?",
             'ats_check' => 'Review my CV and suggest ATS optimization improvements.',
             'job_match' => 'Analyze this job description and tell me what keywords I should add to my CV.',
             'template' => 'What CV template would work best for a senior position applying to startups?',

@@ -53,6 +53,9 @@ class CvSkillsManager extends Component
     public function mount(?Cv $cv = null): void
     {
         $this->cv = $cv;
+        $this->commonSkills = ($cv && $cv->exists)
+            ? $cv->industryPack()->skillSuggestions()
+            : $this->commonSkills;
         $this->loadCategories();
         $this->loadSkills();
     }
@@ -73,14 +76,21 @@ class CvSkillsManager extends Component
     {
         $user = auth()->user();
 
+        // Start from the CV's active industry-pack categories (falls back
+        // to the neutral presets when no CV/pack is set), then layer the
+        // user's custom categories on top.
+        $base = ($this->cv && $this->cv->exists)
+            ? $this->cv->industryPack()->skillCategories()
+            : self::PRESET_CATEGORIES;
+
         if (! $user) {
-            $this->categories = self::PRESET_CATEGORIES;
+            $this->categories = $base;
 
             return;
         }
 
         $custom = $user->skillCategories()->pluck('name', 'name')->toArray();
-        $this->categories = array_merge(self::PRESET_CATEGORIES, $custom);
+        $this->categories = array_merge($base, $custom);
     }
 
     public function loadSkills(): void

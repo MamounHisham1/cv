@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Cv\IndustryPacks\GenericPack;
 use Database\Factories\CvSkillFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,17 +20,12 @@ class CvSkill extends Model
         'name',
         'category',
         'level',
-        'is_aws_service',
-        'aws_metadata',
         'sort_order',
     ];
 
     protected function casts(): array
     {
-        return [
-            'is_aws_service' => 'boolean',
-            'aws_metadata' => 'array',
-        ];
+        return [];
     }
 
     public function cv(): BelongsTo
@@ -37,20 +33,27 @@ class CvSkill extends Model
         return $this->belongsTo(Cv::class);
     }
 
-    public const CATEGORIES = [
-        'general' => 'General',
-        'cloud' => 'Cloud & AWS',
-        'programming' => 'Programming Languages',
-        'infrastructure' => 'Infrastructure & DevOps',
-        'data' => 'Data & Analytics',
-        'security' => 'Security & Compliance',
-        'soft' => 'Soft Skills',
-    ];
-
+    /**
+     * Skill proficiency levels (industry-neutral).
+     */
     public const LEVELS = [
         'beginner' => 'Beginner',
         'intermediate' => 'Intermediate',
         'advanced' => 'Advanced',
         'expert' => 'Expert',
+    ];
+
+    /**
+     * Canonical industry-neutral skill categories. Single source of truth
+     * mirrored by {@see GenericPack::skillCategories()}.
+     * Kept as a constant so AI-tool enums and validators can read it
+     * synchronously. Specialized packs (cloud, etc.) extend this list.
+     */
+    public const CATEGORIES = [
+        'general' => 'General',
+        'technical' => 'Technical Skills',
+        'software' => 'Software & Tools',
+        'industry' => 'Industry Knowledge',
+        'soft' => 'Soft Skills',
     ];
 }
