@@ -701,6 +701,12 @@
                             <span class="hidden sm:inline">Open Preview</span>
                             <span class="sm:hidden">Preview</span>
                         </x-ui::button>
+                        @if($cv->exists)
+                        <x-ui::button variant="ghost" icon="eye" wire:click="togglePreview" class="{{ $secondaryButtonClasses }}">
+                            <span class="hidden md:inline">{{ $showPreview ? 'Hide' : 'Show' }} Live Preview</span>
+                            <span class="md:hidden">{{ $showPreview ? 'Hide' : 'Show' }}</span>
+                        </x-ui::button>
+                        @endif
                         <div
                             x-data="{ open: false }"
                             @click.outside="open = false"
@@ -1098,6 +1104,40 @@
                 @endif
 
             </div>
+
+            {{-- Live preview pane: shown when showPreview is toggled on.
+                 Renders the CV template in an iframe so the light CV theme
+                 is isolated from the dark builder shell. Reloads on every
+                 cv-updated event so the preview tracks edits live. --}}
+            @if($showPreview && $cv->exists)
+            <div
+                class="hidden xl:flex xl:flex-col xl:w-[420px] xl:shrink-0 rounded-2xl border border-white/10 bg-zinc-900/50 backdrop-blur-xl overflow-hidden"
+                x-data="{
+                    base: {{ json_encode(route('cv.preview', $cv)) }},
+                    bump: 0,
+                    refresh() { this.bump++; this.$refs.previewFrame.src = this.base + '?p=' + this.bump }
+                }"
+                x-init="() => { Livewire.on('cv-updated', () => refresh()) }"
+            >
+                <div class="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
+                    <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                        <x-ui::icon name="eye" class="h-4 w-4" />
+                        Live preview
+                    </div>
+                    <a href="{{ route('cv.preview', $cv) }}" target="_blank"
+                       class="text-xs text-zinc-400 hover:text-white">Open in new tab →</a>
+                </div>
+                <div class="min-h-0 flex-1 overflow-auto bg-gray-100">
+                    <iframe
+                        x-ref="previewFrame"
+                        src="{{ route('cv.preview', $cv) }}"
+                        title="CV preview"
+                        class="h-full w-full border-0"
+                        style="min-height: 70vh;"
+                    ></iframe>
+                </div>
+            </div>
+            @endif
         </div>
 
     </div>
