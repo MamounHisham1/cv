@@ -13,9 +13,11 @@ use Laravel\Ai\Tools\Request;
 
 uses(RefreshDatabase::class);
 
-function makeRequest(array $args): Request
-{
-    return new Request($args);
+if (! function_exists('makeRequest')) {
+    function makeRequest(array $args): Request
+    {
+        return new Request($args);
+    }
 }
 
 it('reads cv data with item ids for targeting', function () {
