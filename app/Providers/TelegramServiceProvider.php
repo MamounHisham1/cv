@@ -14,11 +14,13 @@ class TelegramServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Always bind Nutgram, even with an empty token. Nutgram tolerates an
-        // empty token at construction; any outbound call simply throws, which
-        // TelegramService::sendToChat() already swallows. Binding unconditionally
-        // lets the Filament page and the queued jobs degrade gracefully instead
-        // of throwing BindingResolutionException when the bot is unconfigured.
+        // Always bind Nutgram, even when no bot token is configured. Nutgram's
+        // constructor rejects an empty token, so we substitute a non-empty
+        // placeholder — any real outbound call against it fails, and
+        // TelegramService::sendToChat() already swallows those failures. Binding
+        // unconditionally lets the Filament page and the queued jobs degrade
+        // gracefully instead of throwing BindingResolutionException when the
+        // bot is unconfigured.
         $this->app->singleton(Nutgram::class, function (): Nutgram {
             $token = (string) config('services.telegram.bot_token', '');
             $configArray = (array) config('nutgram.config', []);
@@ -29,7 +31,7 @@ class TelegramServiceProvider extends ServiceProvider
                 pollingAllowedUpdates: $configArray['allowedUpdates'] ?? Configuration::DEFAULT_ALLOWED_UPDATES,
             );
 
-            return new Nutgram($token, $config);
+            return new Nutgram($token === '' ? '0:unconfigured' : $token, $config);
         });
     }
 
