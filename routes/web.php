@@ -10,12 +10,14 @@ use App\Livewire\AiInterviewer;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
 use App\Livewire\CvEvaluator;
+use App\Livewire\Drafts;
 use App\Livewire\EvaluationHistory;
 use App\Livewire\InterviewHistory;
 use App\Livewire\ReferralDashboard;
 use App\Livewire\Upgrade;
 use App\Models\Cv;
 use App\Models\User;
+use App\Services\CvExportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +46,35 @@ Route::get('/otp/verify', function () {
     return view('auth.otp-verify');
 })->name('otp.verify');
 
+// Public share route — no auth. Resolves a CV by its opaque share token;
+// CVs without a token are unreachable here.
+Route::get('/r/{token}', function (string $token) {
+    $cv = Cv::where('share_token', $token)->firstOrFail();
+    $cv->load(['educations', 'experiences', 'skills', 'certifications', 'projects', 'languages']);
+
+    return view('cv.shared', ['cv' => $cv]);
+})->name('cv.share')->where('token', '[A-Za-z0-9]{32}');
+
+// Public export via share token — lets visitors download a shared CV
+// without authenticating. Owner is the CV; auth bypassed by token.
+Route::get('/r/{token}/export/{format}', function (string $token, string $format) {
+    abort_unless(in_array($format, ['pdf', 'docx'], true), 404);
+    $cv = Cv::where('share_token', $token)->firstOrFail();
+
+    $service = app(CvExportService::class);
+    $content = $format === 'pdf' ? $service->toPdf($cv) : $service->toDocx($cv);
+
+    return response()->streamDownload(
+        function () use ($content): void {
+            echo $content;
+        },
+        $service->filename($cv, $format),
+        ['Content-Type' => $format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+    );
+})->name('cv.export.public')
+    ->where('token', '[A-Za-z0-9]{32}')
+    ->where('format', 'pdf|docx');
+
 Route::post('/webhooks/vfcash', VfcashWebhookController::class)->name('webhooks.vfcash');
 
 Route::post('/webhooks/telegram', TelegramWebhookController::class)->name('webhooks.telegram');
@@ -56,20 +87,7 @@ Route::middleware(['auth', 'impersonate'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
-    Route::get('/drafts', function () {
-        $user = auth()->user();
-
-        if (! $user->cvs()->exists()) {
-            return redirect()->route('cv.builder', ['onboarding' => 1]);
-        }
-
-        $cvs = $user->cvs()
-            ->with(['experiences', 'skills', 'certifications'])
-            ->latest()
-            ->get();
-
-        return view('welcome-cvs', ['cvs' => $cvs]);
-    })->name('drafts');
+    Route::get('/drafts', Drafts::class)->name('drafts');
 
     Route::get('/builder', CvBuilder::class)->name('cv.builder');
     Route::get('/builder/{cv}', CvBuilder::class)->name('cv.edit');
