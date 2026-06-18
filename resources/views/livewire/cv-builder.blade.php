@@ -1108,16 +1108,37 @@
             {{-- Live preview pane: shown when showPreview is toggled on.
                  Renders the CV template in an iframe so the light CV theme
                  is isolated from the dark builder shell. Reloads on every
-                 cv-updated event so the preview tracks edits live. --}}
+                 content/template/pack change so the preview tracks edits
+                 live — and preserves the scroll position across reloads so
+                 the user doesn't snap back to the top. --}}
             @if($showPreview && $cv->exists)
             <div
                 class="hidden xl:flex xl:flex-col xl:w-[420px] xl:shrink-0 rounded-2xl border border-white/10 bg-zinc-900/50 backdrop-blur-xl overflow-hidden"
                 x-data="{
                     base: {{ json_encode(route('cv.preview', $cv)) }},
                     bump: 0,
-                    refresh() { this.bump++; this.$refs.previewFrame.src = this.base + '?p=' + this.bump }
+                    savedScroll: 0,
+                    refresh() {
+                        // Capture scroll before swapping src so we can restore it.
+                        try {
+                            this.savedScroll = this.$refs.previewFrame.contentWindow.scrollY ?? 0;
+                        } catch (e) { this.savedScroll = 0; }
+                        this.bump++;
+                        this.$refs.previewFrame.src = this.base + '?p=' + this.bump;
+                    },
+                    restoreScroll() {
+                        // Same-origin iframe — restore after the new document loads.
+                        try {
+                            this.$refs.previewFrame.contentWindow.scrollTo(0, this.savedScroll);
+                        } catch (e) {}
+                    }
                 }"
-                x-init="() => { Livewire.on('cv-updated', () => refresh()) }"
+                x-init="() => {
+                    // Refresh on any edit (cv-updated), template swap, or industry-pack change.
+                    ['cv-updated', 'template-changed', 'industry-pack-changed'].forEach((evt) => {
+                        Livewire.on(evt, () => refresh());
+                    });
+                }"
             >
                 <div class="flex items-center justify-between border-b border-white/10 px-4 py-2.5">
                     <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">
@@ -1134,6 +1155,7 @@
                         title="CV preview"
                         class="h-full w-full border-0"
                         style="min-height: 70vh;"
+                        @load="restoreScroll()"
                     ></iframe>
                 </div>
             </div>
