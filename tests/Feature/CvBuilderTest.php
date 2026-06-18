@@ -3,6 +3,7 @@
 use App\Livewire\CvExperienceManager;
 use App\Livewire\CvSkillsManager;
 use App\Models\Cv;
+use App\Models\CvExperience;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -67,6 +68,30 @@ describe('CV Builder', function () {
             'id' => $cv->id,
             'title' => 'My Test CV',
         ]);
+    });
+
+    it('updates an existing experience without nullifying sort_order', function () {
+        $cv = Cv::factory()->for($this->user)->create([
+            'personal_info' => ['first_name' => 'John', 'last_name' => 'Doe', 'email' => 'john@example.com'],
+        ]);
+
+        $experience = CvExperience::factory()->for($cv)->create([
+            'sort_order' => 5,
+            'company' => 'Old Co',
+            'title' => 'Old Title',
+        ]);
+
+        Livewire::actingAs($this->user)
+            ->test(CvExperienceManager::class, ['cv' => $cv])
+            ->call('editExperience', $experience->id)
+            ->set('form.title', 'New Title')
+            ->call('saveExperience')
+            ->assertDispatched('notify', message: 'Experience updated successfully!');
+
+        // Regression: editing must preserve sort_order (previously the update
+        // passed sort_order = null, causing a NOT NULL constraint violation).
+        expect($cv->refresh()->experiences->first()->sort_order)->toBe(5)
+            ->and($cv->refresh()->experiences->first()->title)->toBe('New Title');
     });
 
     it('renders the manager and ai chat components with the shared glass styling', function () {
