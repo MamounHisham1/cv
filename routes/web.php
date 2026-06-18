@@ -3,10 +3,12 @@
 use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\CoverLetterExportController;
 use App\Http\Controllers\CvExportController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\VfcashWebhookController;
 use App\Livewire\AiInterviewer;
+use App\Livewire\CoverLetterBuilder;
 use App\Livewire\CreditHistory;
 use App\Livewire\CvBuilder;
 use App\Livewire\CvEvaluator;
@@ -91,6 +93,12 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
 
     Route::get('/builder', CvBuilder::class)->name('cv.builder');
     Route::get('/builder/{cv}', CvBuilder::class)->name('cv.edit');
+
+    Route::get('/cover-letters', CoverLetterBuilder::class)->name('cover-letters.index');
+    Route::get('/cover-letters/{letter}/export/{format}', [CoverLetterExportController::class, '__invoke'])
+        ->where('format', 'pdf|docx')
+        ->name('cover-letters.export');
+
     Route::get('/evaluator/{cv?}', CvEvaluator::class)->name('cv.evaluator');
     Route::get('/interview', AiInterviewer::class)->name('ai.interview');
     Route::get('/interview/history', InterviewHistory::class)->name('interview.history');

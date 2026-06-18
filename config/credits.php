@@ -10,6 +10,8 @@ return [
         'ai_parse' => 1,
         'ai_builder_message' => 1,
         'ai_interview' => 5,
+        'ai_cover_letter' => 2,
+        'ai_jd_match' => 2,
     ],
 
     'plans' => [

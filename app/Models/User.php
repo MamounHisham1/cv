@@ -71,6 +71,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the user's cover letters.
+     */
+    public function coverLetters(): HasMany
+    {
+        return $this->hasMany(CoverLetter::class);
+    }
+
+    /**
      * Get the user's CV evaluations
      */
     public function cvEvaluations(): HasMany
