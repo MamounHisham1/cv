@@ -79,6 +79,14 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Get the user's CV-vs-job-description match analyses.
+     */
+    public function jobMatches(): HasMany
+    {
+        return $this->hasMany(CvJobMatch::class);
+    }
+
+    /**
      * Get the user's CV evaluations
      */
     public function cvEvaluations(): HasMany

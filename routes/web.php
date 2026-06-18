@@ -15,6 +15,7 @@ use App\Livewire\CvEvaluator;
 use App\Livewire\Drafts;
 use App\Livewire\EvaluationHistory;
 use App\Livewire\InterviewHistory;
+use App\Livewire\JobMatch;
 use App\Livewire\ReferralDashboard;
 use App\Livewire\Upgrade;
 use App\Models\Cv;
@@ -100,6 +101,8 @@ Route::middleware(['auth', 'verified', 'otp.verified'])->group(function () {
         ->name('cover-letters.export');
 
     Route::get('/evaluator/{cv?}', CvEvaluator::class)->name('cv.evaluator');
+
+    Route::get('/match/{cv?}', JobMatch::class)->name('job.match');
     Route::get('/interview', AiInterviewer::class)->name('ai.interview');
     Route::get('/interview/history', InterviewHistory::class)->name('interview.history');
     Route::get('/evaluations/history', EvaluationHistory::class)->name('evaluations.history');
