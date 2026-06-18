@@ -51,7 +51,9 @@
             <form wire:submit="saveSkill" class="space-y-4 mb-8 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Skill' : 'Add New Skill' }}
-                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
+                    @if($editingId)
+                        <span class="ml-2 text-xs font-normal text-zinc-500">Auto-saves as you type</span>
+                    @endif
                 </x-ui::heading>
 
                 <x-ui::input wire:model.live.debounce.1000ms="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />

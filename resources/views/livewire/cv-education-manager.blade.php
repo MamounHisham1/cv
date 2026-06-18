@@ -31,7 +31,9 @@
             <form wire:submit="saveEducation" class="mb-8 space-y-4 form-section">
                 <x-ui::heading size="md" class="text-emerald-300">
                     {{ $editingId ? 'Edit Education' : 'Add New Education' }}
-                    {{ $editingId ? '<span class="text-xs text-zinc-500">Auto-saves as you type</span>' : '' }}
+                    @if($editingId)
+                        <span class="ml-2 text-xs font-normal text-zinc-500">Auto-saves as you type</span>
+                    @endif
                 </x-ui::heading>
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
