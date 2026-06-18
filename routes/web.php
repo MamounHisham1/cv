@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ImpersonateController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
+use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\VfcashWebhookController;
 use App\Livewire\AiInterviewer;
 use App\Livewire\CreditHistory;
@@ -43,6 +44,8 @@ Route::get('/otp/verify', function () {
 })->name('otp.verify');
 
 Route::post('/webhooks/vfcash', VfcashWebhookController::class)->name('webhooks.vfcash');
+
+Route::post('/webhooks/telegram', TelegramWebhookController::class)->name('webhooks.telegram');
 
 Route::middleware(['auth', 'impersonate'])->group(function () {
     Route::get('/impersonate/{user}', [ImpersonateController::class, 'start'])

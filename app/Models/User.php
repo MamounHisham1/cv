@@ -101,6 +101,16 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(ReferralCode::class);
     }
 
+    public function telegramBotTokens(): HasMany
+    {
+        return $this->hasMany(TelegramBotToken::class);
+    }
+
+    public function telegramChats(): HasMany
+    {
+        return $this->hasMany(TelegramChat::class);
+    }
+
     /**
      * Get the user's push subscriptions for web push notifications.
      *
