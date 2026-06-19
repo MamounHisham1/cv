@@ -57,12 +57,18 @@ class ProcessCoverLetter implements ShouldQueue
             $prompt = $this->buildPrompt($cv->toText(), $letter->job_description);
 
             $response = (new CoverLetterAgent)->prompt($prompt);
-            $body = trim(preg_replace('/\R{3,}/', "\n\n", (string) $response));
+            [$title, $body] = $this->splitTitleAndBody((string) $response);
 
-            $letter->update([
+            $update = [
                 'status' => CoverLetter::STATUS_GENERATED,
-                'body' => $body,
-            ]);
+                'body' => trim(preg_replace('/\R{3,}/', "\n\n", $body)),
+            ];
+            // Only override the title if the AI produced a valid short one.
+            if ($title !== '') {
+                $update['title'] = $title;
+            }
+
+            $letter->update($update);
 
             $this->charge($letter, $response->usage);
 
@@ -80,6 +86,60 @@ class ProcessCoverLetter implements ShouldQueue
                 'error_message' => mb_substr($e->getMessage(), 0, 500),
             ]);
         }
+    }
+
+    /**
+     * Split the agent output into a short title (first line) and the
+     * letter body (everything after the first blank line). The title is
+     * clamped to 3 words; if parsing fails we return an empty title and
+     * treat the whole output as the body.
+     *
+     * @return array{0: string, 1: string} [title, body]
+     */
+    private function splitTitleAndBody(string $output): array
+    {
+        $output = trim($output);
+        if ($output === '') {
+            return ['', ''];
+        }
+
+        // First non-empty line = candidate title; rest = body.
+        $lines = preg_split('/\r\n|\r|\n/', $output);
+        $titleLine = '';
+        $bodyStartIndex = 0;
+        foreach ($lines as $i => $line) {
+            if (trim($line) !== '') {
+                $titleLine = trim($line);
+                $bodyStartIndex = $i + 1;
+
+                break;
+            }
+        }
+
+        $body = trim(implode("\n", array_slice($lines, $bodyStartIndex)));
+
+        // Strip quotes/punctuation, drop standalone punctuation tokens
+        // (em/en dashes, hyphens the model uses as separators), then clamp
+        // to 3 words. "Acme — Senior Engineer" → ["Acme","Senior","Engineer"].
+        $titleLine = trim($titleLine, " \t\n\r\0\x0B\"'….,");
+        $words = array_values(array_filter(
+            preg_split('/\s+/', $titleLine),
+            fn ($w) => $w !== '' && preg_match('/[\p{L}\p{N}]/u', $w)
+        ));
+        if (count($words) > 3) {
+            $words = array_slice($words, 0, 3);
+        }
+        $titleLine = implode(' ', $words);
+
+        // Heuristic: if the first line looks like prose (>= 4 words AND
+        // ends with sentence punctuation), treat the whole output as body.
+        $firstLine = trim($lines[$bodyStartIndex - 1] ?? '');
+        $firstLineWords = array_values(array_filter(preg_split('/\s+/', $firstLine), fn ($w) => $w !== ''));
+        if (count($firstLineWords) >= 4 && preg_match('/[.!?]$/', $firstLine)) {
+            return ['', $output];
+        }
+
+        return [$titleLine, $body];
     }
 
     private function buildPrompt(string $cvText, ?string $jobDescription): string
