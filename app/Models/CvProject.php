@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\JsonArray;
 use Database\Factories\CvProjectFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +32,7 @@ class CvProject extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
-            'key_achievements' => 'array',
+            'key_achievements' => JsonArray::class,
         ];
     }
 

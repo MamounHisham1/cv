@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\JsonArray;
 use Database\Factories\CvExperienceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -34,8 +35,8 @@ class CvExperience extends Model
             'start_date' => 'date',
             'end_date' => 'date',
             'is_current' => 'boolean',
-            'technologies' => 'array',
-            'achievements' => 'array',
+            'technologies' => JsonArray::class,
+            'achievements' => JsonArray::class,
         ];
     }
 
