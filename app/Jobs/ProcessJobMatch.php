@@ -156,7 +156,7 @@ PROMPT;
                 $creditManager->deduct($user, $credits, 'ai_jd_match', $match, [
                     'prompt_tokens' => $usage->promptTokens ?? 0,
                     'completion_tokens' => $usage->completionTokens ?? 0,
-                    'model' => 'mistral-large-3',
+                    'model' => config('services.ollama.model'),
                 ]);
 
                 return;

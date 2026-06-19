@@ -4,7 +4,6 @@ namespace App\Ai\Agents;
 
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
-use Laravel\Ai\Attributes\Model;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Attributes\Timeout;
@@ -21,7 +20,6 @@ use Stringable;
  * (including the CV text + JD) is injected by the queued job.
  */
 #[Provider(Lab::Ollama)]
-#[Model('mistral-large-3:675b-cloud')]
 #[Temperature(0.0)]
 #[MaxTokens(3000)]
 #[Timeout(300)]
