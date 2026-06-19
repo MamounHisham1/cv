@@ -1,4 +1,10 @@
-<div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100">
+<div
+    class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100"
+    x-data="{
+        copy(url) { navigator.clipboard.writeText(url) }
+    }"
+    @share-link-ready.window="copy($event.detail.url)"
+>
     <div class="pointer-events-none absolute inset-x-0 top-0 h-96 bg-[radial-gradient(ellipse_at_top_right,_rgba(16,185,129,0.12),_transparent_55%)]"></div>
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(16,185,129,0.06),_transparent_55%)]"></div>
 

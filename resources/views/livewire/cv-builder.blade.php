@@ -733,6 +733,36 @@
                                 </a>
                             </div>
                         </div>
+                        {{-- Share: toggles public link + copies to clipboard --}}
+                        <div
+                            x-data="{
+                                copied: false,
+                                copy(url) {
+                                    navigator.clipboard.writeText(url).then(() => {
+                                        this.copied = true;
+                                        setTimeout(() => this.copied = false, 2000);
+                                    });
+                                }
+                            }"
+                            @share-link-ready.window="copy($event.detail.url)"
+                            class="relative"
+                        >
+                            @if($cv->isShared())
+                                <x-ui::button variant="ghost" icon="globe" class="{{ $secondaryButtonClasses }} text-emerald-300" @click="copy('{{ route('cv.share', $cv->share_token) }}')">
+                                    <span class="hidden sm:inline" x-text="copied ? 'Copied!' : 'Copy Link'"></span>
+                                    <span class="sm:hidden" x-text="copied ? '✓' : 'Link'"></span>
+                                </x-ui::button>
+                                <button type="button" wire:click="disableSharing" wire:confirm="Disable public sharing?"
+                                        class="ml-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/20" title="Stop sharing">
+                                    <x-ui::icon name="x" class="h-4 w-4" />
+                                </button>
+                            @else
+                                <x-ui::button variant="ghost" icon="globe" wire:click="enableSharing" class="{{ $secondaryButtonClasses }}">
+                                    <span class="hidden sm:inline">Share</span>
+                                    <span class="sm:hidden">Share</span>
+                                </x-ui::button>
+                            @endif
+                        </div>
                     @endif
                 </div>
             </div>

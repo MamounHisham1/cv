@@ -424,6 +424,37 @@ class CvBuilder extends Component
     }
 
     /**
+     * Enable public sharing and return the share URL. The frontend dispatches
+     * a copy-to-clipboard event once the URL is available.
+     */
+    public function enableSharing(): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            return;
+        }
+
+        $this->cv->enableSharing();
+        $this->cv->refresh();
+
+        $this->dispatch('share-link-ready', url: route('cv.share', $this->cv->share_token));
+    }
+
+    /**
+     * Disable public sharing for the current CV.
+     */
+    public function disableSharing(): void
+    {
+        if (! $this->cv || ! $this->cv->exists) {
+            return;
+        }
+
+        $this->cv->disableSharing();
+        $this->cv->refresh();
+
+        $this->dispatch('notify', message: 'Share link disabled.', type: 'success');
+    }
+
+    /**
      * Store an uploaded profile photo on the public disk and attach its URL
      * to personal_info. Only rendered by photo-supporting templates.
      */

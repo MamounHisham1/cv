@@ -57,7 +57,9 @@ class Drafts extends Component
         }
         $cv->enableSharing();
 
-        $this->dispatch('notify', message: 'Public share link created.', type: 'success');
+        // Tell the frontend the link is ready so it can copy to clipboard.
+        $this->dispatch('share-link-ready', url: route('cv.share', $cv->share_token));
+        $this->dispatch('notify', message: 'Share link copied to clipboard.', type: 'success');
     }
 
     public function confirmUnshare(int $cvId): void
