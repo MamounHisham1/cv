@@ -80,7 +80,7 @@
                                    class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-300 hover:bg-white/10">Export PDF</a>
                                 <a href="{{ route('cover-letters.export', [$editingId, 'docx']) }}"
                                    class="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-300 hover:bg-white/10">Export DOCX</a>
-                                <button type="button" wire:click="delete({{ $editingId }})" wire:confirm="Delete this cover letter?"
+                                <button type="button" @click="confirmAction({title: 'Delete this cover letter?', message: 'This cannot be undone.', method: 'delete', params: [{{ $editingId }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                                         class="rounded-lg border border-red-500/20 bg-red-500/5 px-3 py-2 text-xs text-red-400 hover:bg-red-500/20">Delete</button>
                             @endif
                             <button type="submit"

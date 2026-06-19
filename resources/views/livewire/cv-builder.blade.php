@@ -752,7 +752,7 @@
                                     <span class="hidden sm:inline" x-text="copied ? 'Copied!' : 'Copy Link'"></span>
                                     <span class="sm:hidden" x-text="copied ? '✓' : 'Link'"></span>
                                 </x-ui::button>
-                                <button type="button" wire:click="disableSharing" wire:confirm="Disable public sharing?"
+                                <button type="button" @click="confirmAction({title: 'Disable public sharing?', message: 'The share link will stop working immediately. Anyone who has it open will lose access.', method: 'disableSharing', source: $el, danger: true, confirmLabel: 'Disable sharing', cancelLabel: 'Cancel'})"
                                         class="ml-1 inline-flex h-8 w-8 items-center justify-center rounded-full border border-red-500/20 bg-red-500/5 text-red-400 hover:bg-red-500/20" title="Stop sharing">
                                     <x-ui::icon name="x" class="h-4 w-4" />
                                 </button>

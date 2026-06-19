@@ -49,6 +49,94 @@
             </template>
         </div>
 
+        {{-- Global custom confirm modal (replaces native browser wire:confirm) --}}
+        <div
+            x-data="{
+                open: false,
+                title: '',
+                message: '',
+                confirmLabel: 'Confirm',
+                cancelLabel: 'Cancel',
+                danger: false,
+                component: null,
+                method: null,
+                params: null,
+                ask(e) {
+                    const d = e.detail;
+                    this.title = d.title || 'Are you sure?';
+                    this.message = d.message || '';
+                    this.confirmLabel = d.confirmLabel || 'Confirm';
+                    this.cancelLabel = d.cancelLabel || 'Cancel';
+                    this.danger = d.danger !== false;
+                    this.component = d.component || null;
+                    this.method = d.method || null;
+                    this.params = d.params || null;
+                    this.open = true;
+                },
+                confirm() {
+                    if (this.component && this.method) {
+                        Livewire.find(this.component).call(this.method, ...(this.params || []));
+                    }
+                    this.open = false;
+                }
+            }"
+            @confirm-action.window="ask($event)"
+            x-cloak
+        >
+            <script>
+                // Global helper: any button can call window.confirmAction({ ... })
+                // to open the modal. It auto-detects the enclosing Livewire
+                // component so the confirmed action runs in the right scope.
+                window.confirmAction = function (opts) {
+                    const el = opts.source instanceof Element ? opts.source : (opts._source || null);
+                    let component = opts.component || null;
+                    if (!component && el) {
+                        const node = el.closest('[wire\\:id]');
+                        if (node) component = node.getAttribute('wire:id');
+                    }
+                    window.dispatchEvent(new CustomEvent('confirm-action', {
+                        detail: {
+                            title: opts.title,
+                            message: opts.message,
+                            confirmLabel: opts.confirmLabel,
+                            cancelLabel: opts.cancelLabel,
+                            danger: opts.danger,
+                            component: component,
+                            method: opts.method,
+                            params: opts.params,
+                        }
+                    }));
+                };
+            </script>
+            <div
+                x-show="open"
+                x-transition.opacity
+                @keydown.escape.window="open = false"
+                class="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 p-4"
+                style="display: none;"
+            >
+                <div
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 scale-95"
+                    x-transition:enter-end="opacity-100 scale-100"
+                    class="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl"
+                    @click.outside="open = false"
+                >
+                    <h3 class="mb-2 text-lg font-semibold text-white" x-text="title"></h3>
+                    <p class="mb-6 text-sm text-zinc-400" x-text="message"></p>
+                    <div class="flex justify-end gap-3">
+                        <button type="button" @click="open = false"
+                                class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 hover:bg-white/10"
+                                x-text="cancelLabel"></button>
+                        <button type="button" @click="confirm()"
+                                class="rounded-lg px-4 py-2 text-sm font-medium text-white"
+                                :class="danger ? 'bg-red-600 hover:bg-red-500' : 'bg-emerald-600 hover:bg-emerald-500'"
+                                x-text="confirmLabel"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @stack('scripts')
     </body>
 </html>

@@ -206,9 +206,11 @@
                                 <x-ui::button variant="ghost" size="sm" wire:click="editProject({{ $project['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
                                     <span class="sr-only lg:not-sr-only">Edit</span>
                                 </x-ui::button>
-                                <x-ui::button variant="ghost" size="sm" wire:click="deleteProject({{ $project['id'] }})" wire:confirm="Are you sure you want to delete this project?" icon="trash-2" class="flex-1 border border-red-400/20 bg-red-500/10 text-red-300 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
+                                <button type="button" @click="confirmAction({title: 'Delete this project?', message: 'This cannot be undone.', method: 'deleteProject', params: [{{ $project['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
+                                    class="inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-1 text-sm text-red-300 transition flex-1 border border-red-400/20 bg-red-500/10 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
+                                    <x-ui::icon name="trash-2" class="h-4 w-4" />
                                     <span class="sr-only lg:not-sr-only">Delete</span>
-                                </x-ui::button>
+                                </button>
                             </div>
                         </div>
                     </div>

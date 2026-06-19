@@ -281,8 +281,7 @@
                                 <x-ui::icon name="eye" class="h-4 w-4" />
                             </button>
                             <button
-                                wire:click="delete({{ $evaluation->id }})"
-                                wire:confirm="Are you sure you want to delete this evaluation?"
+                                @click="confirmAction({title: 'Delete this evaluation?', message: 'This cannot be undone.', method: 'delete', params: [{{ $evaluation->id }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                                 class="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
                                 title="Delete"
                             >
@@ -454,8 +453,7 @@
                             Close
                         </button>
                         <button
-                            wire:click="delete({{ $detailEvaluation->id }})"
-                            wire:confirm="Are you sure you want to delete this evaluation?"
+                            @click="confirmAction({title: 'Delete this evaluation?', message: 'This cannot be undone.', method: 'delete', params: [{{ $detailEvaluation->id }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                             class="{{ $dangerBtn }}"
                         >
                             <x-ui::icon name="trash-2" class="h-4 w-4" /> Delete

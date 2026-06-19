@@ -228,7 +228,10 @@
                                                 <span class="sr-only">Move Down</span>
                                             </x-ui::button>
                                             <x-ui::button variant="ghost" size="sm" wire:click="editSkill({{ $skill['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} shrink-0" />
-                                            <x-ui::button variant="ghost" size="sm" wire:click="deleteSkill({{ $skill['id'] }})" wire:confirm="Delete this skill?" icon="trash-2" class="shrink-0 border border-red-400/20 bg-red-500/10 text-red-300 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200" />
+                                            <button type="button" @click="confirmAction({title: 'Delete this skill?', message: 'This cannot be undone.', method: 'deleteSkill', params: [{{ $skill['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
+                                                class="inline-flex items-center justify-center rounded-lg p-1.5 text-sm text-red-300 transition shrink-0 border border-red-400/20 bg-red-500/10 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200">
+                                                <x-ui::icon name="trash-2" class="h-4 w-4" />
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
