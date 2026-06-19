@@ -101,42 +101,36 @@
                                 </a>
                             </div>
 
-                            {{-- Secondary actions, always visible, subtle --}}
-                            <div class="mt-2.5 flex items-center justify-between border-t border-white/5 pt-2.5">
-                                <div class="flex items-center gap-1">
-                                    <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
-                                       class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Evaluate">
-                                        <x-ui::icon name="sparkles" class="h-3.5 w-3.5" />
-                                        Evaluate
-                                    </a>
-                                    <button type="button" wire:click="duplicate({{ $cv->id }})" wire:loading.attr="disabled"
-                                            class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30" title="Duplicate">
-                                        <x-ui::icon name="copy" class="h-3.5 w-3.5" />
-                                        Duplicate
+                            {{-- Secondary actions: single centered icon row, subtle --}}
+                            <div class="mt-2.5 flex items-center justify-center gap-1 border-t border-white/5 pt-2.5">
+                                <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
+                                   class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Evaluate">
+                                    <x-ui::icon name="sparkles" class="h-4 w-4" />
+                                </a>
+                                <button type="button" wire:click="duplicate({{ $cv->id }})" wire:loading.attr="disabled"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30" title="Duplicate">
+                                    <x-ui::icon name="copy" class="h-4 w-4" />
+                                </button>
+                                <button type="button" wire:click="viewVersions({{ $cv->id }})"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Version history">
+                                    <x-ui::icon name="clock" class="h-4 w-4" />
+                                </button>
+                                <span class="mx-1 h-4 w-px bg-white/10"></span>
+                                @if($cv->isShared())
+                                    <button type="button" wire:click="confirmUnshare({{ $cv->id }})"
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-400 transition-colors hover:bg-emerald-500/10" title="Manage sharing">
+                                        <x-ui::icon name="globe" class="h-4 w-4" />
                                     </button>
-                                    <button type="button" wire:click="viewVersions({{ $cv->id }})"
-                                            class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Version history">
-                                        <x-ui::icon name="clock" class="h-3.5 w-3.5" />
-                                        History
+                                @else
+                                    <button type="button" wire:click="share({{ $cv->id }})"
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300" title="Create share link">
+                                        <x-ui::icon name="globe" class="h-4 w-4" />
                                     </button>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    @if($cv->isShared())
-                                        <button type="button" wire:click="confirmUnshare({{ $cv->id }})"
-                                                class="flex h-7 w-7 items-center justify-center rounded-lg text-emerald-400 transition-colors hover:bg-emerald-500/10" title="Copy link / manage sharing">
-                                            <x-ui::icon name="globe" class="h-3.5 w-3.5" />
-                                        </button>
-                                    @else
-                                        <button type="button" wire:click="share({{ $cv->id }})"
-                                                class="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300" title="Create share link">
-                                            <x-ui::icon name="globe" class="h-3.5 w-3.5" />
-                                        </button>
-                                    @endif
-                                    <button type="button" wire:click="confirmDelete({{ $cv->id }})"
-                                            class="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-red-500/10 hover:text-red-400" title="Delete">
-                                        <x-ui::icon name="trash" class="h-3.5 w-3.5" />
-                                    </button>
-                                </div>
+                                @endif
+                                <button type="button" wire:click="confirmDelete({{ $cv->id }})"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-red-500/10 hover:text-red-400" title="Delete">
+                                    <x-ui::icon name="trash" class="h-4 w-4" />
+                                </button>
                             </div>
                         </div>
                     </div>
