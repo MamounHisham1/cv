@@ -21,9 +21,11 @@
 
                 <div class="space-y-2">
                     @forelse($letters as $letter)
-                        <button type="button" wire:click="edit({{ $letter->id }})"
-                                class="group w-full rounded-xl border px-4 py-3 text-left transition-all duration-200 @if($editingId === $letter->id) border-emerald-400/30 bg-emerald-500/10 @else border-white/10 bg-zinc-900/50 hover:bg-zinc-900/70 @endif">
-                            <div class="flex items-start justify-between gap-2">
+                        <div
+                            x-data="{ copied: false, copyBody(e) { e.stopPropagation(); navigator.clipboard.writeText(@js($letter->body)).then(() => { this.copied = true; setTimeout(() => this.copied = false, 2000); }); } }"
+                            wire:click="edit({{ $letter->id }})"
+                            class="group relative w-full cursor-pointer rounded-xl border px-4 py-3 text-left transition-all duration-200 @if($editingId === $letter->id) border-emerald-400/30 bg-emerald-500/10 @else border-white/10 bg-zinc-900/50 hover:bg-zinc-900/70 @endif">
+                            <div class="flex items-start justify-between gap-2 pr-6">
                                 <p class="truncate text-sm font-medium text-zinc-100">{{ $letter->title }}</p>
                                 @if($letter->isGenerating())
                                     <span class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
@@ -37,7 +39,15 @@
                             <p class="mt-0.5 text-xs text-zinc-500">
                                 {{ \App\CoverLetterTemplates::name($letter->template_id) }} · {{ $letter->updated_at->diffForHumans() }}
                             </p>
-                        </button>
+                            @if($letter->body && ! $letter->isGenerating())
+                                <button type="button" @click="copyBody($event)"
+                                        class="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 opacity-0 transition-all hover:bg-white/10 hover:text-zinc-200 group-hover:opacity-100"
+                                        title="Copy letter">
+                                    <x-ui::icon name="copy" class="h-3.5 w-3.5" />
+                                    <span x-show="copied" x-cloak class="absolute -bottom-5 right-0 rounded bg-emerald-600 px-1.5 py-0.5 text-[9px] text-white">Copied</span>
+                                </button>
+                            @endif
+                        </div>
                     @empty
                         <div class="rounded-xl border border-dashed border-white/10 px-4 py-8 text-center">
                             <x-ui::icon name="document-text" class="mx-auto mb-2 h-8 w-8 text-zinc-700" />
@@ -159,14 +169,9 @@
                         </select>
                     </div>
 
-                    <div x-data="{ copied: false, copyLetter() { const ta = document.getElementById('body'); if (!ta || !ta.value) return; navigator.clipboard.writeText(ta.value).then(() => { this.copied = true; setTimeout(() => this.copied = false, 2000); }); } }">
-                        <div class="mb-1 flex items-center justify-between">
+                    <div>
+                        <div class="mb-1">
                             <x-ui::label for="body">Letter body</x-ui::label>
-                            <button type="button" @click="copyLetter()"
-                                    class="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-zinc-200">
-                                <x-ui::icon name="copy" class="h-3.5 w-3.5" />
-                                <span x-text="copied ? 'Copied!' : 'Copy'"></span>
-                            </button>
                         </div>
                         <textarea id="body" wire:model.blur="body" rows="14"
                                   class="w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-zinc-100"
