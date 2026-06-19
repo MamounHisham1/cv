@@ -13,37 +13,39 @@
 
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-[340px_1fr]">
             {{-- LEFT: letters list --}}
-            <aside class="space-y-2">
-                <div class="mb-3 flex items-center justify-between">
+            <aside class="rounded-2xl border border-white/10 bg-zinc-900/50 p-4">
+                <div class="mb-3 flex items-center justify-between border-b border-white/10 pb-3">
                     <h2 class="text-xs font-semibold uppercase tracking-widest text-zinc-500">Your letters</h2>
-                    <span class="text-xs text-zinc-600">{{ $letters->count() }}</span>
+                    <span class="rounded-full bg-white/5 px-2 py-0.5 text-[10px] font-medium text-zinc-400">{{ $letters->count() }}</span>
                 </div>
 
-                @forelse($letters as $letter)
-                    <button type="button" wire:click="edit({{ $letter->id }})"
-                            class="group w-full rounded-xl border px-4 py-3 text-left transition-all duration-200 @if($editingId === $letter->id) border-emerald-400/30 bg-emerald-500/10 @else border-white/10 bg-zinc-900/50 hover:bg-zinc-900/70 @endif">
-                        <div class="flex items-start justify-between gap-2">
-                            <p class="truncate text-sm font-medium text-zinc-100">{{ $letter->title }}</p>
-                            @if($letter->isGenerating())
-                                <span class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
-                                    <svg class="h-2.5 w-2.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
-                                    Drafting
-                                </span>
-                            @elseif($letter->isFailed())
-                                <span class="shrink-0 rounded-full border border-red-400/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-300">Failed</span>
-                            @endif
+                <div class="space-y-2">
+                    @forelse($letters as $letter)
+                        <button type="button" wire:click="edit({{ $letter->id }})"
+                                class="group w-full rounded-xl border px-4 py-3 text-left transition-all duration-200 @if($editingId === $letter->id) border-emerald-400/30 bg-emerald-500/10 @else border-white/10 bg-zinc-900/50 hover:bg-zinc-900/70 @endif">
+                            <div class="flex items-start justify-between gap-2">
+                                <p class="truncate text-sm font-medium text-zinc-100">{{ $letter->title }}</p>
+                                @if($letter->isGenerating())
+                                    <span class="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/20 bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-300">
+                                        <svg class="h-2.5 w-2.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                        Drafting
+                                    </span>
+                                @elseif($letter->isFailed())
+                                    <span class="shrink-0 rounded-full border border-red-400/20 bg-red-500/10 px-2 py-0.5 text-[10px] font-medium text-red-300">Failed</span>
+                                @endif
+                            </div>
+                            <p class="mt-0.5 text-xs text-zinc-500">
+                                {{ \App\CoverLetterTemplates::name($letter->template_id) }} · {{ $letter->updated_at->diffForHumans() }}
+                            </p>
+                        </button>
+                    @empty
+                        <div class="rounded-xl border border-dashed border-white/10 px-4 py-8 text-center">
+                            <x-ui::icon name="document-text" class="mx-auto mb-2 h-8 w-8 text-zinc-700" />
+                            <p class="text-sm text-zinc-500">No cover letters yet.</p>
+                            <p class="mt-1 text-xs text-zinc-600">Generate one from a CV below.</p>
                         </div>
-                        <p class="mt-0.5 text-xs text-zinc-500">
-                            {{ \App\CoverLetterTemplates::name($letter->template_id) }} · {{ $letter->updated_at->diffForHumans() }}
-                        </p>
-                    </button>
-                @empty
-                    <div class="rounded-xl border border-dashed border-white/10 px-4 py-8 text-center">
-                        <x-ui::icon name="document-text" class="mx-auto mb-2 h-8 w-8 text-zinc-700" />
-                        <p class="text-sm text-zinc-500">No cover letters yet.</p>
-                        <p class="mt-1 text-xs text-zinc-600">Generate one from a CV below.</p>
-                    </div>
-                @endforelse
+                    @endforelse
+                </div>
             </aside>
 
             {{-- RIGHT: editor / AI generation --}}
