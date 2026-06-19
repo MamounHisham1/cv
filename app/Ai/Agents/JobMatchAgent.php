@@ -2,28 +2,26 @@
 
 namespace App\Ai\Agents;
 
-use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Attributes\Timeout;
 use Laravel\Ai\Contracts\Agent;
-use Laravel\Ai\Contracts\HasStructuredOutput;
 use Laravel\Ai\Enums\Lab;
 use Laravel\Ai\Promptable;
 use Stringable;
 
 /**
- * One-shot structured-output agent that scores how well a CV matches a
- * target job description: overall compatibility, matched/missing
- * keywords, a gap analysis, and concrete suggestions. The prompt
- * (including the CV text + JD) is injected by the queued job.
+ * One-shot agent that scores how well a CV matches a target job
+ * description. Returns plain text containing a JSON object (NOT
+ * HasStructuredOutput — the structured decoder crashes on truncated
+ * responses). The job parses the JSON defensively.
  */
 #[Provider(Lab::Ollama)]
 #[Temperature(0.0)]
-#[MaxTokens(3000)]
+#[MaxTokens(4096)]
 #[Timeout(300)]
-class JobMatchAgent implements Agent, HasStructuredOutput
+class JobMatchAgent implements Agent
 {
     use Promptable;
 
@@ -57,21 +55,5 @@ Field rules:
 
 Be grounded — never invent requirements. Output the JSON object now.
 INSTRUCTIONS;
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function schema(JsonSchema $schema): array
-    {
-        return [
-            'compatibility_score' => $schema->integer()->required()->description('0–100 compatibility score'),
-            'grade' => $schema->string()->required()->description('A | B | C | D | F'),
-            'summary' => $schema->string()->required()->description('2–3 sentence summary of match and biggest gap'),
-            'matched_keywords' => $schema->string()->required()->description('JD keywords the CV already covers, ||-separated'),
-            'missing_keywords' => $schema->string()->required()->description('Important JD keywords the CV lacks, ||-separated'),
-            'gap_analysis' => $schema->string()->required()->description('3–5 key gaps as short sentences, ||-separated'),
-            'suggestions' => $schema->string()->required()->description('3–5 concrete actions to close gaps, ||-separated'),
-        ];
     }
 }

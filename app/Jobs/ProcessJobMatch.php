@@ -80,34 +80,42 @@ class ProcessJobMatch implements ShouldQueue
     }
 
     /**
-     * Try every strategy to get a structured array out of the agent
-     * response: toArray() first, then raw-text JSON decode, then a
-     * forgiving key:value line parser for models that refuse JSON.
+     * Parse the agent's plain-text JSON response into an array. Tries
+     * json_decode first (stripping markdown fences), then falls back to
+     * a forgiving key:value line parser. Handles truncated JSON by
+     * salvaging whatever fields did complete.
      *
      * @return array<string, mixed>
      */
     private function extractStructuredData($response): array
     {
-        // 1. SDK structured decode (the happy path).
-        try {
-            $data = $response->toArray();
-            if (! empty(array_filter($data))) {
-                return $data;
-            }
-        } catch (\Throwable) {
-            // SDK couldn't decode — fall through to manual parsing.
-        }
-
+        // The agent no longer uses HasStructuredOutput, so the response
+        // is plain text containing a JSON object.
         $raw = trim((string) $response);
 
-        // 2. Strip markdown code fences if present, then json_decode.
-        $raw = preg_replace('/^```(?:json)?\s*|\s*```$/i', '', $raw) ?: $raw;
-        $decoded = json_decode($raw, true);
+        // 1. Strip markdown code fences if present, then json_decode.
+        $cleaned = preg_replace('/^```(?:json)?\s*|\s*```$/i', '', $raw) ?: $raw;
+        $decoded = json_decode($cleaned, true);
         if (is_array($decoded) && ! empty($decoded)) {
             return $decoded;
         }
 
-        // 3. Forgiving key:value line parser for stubborn models.
+        // 2. Truncated JSON? Salvage complete key:value pairs from the
+        // raw text using regex so a cut-off response isn't a total loss.
+        $salvaged = [];
+        foreach (['compatibility_score', 'grade', 'summary', 'matched_keywords', 'missing_keywords', 'gap_analysis', 'suggestions'] as $field) {
+            // Match "field": "value" or "field": number
+            if (preg_match('/"'.$field.'"\s*:\s*"(.*?)"(?=\s*[,}])/s', $cleaned, $m)) {
+                $salvaged[$field] = $m[1];
+            } elseif (preg_match('/"'.$field.'"\s*:\s*(\d+)/', $cleaned, $m)) {
+                $salvaged[$field] = (int) $m[1];
+            }
+        }
+        if (! empty($salvaged)) {
+            return $salvaged;
+        }
+
+        // 3. Last resort: forgiving key:value line parser.
         $parsed = [];
         foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
             $line = trim($line);
@@ -115,11 +123,8 @@ class ProcessJobMatch implements ShouldQueue
                 continue;
             }
             [$key, $value] = array_pad(explode(':', $line, 2), 2, '');
-            $key = trim($key);
-            $value = trim($value);
-            // Normalize key aliases to snake_case.
-            $key = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $key));
-            $parsed[$key] = $value;
+            $key = strtolower(preg_replace('/[^a-z0-9]+/i', '_', trim($key)));
+            $parsed[$key] = trim($value);
         }
 
         return $parsed;
