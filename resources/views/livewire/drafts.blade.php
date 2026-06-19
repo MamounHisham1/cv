@@ -24,83 +24,122 @@
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 @foreach($cvs as $cv)
-                <div class="card-hover group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-6 transition-all duration-300 hover:border-white/20 hover:bg-zinc-900/70">
-                    <div class="mb-4 flex items-start justify-between">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                            <x-ui::icon name="file-text" class="h-6 w-6 text-zinc-400" />
-                        </div>
-                        <div class="flex flex-wrap gap-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                            <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
-                               class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Evaluate">
-                                <x-ui::icon name="sparkles" class="h-4 w-4" />
-                            </a>
-                            <a href="{{ route('cv.edit', $cv) }}" wire:navigate
-                               class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Edit">
-                                <x-ui::icon name="pencil" class="h-4 w-4" />
-                            </a>
-                            <a href="{{ route('cv.preview', $cv) }}" target="_blank"
-                               class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Preview">
-                                <x-ui::icon name="eye" class="h-4 w-4" />
-                            </a>
-                            <a href="{{ route('cv.export', [$cv, 'pdf']) }}"
-                               class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Download PDF">
-                                <x-ui::icon name="download" class="h-4 w-4" />
-                            </a>
-                            <button type="button" wire:click="duplicate({{ $cv->id }})" wire:loading.attr="disabled"
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white disabled:opacity-30" title="Duplicate">
-                                <x-ui::icon name="copy" class="h-4 w-4" />
-                            </button>
+                @php
+                    $expCount = $cv->experiences->count();
+                    $skillCount = $cv->skills->count();
+                    $certCount = $cv->certifications->count();
+                    $totalSections = $expCount + $skillCount + $certCount;
+                    $isEmpty = $totalSections === 0;
+                @endphp
+                <div class="card-hover group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/50 transition-all duration-300 hover:border-emerald-400/20 hover:bg-zinc-900/70">
+                    {{-- Accent strip with template indicator --}}
+                    <div class="relative h-20 overflow-hidden border-b border-white/5 bg-gradient-to-br from-zinc-800/80 to-zinc-900">
+                        <div class="absolute inset-0 flex items-center justify-between px-5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+                                    <x-ui::icon name="file-text" class="h-5 w-5 text-emerald-400" />
+                                </div>
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-widest text-zinc-500">{{ \App\CvTemplates::name($cv->template_id ?? 'professional-classic') }}</p>
+                                    @if($cv->industry_pack && $cv->industry_pack !== 'generic')
+                                        <p class="text-[11px] text-emerald-400/70">{{ \App\Cv\IndustryPacks\IndustryPacks::get($cv->industry_pack)?->name() }}</p>
+                                    @endif
+                                </div>
+                            </div>
                             @if($cv->isShared())
-                                <button type="button" wire:click="confirmUnshare({{ $cv->id }})"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-400/20 bg-emerald-500/10 text-emerald-300 transition-all duration-200 hover:bg-emerald-500/20" title="Sharing — click to disable">
-                                    <x-ui::icon name="globe" class="h-4 w-4" />
-                                </button>
-                            @else
-                                <button type="button" wire:click="share({{ $cv->id }})"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Create share link">
-                                    <x-ui::icon name="globe" class="h-4 w-4" />
-                                </button>
+                                <span class="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                                    Shared
+                                </span>
                             @endif
-                            <button type="button" wire:click="confirmDelete({{ $cv->id }})"
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-red-500/20 bg-red-500/5 text-red-400 transition-all duration-200 hover:bg-red-500/20" title="Delete">
-                                <x-ui::icon name="trash" class="h-4 w-4" />
-                            </button>
-                            <button type="button" wire:click="viewVersions({{ $cv->id }})"
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Version history">
-                                <x-ui::icon name="clock" class="h-4 w-4" />
-                            </button>
                         </div>
                     </div>
 
-                    <h3 class="mb-1 text-lg font-semibold text-white">{{ $cv->title }}</h3>
-                    <p class="mb-4 text-xs text-zinc-500">Last edited {{ $cv->updated_at->diffForHumans() }}</p>
+                    {{-- Body --}}
+                    <div class="flex flex-1 flex-col p-5">
+                        <h3 class="mb-0.5 truncate text-base font-semibold text-white" title="{{ $cv->title }}">{{ $cv->title }}</h3>
+                        <p class="mb-4 text-xs text-zinc-500">Last edited {{ $cv->updated_at->diffForHumans() }}</p>
 
-                    <div class="space-y-2">
-                        <div class="flex items-center gap-2 text-xs text-zinc-400">
-                            <x-ui::icon name="briefcase" class="h-3.5 w-3.5" />
-                            <span>{{ $cv->experiences->count() }} Experience{{ $cv->experiences->count() != 1 ? 's' : '' }}</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-xs text-zinc-400">
-                            <x-ui::icon name="zap" class="h-3.5 w-3.5" />
-                            <span>{{ $cv->skills->count() }} Skill{{ $cv->skills->count() != 1 ? 's' : '' }}</span>
-                        </div>
-                        <div class="flex items-center gap-2 text-xs text-zinc-400">
-                            <x-ui::icon name="trophy" class="h-3.5 w-3.5" />
-                            <span>{{ $cv->certifications->count() }} Certification{{ $cv->certifications->count() != 1 ? 's' : '' }}</span>
-                        </div>
-                        @if($cv->isShared())
-                            <div class="flex items-center gap-2 text-xs text-emerald-400">
-                                <x-ui::icon name="globe" class="h-3.5 w-3.5" />
-                                <span>Public link active</span>
+                        @if($isEmpty)
+                            <div class="mb-4 flex items-center gap-2 rounded-lg border border-amber-400/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300/80">
+                                <x-ui::icon name="lightbulb" class="h-3.5 w-3.5" />
+                                <span>Empty CV — start adding content</span>
+                            </div>
+                        @else
+                            {{-- Compact stat row --}}
+                            <div class="mb-5 flex items-center gap-4 text-xs text-zinc-400">
+                                <span class="flex items-center gap-1.5" title="{{ $expCount }} experience{{ $expCount != 1 ? 's' : '' }}">
+                                    <x-ui::icon name="briefcase" class="h-3.5 w-3.5 text-zinc-500" />
+                                    {{ $expCount }}
+                                </span>
+                                <span class="flex items-center gap-1.5" title="{{ $skillCount }} skill{{ $skillCount != 1 ? 's' : '' }}">
+                                    <x-ui::icon name="zap" class="h-3.5 w-3.5 text-zinc-500" />
+                                    {{ $skillCount }}
+                                </span>
+                                <span class="flex items-center gap-1.5" title="{{ $certCount }} certification{{ $certCount != 1 ? 's' : '' }}">
+                                    <x-ui::icon name="trophy" class="h-3.5 w-3.5 text-zinc-500" />
+                                    {{ $certCount }}
+                                </span>
                             </div>
                         @endif
-                    </div>
 
-                    <a href="{{ route('cv.edit', $cv) }}" wire:navigate
-                       class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-all duration-200 hover:bg-white/10 hover:text-white">
-                        <span>Edit CV</span>
-                        <x-ui::icon name="arrow-right" class="h-4 w-4" />
-                    </a>
+                        {{-- Primary action + secondary actions row --}}
+                        <div class="mt-auto">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('cv.edit', $cv) }}" wire:navigate
+                                   class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:from-emerald-400 hover:to-emerald-500">
+                                    <span>Edit</span>
+                                    <x-ui::icon name="arrow-right" class="h-4 w-4" />
+                                </a>
+                                <a href="{{ route('cv.preview', $cv) }}" target="_blank"
+                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Preview">
+                                    <x-ui::icon name="eye" class="h-4 w-4" />
+                                </a>
+                                <a href="{{ route('cv.export', [$cv, 'pdf']) }}"
+                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Download PDF">
+                                    <x-ui::icon name="download" class="h-4 w-4" />
+                                </a>
+                            </div>
+
+                            {{-- Secondary actions, always visible, subtle --}}
+                            <div class="mt-2.5 flex items-center justify-between border-t border-white/5 pt-2.5">
+                                <div class="flex items-center gap-1">
+                                    <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
+                                       class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Evaluate">
+                                        <x-ui::icon name="sparkles" class="h-3.5 w-3.5" />
+                                        Evaluate
+                                    </a>
+                                    <button type="button" wire:click="duplicate({{ $cv->id }})" wire:loading.attr="disabled"
+                                            class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30" title="Duplicate">
+                                        <x-ui::icon name="copy" class="h-3.5 w-3.5" />
+                                        Duplicate
+                                    </button>
+                                    <button type="button" wire:click="viewVersions({{ $cv->id }})"
+                                            class="flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Version history">
+                                        <x-ui::icon name="clock" class="h-3.5 w-3.5" />
+                                        History
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    @if($cv->isShared())
+                                        <button type="button" wire:click="confirmUnshare({{ $cv->id }})"
+                                                class="flex h-7 w-7 items-center justify-center rounded-lg text-emerald-400 transition-colors hover:bg-emerald-500/10" title="Copy link / manage sharing">
+                                            <x-ui::icon name="globe" class="h-3.5 w-3.5" />
+                                        </button>
+                                    @else
+                                        <button type="button" wire:click="share({{ $cv->id }})"
+                                                class="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300" title="Create share link">
+                                            <x-ui::icon name="globe" class="h-3.5 w-3.5" />
+                                        </button>
+                                    @endif
+                                    <button type="button" wire:click="confirmDelete({{ $cv->id }})"
+                                            class="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-red-500/10 hover:text-red-400" title="Delete">
+                                        <x-ui::icon name="trash" class="h-3.5 w-3.5" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @endforeach
             </div>
