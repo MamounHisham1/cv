@@ -159,7 +159,7 @@
 
                     <div>
                         <x-ui::label for="body">Letter body</x-ui::label>
-                        <textarea id="body" wire:model.blur="body" rows="14"
+                        <textarea id="body" x-ref="bodyTextarea" wire:model.blur="body" rows="14"
                                   class="mt-1 w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-zinc-100"
                                   placeholder="Dear Hiring Manager,…"></textarea>
                         @error('body') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
@@ -182,6 +182,56 @@
                         </button>
                     </div>
                 </form>
+
+                {{-- Email-ready: opens the user's mail client pre-filled --}}
+                <div
+                    x-data="{
+                        recipient: '',
+                        subject: 'Application for the role',
+                        buildMailto() {
+                            const body = this.$refs.bodyTextarea ? this.$refs.bodyTextarea.value : '';
+                            const subject = encodeURIComponent(this.subject || 'Application for the role');
+                            const to = encodeURIComponent(this.recipient || '');
+                            const b = encodeURIComponent(body || '');
+                            return 'mailto:' + to + '?subject=' + subject + '&body=' + b;
+                        }
+                    }"
+                    class="rounded-2xl border border-white/10 bg-zinc-900/50 p-6"
+                >
+                    <div class="mb-4 flex items-center gap-2">
+                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/15">
+                            <x-ui::icon name="mail" class="h-5 w-5 text-blue-400" />
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-semibold text-white">Email-ready</h2>
+                            <p class="text-xs text-zinc-500">Opens your email app pre-filled — you just hit send in Gmail.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-zinc-400">Recipient (employer email)</label>
+                            <input type="email" x-model="recipient"
+                                   class="w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm text-zinc-100"
+                                   placeholder="hiring@acme.com">
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-xs font-medium text-zinc-400">Subject</label>
+                            <input type="text" x-model="subject"
+                                   class="w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm text-zinc-100"
+                                   placeholder="Application for Senior Engineer">
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-between">
+                        <p class="text-xs text-zinc-500">The email comes from <strong>your</strong> Gmail account — the right sender for a job application.</p>
+                        <a :href="buildMailto()"
+                           class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:from-blue-400 hover:to-blue-500">
+                            <x-ui::icon name="mail" class="h-4 w-4" />
+                            Open in email
+                        </a>
+                    </div>
+                </div>
             </section>
         </div>
     </div>
