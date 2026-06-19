@@ -48,7 +48,7 @@ class ProcessJobMatch implements ShouldQueue
 
             $response = (new JobMatchAgent)->prompt($prompt);
 
-            $result = $this->normalize((array) $response->json(), (string) $response);
+            $result = $this->normalize($response->toArray(), (string) $response);
 
             $match->update([
                 'status' => CvJobMatch::STATUS_COMPLETED,
