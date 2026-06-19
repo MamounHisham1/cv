@@ -1027,41 +1027,41 @@
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.first_name" label="First Name" placeholder="John" required :error="$errors->first('personalInfo.first_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.first_name') ? $errorFieldClasses : '' }}" />
                                 </div>
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.last_name" label="Last Name" placeholder="Doe" required :error="$errors->first('personalInfo.last_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.last_name') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.last_name" label="Last Name" placeholder="Doe" required :error="$errors->first('personalInfo.last_name')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.last_name') ? $errorFieldClasses : '' }}" />
                                 </div>
                             </div>
 
-                            <x-ui::input wire:model.live.debounce.1000ms="title" label="Job Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
+                            <x-ui::input wire:model.live.debounce.200ms="title" label="Job Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
                             <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required :error="$errors->first('personalInfo.email')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.email') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.email" type="email" label="Email" placeholder="john@example.com" required :error="$errors->first('personalInfo.email')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.email') ? $errorFieldClasses : '' }}" />
                                 </div>
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" :error="$errors->first('personalInfo.phone')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.phone') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.phone" type="tel" label="Phone" placeholder="+1 (555) 123-4567" :error="$errors->first('personalInfo.phone')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.phone') ? $errorFieldClasses : '' }}" />
                                 </div>
                             </div>
 
-                            <x-ui::input wire:model.live.debounce.1000ms="personalInfo.location" label="Location" placeholder="City, Country" :error="$errors->first('personalInfo.location')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.location') ? $errorFieldClasses : '' }}" />
+                            <x-ui::input wire:model.live.debounce.200ms="personalInfo.location" label="Location" placeholder="City, Country" :error="$errors->first('personalInfo.location')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.location') ? $errorFieldClasses : '' }}" />
                             <x-ui::description class="text-zinc-400">City and country where you're based</x-ui::description>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." :error="$errors->first('personalInfo.linkedin')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.linkedin') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.linkedin" label="LinkedIn" placeholder="linkedin.com/in/..." :error="$errors->first('personalInfo.linkedin')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.linkedin') ? $errorFieldClasses : '' }}" />
                                 </div>
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.github" label="GitHub" placeholder="github.com/..." :error="$errors->first('personalInfo.github')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.github') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.github" label="GitHub" placeholder="github.com/..." :error="$errors->first('personalInfo.github')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.github') ? $errorFieldClasses : '' }}" />
                                 </div>
                                 <div class="form-field">
-                                    <x-ui::input wire:model.live.debounce.1000ms="personalInfo.website" label="Website" placeholder="yoursite.com" :error="$errors->first('personalInfo.website')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.website') ? $errorFieldClasses : '' }}" />
+                                    <x-ui::input wire:model.live.debounce.200ms="personalInfo.website" label="Website" placeholder="yoursite.com" :error="$errors->first('personalInfo.website')" class="{{ $fieldClasses }} {{ $errors->has('personalInfo.website') ? $errorFieldClasses : '' }}" />
                                 </div>
                             </div>
 
-                            <x-ui::textarea wire:model.live.debounce.1000ms="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" :error="$errors->first('summary')" class="{{ $fieldClasses }} {{ $errors->has('summary') ? $errorFieldClasses : '' }}" />
+                            <x-ui::textarea wire:model.live.debounce.200ms="summary" label="Professional Summary" placeholder="Write a brief summary of your professional background and career goals..." rows="5" :error="$errors->first('summary')" class="{{ $fieldClasses }} {{ $errors->has('summary') ? $errorFieldClasses : '' }}" />
                             <x-ui::description class="text-zinc-400">2-4 sentences highlighting your key strengths and what you bring to the table</x-ui::description>
 
                             <div class="flex items-center justify-end border-t border-white/10 pt-4">

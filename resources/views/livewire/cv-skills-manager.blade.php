@@ -56,7 +56,7 @@
                     @endif
                 </x-ui::heading>
 
-                <x-ui::input wire:model.live.debounce.1000ms="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />
+                <x-ui::input wire:model.live.debounce.200ms="form.name" label="Skill Name" placeholder="e.g., Python, React, Project Management" required :error="$errors->first('form.name')" class="{{ $fieldClasses }}" />
 
                 <div
                     x-data="{
@@ -158,7 +158,7 @@
                 </div>
 
                 <div class="form-field">
-                    <x-ui::select wire:model.live.debounce.1000ms="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
+                    <x-ui::select wire:model.live.debounce.200ms="form.level" label="Proficiency Level" :options="$levels" class="{{ $fieldClasses }}" />
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-end gap-3 border-t border-white/10 pt-4">

@@ -39,7 +39,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.institution"
+                            wire:model.live.debounce.200ms="form.institution"
                             label="Institution"
                             placeholder="e.g., Cairo University"
                             required
@@ -49,7 +49,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.degree"
+                            wire:model.live.debounce.200ms="form.degree"
                             label="Degree"
                             placeholder="e.g., Bachelor of Computer Science"
                             required
@@ -62,7 +62,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.field_of_study"
+                            wire:model.live.debounce.200ms="form.field_of_study"
                             label="Field of Study"
                             placeholder="e.g., Software Engineering"
                             :error="$errors->first('form.field_of_study')"
@@ -71,7 +71,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.location"
+                            wire:model.live.debounce.200ms="form.location"
                             label="Location"
                             placeholder="City, Country (optional)"
                             :error="$errors->first('form.location')"
@@ -83,7 +83,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.start_date"
+                            wire:model.live.debounce.200ms="form.start_date"
                             type="date"
                             label="Start Date"
                             required
@@ -94,7 +94,7 @@
                     <div class="form-field space-y-3">
                         @if(!$form['is_current'])
                             <x-ui::input
-                                wire:model.live.debounce.1000ms="form.end_date"
+                                wire:model.live.debounce.200ms="form.end_date"
                                 type="date"
                                 label="End Date"
                                 :error="$errors->first('form.end_date')"
@@ -110,7 +110,7 @@
                 </div>
 
                 <x-ui::textarea
-                    wire:model.live.debounce.1000ms="form.description"
+                    wire:model.live.debounce.200ms="form.description"
                     label="Description (optional)"
                     placeholder="Relevant coursework, honors, activities..."
                     rows="3"

@@ -37,7 +37,7 @@
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model.live.debounce.1000ms="form.name"
+                    wire:model.live.debounce.200ms="form.name"
                     label="Project Name"
                     placeholder="e.g., E-Commerce Platform"
                     required
@@ -46,7 +46,7 @@
                 />
 
                 <x-ui::textarea
-                    wire:model.live.debounce.1000ms="form.description"
+                    wire:model.live.debounce.200ms="form.description"
                     label="Description"
                     placeholder="Describe what the project does, your role, and the technologies used..."
                     rows="4"
@@ -61,7 +61,7 @@
                     @foreach($form['key_achievements'] as $index => $achievement)
                         <div class="flex gap-2 mb-2">
                             <x-ui::input
-                                wire:model.live.debounce.1000ms="form.key_achievements.{{ $index }}"
+                                wire:model.live.debounce.200ms="form.key_achievements.{{ $index }}"
                                 placeholder="e.g., Served 10,000+ users"
                                 class="{{ $fieldClasses }} flex-1"
                             />
@@ -76,7 +76,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.project_url"
+                            wire:model.live.debounce.200ms="form.project_url"
                             label="Project URL"
                             placeholder="https://..."
                             :error="$errors->first('form.project_url')"
@@ -85,7 +85,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.github_url"
+                            wire:model.live.debounce.200ms="form.github_url"
                             label="GitHub URL"
                             placeholder="https://github.com/..."
                             :error="$errors->first('form.github_url')"
@@ -97,7 +97,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.start_date"
+                            wire:model.live.debounce.200ms="form.start_date"
                             type="date"
                             label="Start Date"
                             :error="$errors->first('form.start_date')"
@@ -106,7 +106,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.end_date"
+                            wire:model.live.debounce.200ms="form.end_date"
                             type="date"
                             label="End Date (optional)"
                             :error="$errors->first('form.end_date')"

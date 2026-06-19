@@ -46,7 +46,7 @@
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model.live.debounce.1000ms="form.language"
+                    wire:model.live.debounce.200ms="form.language"
                     label="Language"
                     placeholder="e.g., English"
                     required
@@ -55,7 +55,7 @@
                 />
 
                 <x-ui::select
-                    wire:model.live.debounce.1000ms="form.proficiency"
+                    wire:model.live.debounce.200ms="form.proficiency"
                     label="Proficiency"
                     :options="$proficiencies"
                     required

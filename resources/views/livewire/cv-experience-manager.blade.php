@@ -39,22 +39,22 @@
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
-                        <x-ui::input wire:model.live.debounce.1000ms="form.company" label="Company" placeholder="Company Name" required :error="$errors->first('form.company')" class="{{ $fieldClasses }} {{ $errors->has('form.company') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.200ms="form.company" label="Company" placeholder="Company Name" required :error="$errors->first('form.company')" class="{{ $fieldClasses }} {{ $errors->has('form.company') ? $errorFieldClasses : '' }}" />
                     </div>
                     <div class="form-field">
-                        <x-ui::input wire:model.live.debounce.1000ms="form.title" label="Job Title" placeholder="e.g., Senior Project Manager" required :error="$errors->first('form.title')" class="{{ $fieldClasses }} {{ $errors->has('form.title') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.200ms="form.title" label="Job Title" placeholder="e.g., Senior Project Manager" required :error="$errors->first('form.title')" class="{{ $fieldClasses }} {{ $errors->has('form.title') ? $errorFieldClasses : '' }}" />
                     </div>
                 </div>
 
-                <x-ui::input wire:model.live.debounce.1000ms="form.location" label="Location" placeholder="City, Country (optional)" :error="$errors->first('form.location')" class="{{ $fieldClasses }} {{ $errors->has('form.location') ? $errorFieldClasses : '' }}" />
+                <x-ui::input wire:model.live.debounce.200ms="form.location" label="Location" placeholder="City, Country (optional)" :error="$errors->first('form.location')" class="{{ $fieldClasses }} {{ $errors->has('form.location') ? $errorFieldClasses : '' }}" />
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
-                        <x-ui::input wire:model.live.debounce.1000ms="form.start_date" type="date" label="Start Date" required :error="$errors->first('form.start_date')" class="{{ $fieldClasses }} {{ $errors->has('form.start_date') ? $errorFieldClasses : '' }}" />
+                        <x-ui::input wire:model.live.debounce.200ms="form.start_date" type="date" label="Start Date" required :error="$errors->first('form.start_date')" class="{{ $fieldClasses }} {{ $errors->has('form.start_date') ? $errorFieldClasses : '' }}" />
                     </div>
                     <div class="form-field space-y-3">
                         @if(!$form['is_current'])
-                            <x-ui::input wire:model.live.debounce.1000ms="form.end_date" type="date" label="End Date" :error="$errors->first('form.end_date')" class="{{ $fieldClasses }} {{ $errors->has('form.end_date') ? $errorFieldClasses : '' }}" />
+                            <x-ui::input wire:model.live.debounce.200ms="form.end_date" type="date" label="End Date" :error="$errors->first('form.end_date')" class="{{ $fieldClasses }} {{ $errors->has('form.end_date') ? $errorFieldClasses : '' }}" />
                         @else
                             <x-ui::input value="Present" label="End Date" disabled class="{{ $fieldClasses }}" />
                         @endif
@@ -64,7 +64,7 @@
                     </div>
                 </div>
 
-                <x-ui::textarea wire:model.live.debounce.1000ms="form.description" label="Description" placeholder="Describe your role, responsibilities, and achievements..." rows="4" required :error="$errors->first('form.description')" class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}" />
+                <x-ui::textarea wire:model.live.debounce.200ms="form.description" label="Description" placeholder="Describe your role, responsibilities, and achievements..." rows="4" required :error="$errors->first('form.description')" class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}" />
                 <x-ui::description class="text-zinc-400">Use action verbs and include quantifiable achievements when possible</x-ui::description>
 
                 <div>

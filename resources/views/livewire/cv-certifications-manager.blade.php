@@ -37,7 +37,7 @@
                 </x-ui::heading>
 
                 <x-ui::input
-                    wire:model.live.debounce.1000ms="form.name"
+                    wire:model.live.debounce.200ms="form.name"
                     label="Certification Name"
                     placeholder="e.g., Project Management Professional (PMP)"
                     required
@@ -46,7 +46,7 @@
                 />
 
                 <x-ui::input
-                    wire:model.live.debounce.1000ms="form.issuing_organization"
+                    wire:model.live.debounce.200ms="form.issuing_organization"
                     label="Issuing Organization"
                     placeholder="e.g., Project Management Institute"
                     required
@@ -57,7 +57,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.issue_date"
+                            wire:model.live.debounce.200ms="form.issue_date"
                             type="date"
                             label="Issue Date"
                             :error="$errors->first('form.issue_date')"
@@ -66,7 +66,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.expiration_date"
+                            wire:model.live.debounce.200ms="form.expiration_date"
                             type="date"
                             label="Expiration Date (if applicable)"
                             :error="$errors->first('form.expiration_date')"
@@ -78,7 +78,7 @@
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.credential_id"
+                            wire:model.live.debounce.200ms="form.credential_id"
                             label="Credential ID"
                             placeholder="Optional"
                             :error="$errors->first('form.credential_id')"
@@ -87,7 +87,7 @@
                     </div>
                     <div class="form-field">
                         <x-ui::input
-                            wire:model.live.debounce.1000ms="form.credential_url"
+                            wire:model.live.debounce.200ms="form.credential_url"
                             label="Credential URL"
                             placeholder="https://..."
                             :error="$errors->first('form.credential_url')"
