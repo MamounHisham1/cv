@@ -157,10 +157,17 @@
                         </select>
                     </div>
 
-                    <div>
-                        <x-ui::label for="body">Letter body</x-ui::label>
-                        <textarea id="body" x-ref="bodyTextarea" wire:model.blur="body" rows="14"
-                                  class="mt-1 w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-zinc-100"
+                    <div x-data="{ copied: false, copyLetter() { const ta = document.getElementById('body'); if (!ta || !ta.value) return; navigator.clipboard.writeText(ta.value).then(() => { this.copied = true; setTimeout(() => this.copied = false, 2000); }); } }">
+                        <div class="mb-1 flex items-center justify-between">
+                            <x-ui::label for="body">Letter body</x-ui::label>
+                            <button type="button" @click="copyLetter()"
+                                    class="inline-flex items-center gap-1.5 text-xs text-zinc-500 transition-colors hover:text-zinc-200">
+                                <x-ui::icon name="copy" class="h-3.5 w-3.5" />
+                                <span x-text="copied ? 'Copied!' : 'Copy'"></span>
+                            </button>
+                        </div>
+                        <textarea id="body" wire:model.blur="body" rows="14"
+                                  class="w-full rounded-lg border border-white/10 bg-zinc-900 px-3 py-2 text-sm leading-relaxed text-zinc-100"
                                   placeholder="Dear Hiring Manager,…"></textarea>
                         @error('body') <p class="mt-1 text-xs text-red-400">{{ $message }}</p> @enderror
                     </div>
@@ -188,11 +195,14 @@
                     x-data="{
                         recipient: '',
                         subject: 'Application for the role',
+                        getBody() {
+                            const ta = document.getElementById('body');
+                            return ta ? ta.value : '';
+                        },
                         buildMailto() {
-                            const body = this.$refs.bodyTextarea ? this.$refs.bodyTextarea.value : '';
                             const subject = encodeURIComponent(this.subject || 'Application for the role');
                             const to = encodeURIComponent(this.recipient || '');
-                            const b = encodeURIComponent(body || '');
+                            const b = encodeURIComponent(this.getBody() || '');
                             return 'mailto:' + to + '?subject=' + subject + '&body=' + b;
                         }
                     }"
@@ -204,7 +214,7 @@
                         </div>
                         <div>
                             <h2 class="text-sm font-semibold text-white">Email-ready</h2>
-                            <p class="text-xs text-zinc-500">Opens your email app pre-filled — you just hit send in Gmail.</p>
+                            <p class="text-xs text-zinc-500">Copy the letter, or open your email app pre-filled — you just hit send in Gmail.</p>
                         </div>
                     </div>
 
@@ -223,13 +233,14 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 flex items-center justify-between">
-                        <p class="text-xs text-zinc-500">The email comes from <strong>your</strong> Gmail account — the right sender for a job application.</p>
+                    <div class="mt-4 flex items-center justify-between gap-3">
+                        <p class="hidden text-xs text-zinc-500 sm:block">Email sends from <strong>your</strong> Gmail — the right sender for a job application.</p>
                         <a :href="buildMailto()"
                            class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-sm font-medium text-white transition-all hover:from-blue-400 hover:to-blue-500">
                             <x-ui::icon name="mail" class="h-4 w-4" />
                             Open in email
                         </a>
+                        </div>
                     </div>
                 </div>
             </section>
