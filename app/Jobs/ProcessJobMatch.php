@@ -46,7 +46,7 @@ class ProcessJobMatch implements ShouldQueue
             $cvText = $cv->toText();
             $prompt = $this->buildPrompt($cvText, $match->job_description, $match->job_title);
 
-            $response = (new JobMatchAgent)->forUser(User::find($match->user_id))->prompt($prompt);
+            $response = (new JobMatchAgent)->prompt($prompt);
 
             $result = $this->normalize((array) $response->json(), (string) $response);
 

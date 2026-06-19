@@ -147,7 +147,7 @@ class CoverLetterBuilder extends Component
             $cv->load(['experiences', 'educations', 'skills', 'certifications', 'projects', 'languages']);
             $prompt = $this->buildPrompt($cv);
 
-            $agent = (new CoverLetterAgent)->forUser(Auth::user());
+            $agent = new CoverLetterAgent;
             $response = $agent->prompt($prompt);
 
             $body = trim(preg_replace('/\R{3,}/', "\n\n", (string) $response));
