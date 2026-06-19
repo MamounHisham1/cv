@@ -12,6 +12,21 @@ class CoverLetter extends Model
     /** @use HasFactory<CoverLetterFactory> */
     use HasFactory;
 
+    public const STATUS_DRAFT = 'draft';
+
+    public const STATUS_GENERATING = 'generating';
+
+    public const STATUS_GENERATED = 'generated';
+
+    public const STATUS_FAILED = 'failed';
+
+    public const STATUSES = [
+        self::STATUS_DRAFT,
+        self::STATUS_GENERATING,
+        self::STATUS_GENERATED,
+        self::STATUS_FAILED,
+    ];
+
     protected $fillable = [
         'user_id',
         'cv_id',
@@ -19,6 +34,9 @@ class CoverLetter extends Model
         'body',
         'template_id',
         'metadata',
+        'status',
+        'job_description',
+        'error_message',
     ];
 
     protected function casts(): array
@@ -40,6 +58,26 @@ class CoverLetter extends Model
     public function cv(): BelongsTo
     {
         return $this->belongsTo(Cv::class);
+    }
+
+    public function isDraft(): bool
+    {
+        return $this->status === self::STATUS_DRAFT;
+    }
+
+    public function isGenerating(): bool
+    {
+        return $this->status === self::STATUS_GENERATING;
+    }
+
+    public function isGenerated(): bool
+    {
+        return $this->status === self::STATUS_GENERATED;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->status === self::STATUS_FAILED;
     }
 
     /**

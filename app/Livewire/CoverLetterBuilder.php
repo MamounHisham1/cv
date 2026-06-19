@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use App\Ai\Agents\CoverLetterAgent;
 use App\CoverLetterTemplates;
+use App\Jobs\ProcessCoverLetter;
 use App\Models\CoverLetter;
 use App\Models\Cv;
 use App\Services\CreditManager;
@@ -35,7 +35,14 @@ class CoverLetterBuilder extends Component
 
     public string $jobDescription = '';
 
-    public bool $isGenerating = false;
+    // Async generation state: idle | generating | complete | error.
+    public string $generationState = 'idle';
+
+    public ?int $generatingLetterId = null;
+
+    public bool $shouldPoll = false;
+
+    public string $errorMessage = '';
 
     public array $templates;
 
@@ -47,11 +54,25 @@ class CoverLetterBuilder extends Component
         $this->templates = CoverLetterTemplates::options();
         $this->cvs = Auth::user()->cvs()->select(['id', 'title'])->latest()->get();
         $this->loadLetters();
+
+        // Resume an in-flight generation if the user navigated away and
+        // came back while the job was still running.
+        $inFlight = Auth::user()->coverLetters()
+            ->where('status', CoverLetter::STATUS_GENERATING)
+            ->latest()->first();
+        if ($inFlight) {
+            $this->generatingLetterId = $inFlight->id;
+            $this->generationState = 'generating';
+            $this->shouldPoll = true;
+        }
     }
 
     public function loadLetters(): void
     {
-        $this->letters = Auth::user()->coverLetters()->latest()->get();
+        $this->letters = Auth::user()->coverLetters()
+            ->with('cv:id,title')
+            ->latest()
+            ->get();
     }
 
     public function startNew(): void
@@ -67,6 +88,7 @@ class CoverLetterBuilder extends Component
             return;
         }
 
+        $this->resetEditor();
         $this->editingId = $letter->id;
         $this->title = $letter->title;
         $this->body = $letter->body ?? '';
@@ -118,10 +140,11 @@ class CoverLetterBuilder extends Component
     }
 
     /**
-     * Generate a tailored letter body from a source CV (+ optional JD) via
-     * the CoverLetterAgent. Credit-gated like the other AI operations.
+     * Kick off an async AI draft. Creates a CoverLetter row in the
+     * "generating" state and dispatches the queued job; the user can
+     * navigate away and will be notified on completion.
      */
-    public function generate(): void
+    public function startGeneration(): void
     {
         $this->validate([
             'generateCvId' => 'required|exists:cvs,id',
@@ -133,72 +156,92 @@ class CoverLetterBuilder extends Component
             return;
         }
 
-        $creditManager = app(CreditManager::class);
-        if (! $creditManager->canPerformOperation(Auth::user(), 'ai_cover_letter')) {
-            $this->dispatch('notify', message: 'You don\'t have enough credits to generate a cover letter.', type: 'error');
+        if (! app(CreditManager::class)->canPerformOperation(Auth::user(), 'ai_cover_letter')) {
+            $this->dispatch('notify', message: "You don't have enough credits to generate a cover letter.", type: 'error');
             $this->dispatch('insufficient-credits');
 
             return;
         }
 
-        $this->isGenerating = true;
+        $letter = Auth::user()->coverLetters()->create([
+            'cv_id' => $cv->id,
+            'title' => 'Cover Letter — '.($cv->title ?? 'Application'),
+            'template_id' => $this->templateId,
+            'status' => CoverLetter::STATUS_GENERATING,
+            'job_description' => $this->jobDescription ?: null,
+        ]);
 
-        try {
-            $cv->load(['experiences', 'educations', 'skills', 'certifications', 'projects', 'languages']);
-            $prompt = $this->buildPrompt($cv);
+        $this->generatingLetterId = $letter->id;
+        $this->generationState = 'generating';
+        $this->shouldPoll = true;
+        $this->errorMessage = '';
+        $this->loadLetters();
 
-            $agent = new CoverLetterAgent;
-            $response = $agent->prompt($prompt);
+        ProcessCoverLetter::dispatch($letter->id);
 
-            $body = trim(preg_replace('/\R{3,}/', "\n\n", (string) $response));
-            $this->body = $body;
-            $this->sourceCvId = $cv->id;
-            if (! $this->title) {
-                $this->title = 'Cover Letter — '.($cv->title ?? 'Application');
-            }
+        $this->dispatch('notify', message: 'Drafting your cover letter — we\'ll notify you when it\'s ready. You can navigate away.', type: 'success');
+    }
 
-            // Charge based on real token usage.
-            $credits = $creditManager->calculateFromUsage($response->usage, 'ai_cover_letter');
-            $creditManager->deduct(Auth::user(), $credits, 'ai_cover_letter', null, [
-                'prompt_tokens' => $response->usage->promptTokens ?? 0,
-                'completion_tokens' => $response->usage->completionTokens ?? 0,
-                'cv_id' => $cv->id,
-            ]);
-            $this->dispatch('credits-updated');
-            $this->dispatch('notify', message: 'Draft generated — edit to make it yours.', type: 'success');
-        } catch (\Throwable $e) {
-            $this->dispatch('notify', message: 'Generation failed: '.$e->getMessage(), type: 'error');
-        } finally {
-            $this->isGenerating = false;
+    /**
+     * Polled while generation is in flight; transitions the UI when the
+     * job finishes (success or failure).
+     */
+    public function checkGenerationStatus(): void
+    {
+        if (! $this->generatingLetterId) {
+            $this->shouldPoll = false;
+
+            return;
         }
+
+        $letter = CoverLetter::find($this->generatingLetterId);
+        if (! $letter) {
+            $this->generationState = 'error';
+            $this->errorMessage = 'Letter record not found.';
+            $this->shouldPoll = false;
+
+            return;
+        }
+
+        if ($letter->isGenerated()) {
+            $this->shouldPoll = false;
+            $this->generationState = 'complete';
+            // Load the finished draft into the editor.
+            $this->editingId = $letter->id;
+            $this->title = $letter->title;
+            $this->body = $letter->body ?? '';
+            $this->templateId = $letter->template_id;
+            $this->sourceCvId = $letter->cv_id;
+            $this->loadLetters();
+            $this->dispatch('notify', message: 'Cover letter draft ready — edit to make it yours.', type: 'success');
+        } elseif ($letter->isFailed()) {
+            $this->shouldPoll = false;
+            $this->generationState = 'error';
+            $this->errorMessage = $letter->error_message ?: 'Generation failed. Please try again.';
+            $this->loadLetters();
+        }
+    }
+
+    public function resetGenerationState(): void
+    {
+        $this->generationState = 'idle';
+        $this->generatingLetterId = null;
+        $this->errorMessage = '';
+        $this->shouldPoll = false;
     }
 
     public function resetEditor(): void
     {
+        $this->editingId = null;
         $this->title = '';
         $this->body = '';
         $this->templateId = 'classic';
         $this->sourceCvId = null;
-        $this->generateCvId = null;
-        $this->jobDescription = '';
     }
 
     public function render()
     {
         return view('livewire.cover-letter-builder');
-    }
-
-    private function buildPrompt(Cv $cv): string
-    {
-        $prompt = "=== CANDIDATE CV ===\n".$cv->toText()."\n\n";
-
-        if (trim($this->jobDescription) !== '') {
-            $prompt .= "=== TARGET JOB DESCRIPTION ===\n".trim($this->jobDescription)."\n\n";
-        }
-
-        $prompt .= 'Write the cover-letter body now (paragraphs only, no headers/salutation).';
-
-        return $prompt;
     }
 
     private function ownedLetter(int $id): ?CoverLetter

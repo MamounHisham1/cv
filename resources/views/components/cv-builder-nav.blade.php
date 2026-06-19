@@ -2,6 +2,7 @@
     $navItems = [
         ['route' => 'drafts', 'label' => 'My CVs', 'icon' => 'file-text', 'routeIs' => ['cv.builder', 'cv.edit', 'drafts']],
         ['route' => 'cv.evaluator', 'label' => 'AI Evaluator', 'icon' => 'sparkles', 'routeIs' => ['cv.evaluator']],
+        ['route' => 'cover-letters.index', 'label' => 'Cover Letters', 'icon' => 'document-text', 'routeIs' => ['cover-letters.index']],
         ['route' => 'ai.interview', 'label' => 'AI Interviewer', 'icon' => 'microphone', 'routeIs' => ['ai.interview', 'interview.history']],
         ['route' => 'referrals', 'label' => 'Referrals', 'icon' => 'gift', 'routeIs' => ['referrals']],
     ];

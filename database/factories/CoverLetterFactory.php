@@ -20,6 +20,7 @@ class CoverLetterFactory extends Factory
             'title' => 'Cover Letter — '.$this->faker->jobTitle(),
             'body' => "Dear Hiring Manager,\n\n".$this->faker->paragraph(4),
             'template_id' => $this->faker->randomElement(['classic', 'modern', 'concise']),
+            'status' => CoverLetter::STATUS_DRAFT,
             'metadata' => null,
         ];
     }
