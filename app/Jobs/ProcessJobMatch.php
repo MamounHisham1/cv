@@ -48,7 +48,12 @@ class ProcessJobMatch implements ShouldQueue
 
             $response = (new JobMatchAgent)->prompt($prompt);
 
-            $result = $this->normalize($response->toArray(), (string) $response);
+            // Structured output may fail to decode if the model ignores
+            // the JSON schema. Fall back to manual parsing of the raw
+            // text (JSON, then key:value lines) before giving up.
+            $data = $this->extractStructuredData($response);
+
+            $result = $this->normalize($data, (string) $response);
 
             $match->update([
                 'status' => CvJobMatch::STATUS_COMPLETED,
@@ -72,6 +77,52 @@ class ProcessJobMatch implements ShouldQueue
                 'error_message' => mb_substr($e->getMessage(), 0, 500),
             ]);
         }
+    }
+
+    /**
+     * Try every strategy to get a structured array out of the agent
+     * response: toArray() first, then raw-text JSON decode, then a
+     * forgiving key:value line parser for models that refuse JSON.
+     *
+     * @return array<string, mixed>
+     */
+    private function extractStructuredData($response): array
+    {
+        // 1. SDK structured decode (the happy path).
+        try {
+            $data = $response->toArray();
+            if (! empty(array_filter($data))) {
+                return $data;
+            }
+        } catch (\Throwable) {
+            // SDK couldn't decode — fall through to manual parsing.
+        }
+
+        $raw = trim((string) $response);
+
+        // 2. Strip markdown code fences if present, then json_decode.
+        $raw = preg_replace('/^```(?:json)?\s*|\s*```$/i', '', $raw) ?: $raw;
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded) && ! empty($decoded)) {
+            return $decoded;
+        }
+
+        // 3. Forgiving key:value line parser for stubborn models.
+        $parsed = [];
+        foreach (preg_split('/\r\n|\r|\n/', $raw) as $line) {
+            $line = trim($line);
+            if ($line === '' || ! str_contains($line, ':')) {
+                continue;
+            }
+            [$key, $value] = array_pad(explode(':', $line, 2), 2, '');
+            $key = trim($key);
+            $value = trim($value);
+            // Normalize key aliases to snake_case.
+            $key = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $key));
+            $parsed[$key] = $value;
+        }
+
+        return $parsed;
     }
 
     private function buildPrompt(string $cvText, string $jobDescription, ?string $jobTitle): string
