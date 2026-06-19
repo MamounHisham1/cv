@@ -41,7 +41,7 @@
                             </p>
                             @if($letter->body && ! $letter->isGenerating())
                                 <button type="button" @click="copyBody($event)"
-                                        class="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 opacity-0 transition-all hover:bg-white/10 hover:text-zinc-200 group-hover:opacity-100"
+                                        class="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-lg text-zinc-500 transition-all hover:bg-white/10 hover:text-zinc-200"
                                         title="Copy letter">
                                     <x-ui::icon name="copy" class="h-3.5 w-3.5" />
                                     <span x-show="copied" x-cloak class="absolute -bottom-5 right-0 rounded bg-emerald-600 px-1.5 py-0.5 text-[9px] text-white">Copied</span>
