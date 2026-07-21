@@ -25,13 +25,11 @@
             <x-heroicon-c-clock class="size-4" />
             {{ __('Credit History') }}
         </a>
-        <div class="relative flex w-full cursor-default select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300">
-            <x-heroicon-o-language class="size-4" />
-            <span class="flex-1 text-start">{{ app()->getLocale() === 'ar' ? 'العربية' : 'English' }}</span>
-            <a href="{{ route('locale.switch', app()->getLocale() === 'ar' ? 'en' : 'ar') }}" class="rounded px-2 py-0.5 text-xs font-medium text-emerald-400 hover:bg-white/10 hover:text-white">
-                {{ app()->getLocale() === 'ar' ? 'English' : 'العربية' }}
-            </a>
-        </div>
+        <a href="{{ route('referrals') }}" wire:navigate class="relative flex w-full cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm text-zinc-300 outline-none transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white">
+            <x-heroicon-c-gift class="size-4 text-emerald-400" />
+            {{ __('Referrals') }}
+        </a>
+
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
             <button

@@ -2,16 +2,10 @@
 
 use App\Livewire\CvBuilder;
 use App\Models\Cv;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
-
-function verifiedUser(): User
-{
-    return User::factory()->create(['otp_verified_at' => now()]);
-}
 
 describe('side-by-side preview', function () {
     it('defaults to preview hidden until toggled', function () {

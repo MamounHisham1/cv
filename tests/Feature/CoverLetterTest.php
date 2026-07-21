@@ -5,17 +5,11 @@ use App\Jobs\ProcessCoverLetter;
 use App\Livewire\CoverLetterBuilder;
 use App\Models\CoverLetter;
 use App\Models\Cv;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
-
-function verifiedUser(): User
-{
-    return User::factory()->create(['otp_verified_at' => now()]);
-}
 
 describe('cover letter templates registry', function () {
     it('exposes the three bundled templates', function () {

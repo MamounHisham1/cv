@@ -11,11 +11,6 @@ use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
-function verifiedUser(): User
-{
-    return User::factory()->create(['otp_verified_at' => now()]);
-}
-
 describe('CvJobMatch model', function () {
     it('casts json columns and tracks status', function () {
         $match = CvJobMatch::factory()->create([

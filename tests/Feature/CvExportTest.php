@@ -1,15 +1,9 @@
 <?php
 
 use App\Models\Cv;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-function verifiedUser(): User
-{
-    return User::factory()->create(['otp_verified_at' => now()]);
-}
 
 describe('CV export', function () {
     it('downloads a valid PDF for the CV owner', function () {

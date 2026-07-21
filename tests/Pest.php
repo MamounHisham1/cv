@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -44,7 +45,9 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
-{
-    // ..
+if (! function_exists('verifiedUser')) {
+    function verifiedUser(): User
+    {
+        return User::factory()->create(['otp_verified_at' => now()]);
+    }
 }

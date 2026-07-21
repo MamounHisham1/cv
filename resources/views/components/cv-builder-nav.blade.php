@@ -5,12 +5,12 @@
         ['route' => 'cover-letters.index', 'label' => __('Cover Letters'), 'icon' => 'document-text', 'routeIs' => ['cover-letters.index']],
         ['route' => 'job.match', 'label' => __('Job Match'), 'icon' => 'search', 'routeIs' => ['job.match']],
         ['route' => 'ai.interview', 'label' => __('AI Interviewer'), 'icon' => 'microphone', 'routeIs' => ['ai.interview', 'interview.history']],
-        ['route' => 'referrals', 'label' => __('Referrals'), 'icon' => 'gift', 'routeIs' => ['referrals']],
     ];
 @endphp
 
 <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
-    @if(app(\App\Services\ImpersonateService::class)->isImpersonating())<div class="bg-amber-600 px-4 py-2 text-center text-sm font-medium text-white">
+    @if(app(\App\Services\ImpersonateService::class)->isImpersonating())
+        <div class="bg-amber-600 px-4 py-2 text-center text-sm font-medium text-white">
             {{ __('You are impersonating :name (:email)', ['name' => auth()->user()->name, 'email' => auth()->user()->email]) }}
             <form method="POST" action="{{ route('impersonate.stop') }}" class="inline ml-3">
                 @csrf
@@ -20,28 +20,47 @@
             </form>
         </div>
     @endif
-    <div class="mx-auto flex min-h-16 max-w-7xl items-center gap-3 px-4 py-3 sm:px-6 lg:px-8">
 
-        <x-app-logo href="/" class="shrink-0" />
+    <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:px-6 lg:px-8">
 
-        {{-- Desktop nav links — fills available space, pills spread evenly --}}
-        <x-ui::navbar class="hidden min-w-0 flex-1 items-stretch gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl [scrollbar-width:none] lg:flex lg:[&::-webkit-scrollbar]:hidden">
+        {{-- Left: App Logo & Brand --}}
+        <div class="flex shrink-0 items-center">
+            <x-app-logo href="/" class="shrink-0" />
+        </div>
+
+        {{-- Desktop Navigation Links — Centered Glass Pill --}}
+        <nav class="hidden shrink-0 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl xl:flex">
             @foreach ($navItems as $item)
                 @php
                     $isActive = request()->routeIs(...$item['routeIs']);
                 @endphp
-                <x-ui::navbar.item :href="route($item['route'])" icon="{{ $item['icon'] }}" :current="$isActive" wire:navigate class="!flex-1 !shrink-0 !basis-0 !whitespace-nowrap !justify-center !rounded-full !px-2 !py-2 {{ $isActive ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white' }}">
-                    {{ $item['label'] }}
-                </x-ui::navbar.item>
+                <a href="{{ route($item['route']) }}" wire:navigate
+                    class="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all 2xl:px-3.5 2xl:text-sm {{ $isActive ? 'bg-white/15 text-white shadow-sm border border-white/10 shadow-emerald-500/10' : 'text-zinc-400 hover:bg-white/10 hover:text-white' }}">
+                    <x-ui::icon name="{{ $item['icon'] }}" class="h-4 w-4 shrink-0 text-emerald-400" />
+                    <span class="whitespace-nowrap">{{ $item['label'] }}</span>
+                </a>
             @endforeach
-        </x-ui::navbar>
+        </nav>
 
-        {{-- Mobile: credits + bell next to hamburger --}}
-        <div class="flex items-center gap-2 lg:hidden">
+        {{-- Desktop Right Controls --}}
+        <div class="hidden shrink-0 items-center gap-2.5 xl:flex">
             <livewire:credit-balance-indicator />
             <livewire:notification-bell />
+
+            <div class="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
+                <x-locale-toggle class="!rounded-full !px-2.5 !py-1.5 !text-xs !text-zinc-300 hover:!bg-white/10 hover:!text-white" icon-size="sm" />
+
+                <x-desktop-user-menu />
+            </div>
+        </div>
+
+        {{-- Mobile/Tablet Controls (Credits + Notifications + Hamburger) --}}
+        <div class="flex items-center gap-2 xl:hidden">
+            <livewire:credit-balance-indicator />
+            <livewire:notification-bell />
+
             <div x-data="{ open: false }">
-                <button @click="open = !open" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors">
+                <button @click="open = !open" class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-white/10 hover:text-white transition-colors" aria-label="Toggle menu">
                     <svg x-show="!open" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
                     </svg>
@@ -50,7 +69,7 @@
                     </svg>
                 </button>
 
-                {{-- Mobile dropdown --}}
+                {{-- Mobile Dropdown Menu --}}
                 <div x-show="open" x-cloak
                     @click.outside="open = false"
                     x-transition:enter="transition ease-out duration-200"
@@ -67,8 +86,8 @@
                             @endphp
                             <a href="{{ route($item['route']) }}" wire:navigate
                                 @click="open = false"
-                                class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors {{ $isActive ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white' }}">
-                                <x-ui::icon name="{{ $item['icon'] }}" class="h-5 w-5" />
+                                class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors {{ $isActive ? 'bg-white/10 text-white font-semibold' : 'text-zinc-400 hover:bg-white/10 hover:text-white' }}">
+                                <x-ui::icon name="{{ $item['icon'] }}" class="h-5 w-5 text-emerald-400" />
                                 {{ $item['label'] }}
                             </a>
                         @endforeach
@@ -79,21 +98,15 @@
                             <x-locale-toggle class="w-full justify-start rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white" />
                         </div>
 
-                        <a href="{{ route('home') }}" wire:navigate
-                            @click="open = false"
-                            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white transition-colors">
-                            <x-ui::icon name="arrow-left" class="h-5 w-5" />
-                            {{ __('Back to site') }}
-                        </a>
 
                         <div class="my-2 border-t border-white/10"></div>
 
-                        {{-- User account links --}}
+                        {{-- User account info --}}
                         <div class="flex items-center gap-2 px-4 py-2 text-start text-sm">
                             <x-ui::avatar :name="auth()->user()->name" :initials="auth()->user()->initials()" size="sm" />
                             <div class="grid flex-1 text-start text-sm leading-tight">
                                 <span class="font-medium text-white">{{ auth()->user()->name }}</span>
-                                <span class="text-zinc-400">{{ auth()->user()->email }}</span>
+                                <span class="text-zinc-400 text-xs">{{ auth()->user()->email }}</span>
                             </div>
                         </div>
                         <a href="{{ route('profile.edit') }}" wire:navigate
@@ -108,6 +121,13 @@
                             <x-ui::icon name="clock" class="h-5 w-5" />
                             {{ __('Credit History') }}
                         </a>
+                        <a href="{{ route('referrals') }}" wire:navigate
+                            @click="open = false"
+                            class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white transition-colors">
+                            <x-ui::icon name="gift" class="h-5 w-5 text-emerald-400" />
+                            {{ __('Referrals') }}
+                        </a>
+
                         <form method="POST" action="{{ route('logout') }}" class="w-full">
                             @csrf
                             <button type="submit"
@@ -121,20 +141,5 @@
             </div>
         </div>
 
-        {{-- Desktop right side --}}
-        <div class="max-lg:hidden items-center gap-2 flex">
-            <livewire:credit-balance-indicator />
-            <livewire:notification-bell />
-
-            <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
-                <x-locale-toggle class="!rounded-full !px-3 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white" icon-size="sm" />
-
-                <x-ui::navbar.item :href="route('home')" icon="arrow-left" class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
-                    {{ __('Back to site') }}
-                </x-ui::navbar.item>
-
-                <x-desktop-user-menu />
-            </x-ui::navbar>
-        </div>
     </div>
 </header>

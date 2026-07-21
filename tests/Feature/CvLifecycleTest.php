@@ -2,15 +2,9 @@
 
 use App\Models\Cv;
 use App\Models\CvVersion;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
-
-function verifiedUser(): User
-{
-    return User::factory()->create(['otp_verified_at' => now()]);
-}
 
 describe('CV lifecycle', function () {
     it('deep-copies a CV with all its sections', function () {
