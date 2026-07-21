@@ -46,9 +46,21 @@ class UpdateCvLanguage implements Tool
             return 'No fields provided to update.';
         }
 
-        $lang->update($updates);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeUpdate(
+            section: 'languages',
+            recordId: $lang->id,
+            before: $lang->toArray(),
+            after: $updates,
+            label: $lang->language,
+            summary: 'Update language: '.implode(', ', array_keys($updates)).'.',
+        );
 
-        return "Language \"{$lang->language}\" updated. Changed: ".implode(', ', array_keys($updates)).'.';
+        $changed = implode(', ', array_keys($updates));
+
+        return "STAGED for review (NOT applied): language \"{$lang->language}\" — {$changed}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

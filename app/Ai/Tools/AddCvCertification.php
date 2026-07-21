@@ -13,7 +13,7 @@ class AddCvCertification implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Add a certification to the user\'s CV. Use this when the user mentions a professional certification they hold (e.g., AWS, Azure, Google Cloud, PMP, etc.).';
+        return 'Add a certification to the user\'s CV. Use this when the user mentions a professional certification they hold (e.g., AWS, Azure, Google Cloud, PMP, etc.). TRUTHFULNESS: Never invent dates, credential IDs, or organizations the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -31,7 +31,7 @@ class AddCvCertification implements Tool
 
         $maxSort = $this->cv->certifications()->max('sort_order') ?? 0;
 
-        $this->cv->certifications()->create([
+        $attributes = [
             'name' => trim($name),
             'issuing_organization' => trim($organization),
             'issue_date' => $request['issue_date'] ?? null,
@@ -39,9 +39,19 @@ class AddCvCertification implements Tool
             'credential_id' => $request['credential_id'] ?? null,
             'credential_url' => $request['credential_url'] ?? null,
             'sort_order' => $maxSort + 1,
-        ]);
+        ];
 
-        return "Certification \"{$name}\" from {$organization} added to CV.";
+        // Stage the addition for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeCreate(
+            section: 'certifications',
+            after: $attributes,
+            label: "{$name} ({$organization})",
+            summary: 'Add certification.',
+        );
+
+        return "STAGED for review (NOT applied): new certification \"{$name}\" from {$organization}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED addition awaiting approval — do NOT say it was added or completed.';
     }
 
     public function schema(JsonSchema $schema): array

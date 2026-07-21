@@ -13,7 +13,7 @@ class UpdateCvProject implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Update an existing project on the user\'s CV. Always call read_cv_data first to get the project id, then pass only the fields you want to change. Useful for improving descriptions, achievements, or adding links.';
+        return 'Update an existing project on the user\'s CV. Always call read_cv_data first to get the project id, then pass only the fields you want to change. Useful for improving descriptions, achievements, or adding links. TRUTHFULNESS: Never include metrics, dates, technologies, or achievements the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -56,9 +56,21 @@ class UpdateCvProject implements Tool
             return 'No fields provided to update.';
         }
 
-        $project->update($updates);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeUpdate(
+            section: 'projects',
+            recordId: $project->id,
+            before: $project->toArray(),
+            after: $updates,
+            label: $project->name,
+            summary: 'Update project: '.implode(', ', array_keys($updates)).'.',
+        );
 
-        return "Project \"{$project->name}\" updated. Changed: ".implode(', ', array_keys($updates)).'.';
+        $changed = implode(', ', array_keys($updates));
+
+        return "STAGED for review (NOT applied): project \"{$project->name}\" — {$changed}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

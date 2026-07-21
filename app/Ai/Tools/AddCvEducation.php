@@ -13,7 +13,7 @@ class AddCvEducation implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Add an education entry to the user\'s CV. Use this when the user mentions a degree, university, or educational program.';
+        return 'Add an education entry to the user\'s CV. Use this when the user mentions a degree, university, or educational program. TRUTHFULNESS: Never invent dates, degree details, or honors the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -31,7 +31,7 @@ class AddCvEducation implements Tool
 
         $maxSort = $this->cv->educations()->max('sort_order') ?? 0;
 
-        $this->cv->educations()->create([
+        $attributes = [
             'institution' => trim($institution),
             'degree' => trim($degree),
             'field_of_study' => trim((string) ($request['field_of_study'] ?? '')),
@@ -41,9 +41,19 @@ class AddCvEducation implements Tool
             'is_current' => $request['is_current'] ?? false,
             'description' => trim((string) ($request['description'] ?? '')),
             'sort_order' => $maxSort + 1,
-        ]);
+        ];
 
-        return "Education added: {$degree} at {$institution}.";
+        // Stage the addition for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeCreate(
+            section: 'educations',
+            after: $attributes,
+            label: "{$degree} at {$institution}",
+            summary: 'Add education.',
+        );
+
+        return "STAGED for review (NOT applied): new education — {$degree} at {$institution}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED addition awaiting approval — do NOT say it was added or completed.';
     }
 
     public function schema(JsonSchema $schema): array

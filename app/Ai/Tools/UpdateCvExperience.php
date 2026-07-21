@@ -13,7 +13,7 @@ class UpdateCvExperience implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Update an existing work experience entry on the user\'s CV. Always call read_cv_data first to get the entry id, then pass only the fields you want to change. Useful for fixing typos, improving descriptions/achievements, or correcting dates.';
+        return 'Update an existing work experience entry on the user\'s CV. Always call read_cv_data first to get the entry id, then pass only the fields you want to change. Useful for fixing typos, improving descriptions/achievements, or correcting dates. TRUTHFULNESS: Never invent metrics, dates, technologies, or achievements the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -74,9 +74,21 @@ class UpdateCvExperience implements Tool
             return 'No fields provided to update.';
         }
 
-        $exp->update($updates);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeUpdate(
+            section: 'experiences',
+            recordId: $exp->id,
+            before: $exp->toArray(),
+            after: $updates,
+            label: "\"{$exp->title}\" at {$exp->company}",
+            summary: 'Update work experience: '.implode(', ', array_keys($updates)).'.',
+        );
 
-        return "Work experience \"{$exp->title}\" at {$exp->company} updated. Changed: ".implode(', ', array_keys($updates)).'.';
+        $changed = implode(', ', array_keys($updates));
+
+        return "STAGED for review (NOT applied): work experience \"{$exp->title}\" at {$exp->company} — {$changed}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

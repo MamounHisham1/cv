@@ -13,7 +13,7 @@ class UpdateCvEducation implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Update an existing education entry on the user\'s CV. Always call read_cv_data first to get the entry id, then pass only the fields you want to change.';
+        return 'Update an existing education entry on the user\'s CV. Always call read_cv_data first to get the entry id, then pass only the fields you want to change. TRUTHFULNESS: Never invent dates, degree details, or honors the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -57,9 +57,21 @@ class UpdateCvEducation implements Tool
             return 'No fields provided to update.';
         }
 
-        $edu->update($updates);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeUpdate(
+            section: 'educations',
+            recordId: $edu->id,
+            before: $edu->toArray(),
+            after: $updates,
+            label: "{$edu->degree} at {$edu->institution}",
+            summary: 'Update education: '.implode(', ', array_keys($updates)).'.',
+        );
 
-        return "Education \"{$edu->degree}\" at {$edu->institution} updated. Changed: ".implode(', ', array_keys($updates)).'.';
+        $changed = implode(', ', array_keys($updates));
+
+        return "STAGED for review (NOT applied): education \"{$edu->degree}\" at {$edu->institution} — {$changed}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

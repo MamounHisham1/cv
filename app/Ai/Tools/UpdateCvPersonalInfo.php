@@ -47,9 +47,22 @@ class UpdateCvPersonalInfo implements Tool
             return 'No fields provided to update. Please specify at least one field to change.';
         }
 
-        $this->cv->update(['personal_info' => $current]);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        // `after` carries the fully-merged personal_info array; the diff UI
+        // will show only the changed keys.
+        $this->proposedChanges()->proposeCvField(
+            field: 'personal_info',
+            before: $this->cv->personal_info ?? [],
+            after: $current,
+            label: 'Personal information',
+            summary: 'Update personal info: '.implode(', ', $updated).'.',
+        );
 
-        return 'Personal information updated successfully! Updated fields: '.implode(', ', $updated).'.';
+        $fields = implode(', ', $updated);
+
+        return "STAGED for review (NOT applied): personal information — {$fields}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

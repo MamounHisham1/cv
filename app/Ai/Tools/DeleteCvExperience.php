@@ -33,20 +33,20 @@ class DeleteCvExperience implements Tool
         }
 
         $label = "{$exp->title} at {$exp->company}";
-        $exp->delete();
 
-        $this->resequence('experiences');
+        // Stage the deletion for user review — do NOT mutate the CV yet.
+        // Resequence runs at apply time in ApplyCvChanges.
+        $this->proposedChanges()->proposeDelete(
+            section: 'experiences',
+            recordId: $exp->id,
+            before: $exp->toArray(),
+            label: $label,
+            summary: 'Delete work experience.',
+        );
 
-        return "Deleted work experience: \"{$label}\".";
-    }
-
-    private function resequence(string $relation): void
-    {
-        $this->cv->$relation()
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get()
-            ->each(fn ($item, $i) => $item->update(['sort_order' => $i]));
+        return "STAGED for review (NOT applied): delete work experience \"{$label}\". ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED deletion awaiting approval — do NOT say it was deleted or completed.';
     }
 
     public function schema(JsonSchema $schema): array

@@ -26,6 +26,7 @@ class CvLivePreview extends Component
     }
 
     #[On('cv-updated')]
+    #[On('cv-applied-from-chat')]
     #[On('template-changed')]
     #[On('industry-pack-changed')]
     public function refreshPreview($cvId = null): void

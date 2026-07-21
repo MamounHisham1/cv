@@ -29,16 +29,25 @@ class AddCvLanguage implements Tool
         }
 
         $maxSort = $this->cv->languages()->max('sort_order') ?? 0;
-
-        $this->cv->languages()->create([
-            'language' => trim($language),
-            'proficiency' => $request['proficiency'] ?? 'intermediate',
-            'sort_order' => $maxSort + 1,
-        ]);
-
         $proficiency = $request['proficiency'] ?? 'intermediate';
 
-        return "\"{$language}\" ({$proficiency}) added to CV.";
+        $attributes = [
+            'language' => trim($language),
+            'proficiency' => $proficiency,
+            'sort_order' => $maxSort + 1,
+        ];
+
+        // Stage the addition for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeCreate(
+            section: 'languages',
+            after: $attributes,
+            label: "{$language} ({$proficiency})",
+            summary: 'Add language.',
+        );
+
+        return "STAGED for review (NOT applied): new language \"{$language}\" ({$proficiency}). ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED addition awaiting approval — do NOT say it was added or completed.';
     }
 
     public function schema(JsonSchema $schema): array

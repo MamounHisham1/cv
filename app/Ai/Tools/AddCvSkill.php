@@ -48,14 +48,24 @@ class AddCvSkill implements Tool
 
         $maxSort = $this->cv->skills()->max('sort_order') ?? 0;
 
-        $this->cv->skills()->create([
+        $attributes = [
             'name' => trim($name),
             'category' => $category,
             'level' => $level,
             'sort_order' => $maxSort + 1,
-        ]);
+        ];
 
-        return "Skill \"{$name}\" added to CV under category \"{$category}\" with level \"{$level}\".";
+        // Stage the addition for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeCreate(
+            section: 'skills',
+            after: $attributes,
+            label: $name,
+            summary: "Add skill ({$category} / {$level}).",
+        );
+
+        return "STAGED for review (NOT applied): new skill \"{$name}\" (category \"{$category}\", level \"{$level}\"). ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED addition awaiting approval — do NOT say it was added or completed.';
     }
 
     public function schema(JsonSchema $schema): array

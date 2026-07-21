@@ -33,20 +33,19 @@ class DeleteCvLanguage implements Tool
         }
 
         $label = $lang->language;
-        $lang->delete();
 
-        $this->resequence();
+        // Stage the deletion for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeDelete(
+            section: 'languages',
+            recordId: $lang->id,
+            before: $lang->toArray(),
+            label: $label,
+            summary: 'Delete language.',
+        );
 
-        return "Deleted language: \"{$label}\".";
-    }
-
-    private function resequence(): void
-    {
-        $this->cv->languages()
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get()
-            ->each(fn ($item, $i) => $item->update(['sort_order' => $i]));
+        return "STAGED for review (NOT applied): delete language \"{$label}\". ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED deletion awaiting approval — do NOT say it was deleted or completed.';
     }
 
     public function schema(JsonSchema $schema): array

@@ -53,9 +53,21 @@ class UpdateCvSkill implements Tool
             return 'No fields provided to update.';
         }
 
-        $skill->update($updates);
+        // Stage the change for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeUpdate(
+            section: 'skills',
+            recordId: $skill->id,
+            before: $skill->toArray(),
+            after: $updates,
+            label: $skill->name,
+            summary: 'Update skill: '.implode(', ', array_keys($updates)).'.',
+        );
 
-        return "Skill \"{$skill->name}\" updated. Changed: ".implode(', ', array_keys($updates)).'.';
+        $changed = implode(', ', array_keys($updates));
+
+        return "STAGED for review (NOT applied): skill \"{$skill->name}\" — {$changed}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED change awaiting approval — do NOT say it was applied, made, or completed.';
     }
 
     public function schema(JsonSchema $schema): array

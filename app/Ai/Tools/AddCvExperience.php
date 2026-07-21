@@ -13,7 +13,7 @@ class AddCvExperience implements Tool
 
     public function description(): Stringable|string
     {
-        return 'Add a work experience entry to the user\'s CV. Use this when the user wants to add a job, internship, or freelance work.';
+        return 'Add a work experience entry to the user\'s CV. Use this when the user wants to add a job, internship, or freelance work. TRUTHFULNESS: Never invent metrics, dates, technologies, or achievements the user did not explicitly provide. If a needed fact is missing, call ask_clarifying_questions first instead of guessing.';
     }
 
     public function handle(Request $request): Stringable|string
@@ -31,7 +31,7 @@ class AddCvExperience implements Tool
 
         $maxSort = $this->cv->experiences()->max('sort_order') ?? 0;
 
-        $this->cv->experiences()->create([
+        $attributes = [
             'title' => trim($title),
             'company' => trim($company),
             'location' => trim((string) ($request['location'] ?? '')),
@@ -42,9 +42,19 @@ class AddCvExperience implements Tool
             'achievements' => $request['achievements'] ?? [],
             'technologies' => $request['technologies'] ?? [],
             'sort_order' => $maxSort + 1,
-        ]);
+        ];
 
-        return "Work experience added: \"{$title}\" at {$company}.";
+        // Stage the addition for user review — do NOT mutate the CV yet.
+        $this->proposedChanges()->proposeCreate(
+            section: 'experiences',
+            after: $attributes,
+            label: "\"{$title}\" at {$company}",
+            summary: 'Add work experience.',
+        );
+
+        return "STAGED for review (NOT applied): new work experience \"{$title}\" at {$company}. ".
+            'The CV is unchanged. The user must approve this in the review card before it takes effect. '.
+            'In your reply, describe this as a PROPOSED addition awaiting approval — do NOT say it was added or completed.';
     }
 
     public function schema(JsonSchema $schema): array

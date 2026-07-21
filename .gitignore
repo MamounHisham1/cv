@@ -29,3 +29,4 @@ master_resumes.jsonl
 *.pdf
 .claude/worktrees/
 .gstack/
+.commandcode/
