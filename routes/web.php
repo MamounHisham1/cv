@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\CoverLetterExportController;
 use App\Http\Controllers\CvExportController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\TelegramWebhookController;
 use App\Http\Controllers\VfcashWebhookController;
 use App\Livewire\AiInterviewer;
@@ -25,6 +26,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'landing.design4')->name('home');
+
+// Locale switcher — GET so it works without CSRF on every page (links/forms).
+Route::get('/locale/{locale}', LocaleController::class)->name('locale.switch')
+    ->where('locale', 'en|ar');
+
 Route::view('/cookie-policy', 'pages.cookie-policy')->name('cookie.policy');
 Route::view('/privacy-policy', 'pages.privacy-policy')->name('privacy.policy');
 Route::view('/terms-of-service', 'pages.terms-of-service')->name('terms.of-service');

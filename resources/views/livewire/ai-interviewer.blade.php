@@ -8,7 +8,7 @@
                 AI Powered
             </div>
             <h1 class="mb-3 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-                AI <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">Interviewer</span>
+                AI <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">{{ __("Interviewer") }}</span>
             </h1>
             <p class="mx-auto max-w-lg text-base text-zinc-400">
                 Practice mock interviews with a voice-based AI recruiter. Get real-time questions tailored to your CV and experience.
@@ -48,10 +48,10 @@
 
                 <div class="space-y-6">
                     <div>
-                        <label class="block text-sm font-medium text-zinc-300 mb-2">Select CV</label>
+                        <label class="block text-sm font-medium text-zinc-300 mb-2">{{ __("Select CV") }}</label>
                         <select wire:model="selectedCvId" class="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-3 text-white focus:ring-emerald-500 focus:border-emerald-500">
                             @if($this->cvs->isEmpty())
-                                <option value="">No CVs found. Please create one first.</option>
+                                <option value="">{{ __("No CVs found. Please create one first.") }}</option>
                             @else
                                 @foreach($this->cvs as $cv)
                                     <option value="{{ $cv->id }}">{{ $cv->title }} ({{ $cv->updated_at->diffForHumans() }})</option>
@@ -62,7 +62,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-zinc-300 mb-2">Interviewer Voice</label>
+                        <label class="block text-sm font-medium text-zinc-300 mb-2">{{ __("Interviewer Voice") }}</label>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             @foreach($voices as $model => $voice)
                                 <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
@@ -85,14 +85,14 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-zinc-300 mb-2">Interview Focus</label>
+                        <label class="block text-sm font-medium text-zinc-300 mb-2">{{ __("Interview Focus") }}</label>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <label class="relative flex cursor-pointer rounded-xl border border-white/10 bg-zinc-950 p-4 hover:bg-zinc-900 focus:outline-none">
                                 <input type="radio" wire:model.live="interviewType" value="behavioral" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span class="block text-sm font-medium text-white">Behavioral</span>
-                                        <span class="mt-1 flex items-center text-xs text-zinc-400">STAR method & cultural fit</span>
+                                        <span class="block text-sm font-medium text-white">{{ __("Behavioral") }}</span>
+                                        <span class="mt-1 flex items-center text-xs text-zinc-400">{{ __("STAR method & cultural fit") }}</span>
                                     </span>
                                 </span>
                                 <svg class="h-5 w-5 text-emerald-500 {{ $interviewType === 'behavioral' ? 'block' : 'hidden' }}" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
@@ -102,8 +102,8 @@
                                 <input type="radio" wire:model.live="interviewType" value="technical" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span class="block text-sm font-medium text-white">Technical</span>
-                                        <span class="mt-1 flex items-center text-xs text-zinc-400">Hard skills & system design</span>
+                                        <span class="block text-sm font-medium text-white">{{ __("Technical") }}</span>
+                                        <span class="mt-1 flex items-center text-xs text-zinc-400">{{ __("Hard skills & system design") }}</span>
                                     </span>
                                 </span>
                                 <svg class="h-5 w-5 text-emerald-500 {{ $interviewType === 'technical' ? 'block' : 'hidden' }}" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
@@ -113,8 +113,8 @@
                                 <input type="radio" wire:model.live="interviewType" value="mixed" class="sr-only">
                                 <span class="flex flex-1">
                                     <span class="flex flex-col">
-                                        <span class="block text-sm font-medium text-white">Mixed</span>
-                                        <span class="mt-1 flex items-center text-xs text-zinc-400">Comprehensive screening</span>
+                                        <span class="block text-sm font-medium text-white">{{ __("Mixed") }}</span>
+                                        <span class="mt-1 flex items-center text-xs text-zinc-400">{{ __("Comprehensive screening") }}</span>
                                     </span>
                                 </span>
                                 <svg class="h-5 w-5 text-emerald-500 {{ $interviewType === 'mixed' ? 'block' : 'hidden' }}" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
@@ -131,7 +131,7 @@
                     <div class="pt-4 border-t border-white/5 flex items-center justify-between">
                         <div class="text-sm text-zinc-500">
                             @if(!($this->interviewAccess['allowed'] ?? true))
-                                <span class="text-amber-400">Free trial used</span>
+                                <span class="text-amber-400">{{ __("Free trial used") }}</span>
                             @else
                                 <span class="flex items-center gap-1.5">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -156,7 +156,7 @@
                     @if(!($this->interviewAccess['allowed'] ?? true))
                         <div class="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-300">
                             <p>{{ $this->interviewAccess['reason'] }}</p>
-                            <a href="{{ route('home') }}#pricing" class="mt-1 inline-block font-medium text-amber-200 underline hover:text-amber-100">Upgrade your plan &rarr;</a>
+                            <a href="{{ route('home') }}#pricing" class="mt-1 inline-block font-medium text-amber-200 underline hover:text-amber-100">{{ __("Upgrade your plan &rarr;") }}</a>
                         </div>
                     @endif
                 </div>
@@ -193,7 +193,7 @@
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
                         </div>
-                        <span class="text-sm font-medium text-white">Live Interview</span>
+                        <span class="text-sm font-medium text-white">{{ __("Live Interview") }}</span>
                         <span class="text-xs text-zinc-600">|</span>
                         <span class="text-xs font-mono text-zinc-400" x-text="formattedTime">0:00</span>
                         <span class="text-xs text-zinc-600">|</span>
@@ -204,11 +204,11 @@
                                   :class="freeTrialRemaining <= 60 ? 'text-amber-400' : 'text-emerald-400'"
                                   x-show="!gracePeriodActive"
                                   x-text="formattedFreeTrialTime"></span>
-                            <span x-show="gracePeriodActive" class="text-xs text-amber-400">Wrapping up...</span>
+                            <span x-show="gracePeriodActive" class="text-xs text-amber-400">{{ __("Wrapping up...") }}</span>
                         @endif
                     </div>
                     <div class="flex items-center gap-3">
-                        <span x-show="isConnecting" class="text-xs text-yellow-400">Connecting...</span>
+                        <span x-show="isConnecting" class="text-xs text-yellow-400">{{ __("Connecting...") }}</span>
                         <span x-show="connectionError" class="text-xs text-red-400" x-text="connectionError"></span>
                         <button x-on:click="endCall()" x-bind:disabled="isConnecting" class="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition border border-red-500/20">
                             End Interview
@@ -298,7 +298,7 @@
                     <div class="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-red-500/10">
                         <svg class="w-10 h-10 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Evaluation Failed</h2>
+                    <h2 class="text-2xl font-bold text-white mb-2">{{ __("Evaluation Failed") }}</h2>
                     <p class="text-zinc-400 mb-8">{{ $evalErrorMessage }}</p>
                     <button wire:click="retryEvaluation" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-zinc-900 bg-emerald-500 hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 focus:ring-offset-zinc-950 transition-colors">
                         Retry Evaluation
@@ -316,8 +316,8 @@
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-white mb-2">Analyzing Your Performance</h2>
-                    <p class="text-zinc-400">The AI is reviewing the transcript to provide structured feedback and a final grade. You can navigate away and come back later.</p>
+                    <h2 class="text-2xl font-bold text-white mb-2">{{ __("Analyzing Your Performance") }}</h2>
+                    <p class="text-zinc-400">{{ __("The AI is reviewing the transcript to provide structured feedback and a final grade. You can navigate away and come back later.") }}</p>
                 </div>
             @endif
         @endif
@@ -329,13 +329,13 @@
                 <div class="bg-zinc-900/50 backdrop-blur-xl border border-white/5 rounded-2xl p-8 shadow-2xl flex flex-col md:flex-row items-center gap-8">
                     <div class="flex-shrink-0 flex flex-col items-center justify-center w-40 h-40 rounded-full border-4 {{ $evaluation['overall_score'] >= 80 ? 'border-emerald-500 text-emerald-400' : ($evaluation['overall_score'] >= 60 ? 'border-yellow-500 text-yellow-400' : 'border-red-500 text-red-400') }} bg-zinc-950">
                         <span class="text-5xl font-bold">{{ $evaluation['overall_score'] }}</span>
-                        <span class="text-sm uppercase tracking-widest mt-1 text-zinc-500">Score</span>
+                        <span class="text-sm uppercase tracking-widest mt-1 text-zinc-500">{{ __("Score") }}</span>
                     </div>
                     <div class="flex-1 text-center md:text-left">
                         <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/10 text-white mb-4">
                             Grade: {{ $evaluation['grade'] }}
                         </div>
-                        <h2 class="text-2xl font-bold text-white mb-3">Executive Summary</h2>
+                        <h2 class="text-2xl font-bold text-white mb-3">{{ __("Executive Summary") }}</h2>
                         <p class="text-zinc-300 text-lg leading-relaxed">{{ $evaluation['summary'] }}</p>
                     </div>
                 </div>

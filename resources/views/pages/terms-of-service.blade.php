@@ -17,15 +17,9 @@
 
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
                 <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
-                    <x-ui::icon name="shield-check" size="sm" />
-                    Legal
-                </div>
-                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                    Terms of Service
-                </h1>
-                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Please read these terms carefully before using SeratyAI.
-                </p>
+                    <x-ui::icon name="shield-check" size="sm" />{{ __("Legal") }}</div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">{{ __("Terms of Service") }}</h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">{{ __("Please read these terms carefully before using SeratyAI.") }}</p>
             </div>
         </section>
 
@@ -34,73 +28,55 @@
             <div class="mx-auto max-w-4xl px-6 lg:px-8">
                 <div class="space-y-12">
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Acceptance of Terms</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            By accessing or using SeratyAI, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use our services. These terms apply to all visitors, users, and others who access or use the platform.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Acceptance of Terms") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("By accessing or using SeratyAI, you agree to be bound by these Terms of Service. If you do not agree to these terms, you may not use our services. These terms apply to all visitors, users, and others who access or use the platform.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Use of Services</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                            SeratyAI grants you a limited, non-exclusive, non-transferable license to use our platform for personal and professional CV building purposes. You agree not to:
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Use of Services") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">SeratyAI grants you a limited, non-exclusive, non-transferable license to use our platform for personal and professional CV building purposes. You agree not to:</p>
                         <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                            <li>Use the service for any unlawful purpose or in violation of any applicable laws</li>
-                            <li>Attempt to gain unauthorized access to any part of the platform or its systems</li>
-                            <li>Interfere with or disrupt the service or servers connected to the platform</li>
-                            <li>Reproduce, duplicate, copy, sell, or resell any portion of the service</li>
-                            <li>Upload malicious code, viruses, or any harmful content</li>
+                            <li>{{ __("Use the service for any unlawful purpose or in violation of any applicable laws") }}</li>
+                            <li>{{ __("Attempt to gain unauthorized access to any part of the platform or its systems") }}</li>
+                            <li>{{ __("Interfere with or disrupt the service or servers connected to the platform") }}</li>
+                            <li>{{ __("Reproduce, duplicate, copy, sell, or resell any portion of the service") }}</li>
+                            <li>{{ __("Upload malicious code, viruses, or any harmful content") }}</li>
                         </ul>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">User Accounts</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account. We reserve the right to suspend or terminate accounts that violate these terms.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("User Accounts") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately of any unauthorized use of your account. We reserve the right to suspend or terminate accounts that violate these terms.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Intellectual Property</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            The SeratyAI platform, including its design, features, logos, and underlying technology, is owned by us and protected by intellectual property laws. You retain ownership of the content you create on our platform, including your CV data. By using our AI features, you grant us a limited license to process your content solely for the purpose of providing the service.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Intellectual Property") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("The SeratyAI platform, including its design, features, logos, and underlying technology, is owned by us and protected by intellectual property laws. You retain ownership of the content you create on our platform, including your CV data. By using our AI features, you grant us a limited license to process your content solely for the purpose of providing the service.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Subscriptions and Payments</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            Certain features of SeratyAI require a paid subscription or credit purchases. Subscription fees are billed in advance on a recurring basis. You may cancel your subscription by contacting us, and your access will continue until the end of the current billing period. Refunds are handled on a case-by-case basis at our discretion. Credit top-ups are non-refundable but do not expire.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Subscriptions and Payments") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">Certain features of SeratyAI require a paid subscription or credit purchases. Subscription fees are billed in advance on a recurring basis. You may cancel your subscription by contacting us, and your access will continue until the end of the current billing period. Refunds are handled on a case-by-case basis at our discretion. Credit top-ups are non-refundable but do not expire.</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Internal Data Access</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            Our administrators may access user accounts for support, troubleshooting, abuse prevention, and platform maintenance. This access is logged and restricted to authorized personnel.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Internal Data Access") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("Our administrators may access user accounts for support, troubleshooting, abuse prevention, and platform maintenance. This access is logged and restricted to authorized personnel.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Disclaimer of Warranties</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            SeratyAI is provided on an "as is" and "as available" basis without any warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, secure, or error-free. The AI-generated content is provided as a suggestion tool and should be reviewed and verified by you before use.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Disclaimer of Warranties") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __('SeratyAI is provided on an "as is" and "as available" basis without any warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, secure, or error-free. The AI-generated content is provided as a suggestion tool and should be reviewed and verified by you before use.') }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Limitation of Liability</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            To the fullest extent permitted by law, SeratyAI shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of the service.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Limitation of Liability") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("To the fullest extent permitted by law, SeratyAI shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or business opportunities, arising from your use of the service.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Changes to Terms</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We reserve the right to modify these terms at any time. Significant changes will be posted on this page with an updated effective date. Continued use of the service after changes constitutes acceptance of the updated terms.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Changes to Terms") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We reserve the right to modify these terms at any time. Significant changes will be posted on this page with an updated effective date. Continued use of the service after changes constitutes acceptance of the updated terms.") }}</p>
                     </div>
                 </div>
 
@@ -114,11 +90,9 @@
                             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30">
                                 <x-ui::icon name="mail" size="xl" class="text-white" />
                             </div>
-                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Questions About Our Terms?</h3>
-                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">If you have any questions about these Terms of Service, please don't hesitate to reach out.</p>
-                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                                Contact Us
-                            </x-ui::button>
+                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ __("Questions About Our Terms?") }}</h3>
+                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">{{ __("If you have any questions about these Terms of Service, please don't hesitate to reach out.") }}</p>
+                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">{{ __("Contact Us") }}</x-ui::button>
                         </div>
                     </x-ui::card>
                 </div>

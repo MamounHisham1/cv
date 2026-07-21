@@ -22,15 +22,9 @@
 
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
                 <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
-                    <x-ui::icon name="chat-bubble-left-right" size="sm" />
-                    Get in Touch
-                </div>
-                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                    We're Here to Help
-                </h1>
-                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Have a question, suggestion, or need help? Our team typically responds within 24 hours.
-                </p>
+                    <x-ui::icon name="chat-bubble-left-right" size="sm" />{{ __("Get in Touch") }}</div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">{{ __("We're Here to Help") }}</h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">{{ __("Have a question, suggestion, or need help? Our team typically responds within 24 hours.") }}</p>
             </div>
         </section>
 
@@ -51,9 +45,9 @@
                                         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                                             <x-ui::icon name="paper-airplane" size="md" class="text-white" />
                                         </div>
-                                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Send Us a Message</h2>
+                                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __("Send Us a Message") }}</h2>
                                     </div>
-                                    <p class="text-sm text-zinc-600 dark:text-zinc-400 ml-13">Fill out the form below and we will get back to you as soon as possible.</p>
+                                    <p class="text-sm text-zinc-600 dark:text-zinc-400 ml-13">{{ __("Fill out the form below and we will get back to you as soon as possible.") }}</p>
                                 </div>
 
                                 <livewire:contact-form />
@@ -71,9 +65,9 @@
                                         <x-ui::icon name="envelope" size="lg" class="text-white" />
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">Email Us</div>
-                                        <a href="mailto:support@seratyai.com" class="text-base text-emerald-600 dark:text-emerald-400 hover:underline font-medium">support@seratyai.com</a>
-                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">We'll respond within 24 hours</p>
+                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">{{ __("Email Us") }}</div>
+                                        <a href="mailto:support@seratyai.com" class="text-base text-emerald-600 dark:text-emerald-400 hover:underline font-medium">{{ __("support@seratyai.com") }}</a>
+                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">{{ __("We'll respond within 24 hours") }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -87,7 +81,7 @@
                                         <x-ui::icon name="phone" size="lg" class="text-white" />
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">Call Us</div>
+                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">{{ __("Call Us") }}</div>
                                         <a href="tel:+15551234567" class="text-base text-zinc-600 dark:text-zinc-400 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium">+1 (555) 123-4567</a>
                                         <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Mon-Fri, 9AM-6PM PST</p>
                                     </div>
@@ -103,9 +97,9 @@
                                         <x-ui::icon name="map-pin" size="lg" class="text-white" />
                                     </div>
                                     <div class="flex-1">
-                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">Visit Us</div>
-                                        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">123 Innovation Drive<br>San Francisco, CA 94107</p>
-                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">By appointment only</p>
+                                        <div class="text-sm font-semibold text-zinc-900 dark:text-white mb-1">{{ __("Visit Us") }}</div>
+                                        <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("123 Innovation Drive") }}<br>{{ __("San Francisco, CA 94107") }}</p>
+                                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-2">{{ __("By appointment only") }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -118,7 +112,7 @@
                                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
                                         <x-ui::icon name="clock" size="md" class="text-white" />
                                     </div>
-                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Office Hours</h3>
+                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __("Office Hours") }}</h3>
                                 </div>
                                 <div class="space-y-4">
                                     <div class="flex justify-between items-center p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
@@ -126,12 +120,12 @@
                                         <span class="text-sm font-bold text-zinc-900 dark:text-white">9:00 AM - 6:00 PM PST</span>
                                     </div>
                                     <div class="flex justify-between items-center p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/50">
-                                        <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Saturday</span>
+                                        <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">{{ __("Saturday") }}</span>
                                         <span class="text-sm font-bold text-zinc-900 dark:text-white">10:00 AM - 2:00 PM PST</span>
                                     </div>
                                     <div class="flex justify-between items-center p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-                                        <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">Sunday</span>
-                                        <span class="text-sm font-bold text-red-600 dark:text-red-400">Closed</span>
+                                        <span class="text-sm font-medium text-zinc-600 dark:text-zinc-400">{{ __("Sunday") }}</span>
+                                        <span class="text-sm font-bold text-red-600 dark:text-red-400">{{ __("Closed") }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +138,7 @@
                                     <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center shadow-lg shadow-pink-500/30">
                                         <x-ui::icon name="heart" size="md" class="text-white" />
                                     </div>
-                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Follow Us</h3>
+                                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ __("Follow Us") }}</h3>
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <a href="#" class="group/social w-11 h-11 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 dark:text-zinc-400 hover:bg-gradient-to-br hover:from-emerald-500 hover:to-emerald-600 hover:text-white transition-all duration-300 hover:scale-110 shadow-md">

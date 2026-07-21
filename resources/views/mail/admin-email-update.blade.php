@@ -21,9 +21,7 @@
                                     </p>
                                 </td>
                                 <td style="text-align: right;">
-                                    <p style="margin: 0; font-size: 12px; color: #71717a; font-weight: 400;">
-                                        AI-Powered Resume Builder
-                                    </p>
+                                    <p style="margin: 0; font-size: 12px; color: #71717a; font-weight: 400;">AI-Powered Resume Builder</p>
                                 </td>
                             </tr>
                         </table>

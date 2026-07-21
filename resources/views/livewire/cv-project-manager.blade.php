@@ -13,8 +13,8 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <x-ui::heading size="lg" class="text-white">Projects</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Showcase your best work and side projects</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Projects") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Showcase your best work and side projects") }}</p>
             </div>
             <x-ui::button
                 wire:click="addProject"
@@ -22,9 +22,7 @@
                 size="sm"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Project
-            </x-ui::button>
+            >{{ __("Add Project") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -54,10 +52,10 @@
                     :error="$errors->first('form.description')"
                     class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}"
                 />
-                <x-ui::description class="text-zinc-400">Focus on what you built and the impact it had</x-ui::description>
+                <x-ui::description class="text-zinc-400">{{ __("Focus on what you built and the impact it had") }}</x-ui::description>
 
                 <div>
-                    <x-ui::label class="mb-3 block text-zinc-200">Key Achievements</x-ui::label>
+                    <x-ui::label class="mb-3 block text-zinc-200">{{ __("Key Achievements") }}</x-ui::label>
                     @foreach($form['key_achievements'] as $index => $achievement)
                         <div class="flex gap-2 mb-2">
                             <x-ui::input
@@ -68,9 +66,7 @@
                             <x-ui::button type="button" variant="ghost" size="sm" wire:click="removeAchievement({{ $index }})" icon="x" class="{{ $ghostButtonClasses }} shrink-0" />
                         </div>
                     @endforeach
-                    <x-ui::button type="button" variant="ghost" size="sm" wire:click="addAchievement" icon="plus" class="{{ $ghostButtonClasses }} mt-2">
-                        Add Achievement
-                    </x-ui::button>
+                    <x-ui::button type="button" variant="ghost" size="sm" wire:click="addAchievement" icon="plus" class="{{ $ghostButtonClasses }} mt-2">{{ __("Add Achievement") }}</x-ui::button>
                 </div>
 
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -120,13 +116,11 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        Add Project
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">{{ __("Add Project") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
@@ -159,15 +153,11 @@
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             @if($project['project_url'])
                                                 <a href="{{ $project['project_url'] }}" target="_blank" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-zinc-300 transition-colors hover:bg-white/10 hover:text-white">
-                                                    <x-ui::icon name="external-link" class="w-3 h-3" />
-                                                    Live
-                                                </a>
+                                                    <x-ui::icon name="external-link" class="w-3 h-3" />{{ __("Live") }}</a>
                                             @endif
                                             @if($project['github_url'])
                                                 <a href="{{ $project['github_url'] }}" target="_blank" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-zinc-300 transition-colors hover:bg-white/10 hover:text-white">
-                                                    <x-ui::icon name="github" class="w-3 h-3" />
-                                                    GitHub
-                                                </a>
+                                                    <x-ui::icon name="github" class="w-3 h-3" />{{ __("GitHub") }}</a>
                                             @endif
                                         </div>
                                     </div>
@@ -181,9 +171,7 @@
 
                                 @if(!empty($project['key_achievements']) && collect($project['key_achievements'])->filter()->count() > 0)
                                     <div class="mt-3 border-t border-white/10 pt-3">
-                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                                            Key Achievements
-                                        </p>
+                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">{{ __("Key Achievements") }}</p>
                                         <ul class="space-y-1">
                                             @foreach(collect($project['key_achievements'])->filter() as $achievement)
                                                 <li class="flex items-start gap-2 text-sm text-zinc-300">
@@ -198,18 +186,18 @@
 
                             <div class="flex lg:flex-col gap-2 lg:shrink-0">
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $project['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Up</span>
+                                    <span class="sr-only">{{ __("Move Up") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $project['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Down</span>
+                                    <span class="sr-only">{{ __("Move Down") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="editProject({{ $project['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only lg:not-sr-only">Edit</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Edit") }}</span>
                                 </x-ui::button>
                                 <button type="button" @click="confirmAction({title: 'Delete this project?', message: 'This cannot be undone.', method: 'deleteProject', params: [{{ $project['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                                     class="inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-1 text-sm text-red-300 transition flex-1 border border-red-400/20 bg-red-500/10 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
                                     <x-ui::icon name="trash-2" class="h-4 w-4" />
-                                    <span class="sr-only lg:not-sr-only">Delete</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Delete") }}</span>
                                 </button>
                             </div>
                         </div>
@@ -220,11 +208,9 @@
                     <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/60">
                         <x-ui::icon name="folder" class="w-8 h-8 text-emerald-300" />
                     </div>
-                    <x-ui::heading size="md" class="mb-2 text-white">No Projects Added Yet</x-ui::heading>
-                    <p class="mb-4 text-sm text-zinc-400">Showcase your best work</p>
-                    <x-ui::button wire:click="addProject" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">
-                        Add Your First Project
-                    </x-ui::button>
+                    <x-ui::heading size="md" class="mb-2 text-white">{{ __("No Projects Added Yet") }}</x-ui::heading>
+                    <p class="mb-4 text-sm text-zinc-400">{{ __("Showcase your best work") }}</p>
+                    <x-ui::button wire:click="addProject" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">{{ __("Add Your First Project") }}</x-ui::button>
                 </div>
             @endforelse
         </div>

@@ -5,13 +5,10 @@
 <div class="flex flex-col gap-8 text-zinc-200">
     {{-- Header --}}
     <div class="text-center animate-slide-up">
-        <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">
-            Email Verification
-        </div>
+        <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-200">{{ __("Email Verification") }}</div>
 
-        <h1 class="mb-2 text-3xl font-bold text-white">Verify Your Email</h1>
-        <p class="text-sm text-zinc-400">
-            We've sent a 6-digit code to<br>
+        <h1 class="mb-2 text-3xl font-bold text-white">{{ __("Verify Your Email") }}</h1>
+        <p class="text-sm text-zinc-400">We've sent a 6-digit code to<br>
             <span class="font-medium text-zinc-200">{{ $email }}</span>
         </p>
     </div>
@@ -102,16 +99,14 @@
             type="submit"
             class="w-full border border-white/10 bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl hover:shadow-emerald-500/40"
         >
-            <span wire:loading.remove wire:target="verify">Verify & Continue</span>
-            <span wire:loading wire:target="verify">Verifying...</span>
+            <span wire:loading.remove wire:target="verify">{{ __("Verify & Continue") }}</span>
+            <span wire:loading wire:target="verify">{{ __("Verifying...") }}</span>
         </x-ui::button>
     </form>
 
     {{-- Resend --}}
     <div class="text-center animate-fade-in delay-200">
-        <p class="text-sm text-zinc-400">
-            Didn't receive the code?
-        </p>
+        <p class="text-sm text-zinc-400">{{ __("Didn't receive the code?") }}</p>
 
         @if($resendCooldown > 0)
             <p class="mt-1 text-sm text-zinc-500">
@@ -124,8 +119,8 @@
                 wire:loading.attr="disabled"
                 class="mt-1 text-sm font-semibold text-emerald-300 hover:text-emerald-200 hover:underline disabled:opacity-50"
             >
-                <span wire:loading.remove wire:target="sendOtp">Resend Code</span>
-                <span wire:loading wire:target="sendOtp">Sending...</span>
+                <span wire:loading.remove wire:target="sendOtp">{{ __("Resend Code") }}</span>
+                <span wire:loading wire:target="sendOtp">{{ __("Sending...") }}</span>
             </button>
         @endif
     </div>
@@ -135,8 +130,6 @@
         <button
             wire:click="cancel"
             class="text-sm text-zinc-500 hover:text-zinc-300"
-        >
-            ← Back to login
-        </button>
+        >{{ __("← Back to login") }}</button>
     </div>
 </div>

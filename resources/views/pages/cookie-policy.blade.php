@@ -17,15 +17,9 @@
 
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
                 <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
-                    <x-ui::icon name="shield-check" size="sm" />
-                    Legal
-                </div>
-                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                    Cookie Policy
-                </h1>
-                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Learn about how SeratyAI uses cookies and similar technologies to improve your experience.
-                </p>
+                    <x-ui::icon name="shield-check" size="sm" />{{ __("Legal") }}</div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">{{ __("Cookie Policy") }}</h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">{{ __("Learn about how SeratyAI uses cookies and similar technologies to improve your experience.") }}</p>
             </div>
         </section>
 
@@ -34,18 +28,14 @@
             <div class="mx-auto max-w-4xl px-6 lg:px-8 prose prose-zinc dark:prose-invert max-w-none">
                 {{-- What Are Cookies --}}
                 <div class="mb-16">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">What Are Cookies?</h2>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                        Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences, understand how you interact with the site, and improve your overall experience. Cookies may be "session" cookies (deleted when you close your browser) or "persistent" cookies (remain until they expire or are deleted).
-                    </p>
+                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("What Are Cookies?") }}</h2>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __('Cookies are small text files that are stored on your device when you visit a website. They help websites remember your preferences, understand how you interact with the site, and improve your overall experience. Cookies may be "session" cookies (deleted when you close your browser) or "persistent" cookies (remain until they expire or are deleted).') }}</p>
                 </div>
 
                 {{-- How We Use Cookies --}}
                 <div class="mb-16">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">How We Use Cookies</h2>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">
-                        SeratyAI uses cookies to deliver and maintain our services, enhance your experience, and analyze how our platform is used. Below is a breakdown of the cookie categories we use.
-                    </p>
+                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("How We Use Cookies") }}</h2>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-8">{{ __("SeratyAI uses cookies to deliver and maintain our services, enhance your experience, and analyze how our platform is used. Below is a breakdown of the cookie categories we use.") }}</p>
 
                     <div class="space-y-6">
                         @foreach(config('cookie-consent.categories') as $key => $category)
@@ -53,7 +43,7 @@
                             <div class="flex items-center gap-3 mb-3">
                                 <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">{{ $category['name'] }}</h3>
                                 @if(!$category['toggleable'])
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">Always Active</span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">{{ __("Always Active") }}</span>
                                 @endif
                             </div>
                             <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -66,39 +56,29 @@
 
                 {{-- Managing Cookies --}}
                 <div class="mb-16">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Managing Your Cookie Preferences</h2>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                        You can manage your cookie preferences at any time by clicking the "Customize" button in the cookie consent banner or by clearing your browser cookies. When you revisit our site after clearing cookies, the consent banner will reappear, allowing you to set your preferences again.
-                    </p>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                        You can also control cookies through your browser settings. Most browsers allow you to:
-                    </p>
+                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Managing Your Cookie Preferences") }}</h2>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ __('You can manage your cookie preferences at any time by clicking the "Customize" button in the cookie consent banner or by clearing your browser cookies. When you revisit our site after clearing cookies, the consent banner will reappear, allowing you to set your preferences again.') }}</p>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ __("You can also control cookies through your browser settings. Most browsers allow you to:") }}</p>
                     <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                        <li>View what cookies are stored and delete them individually</li>
+                        <li>{{ __("View what cookies are stored and delete them individually") }}</li>
                         <li>Block third-party cookies</li>
-                        <li>Block cookies from specific sites</li>
-                        <li>Block all cookies from being set</li>
-                        <li>Delete all cookies when you close your browser</li>
+                        <li>{{ __("Block cookies from specific sites") }}</li>
+                        <li>{{ __("Block all cookies from being set") }}</li>
+                        <li>{{ __("Delete all cookies when you close your browser") }}</li>
                     </ul>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mt-4">
-                        Please note that blocking certain cookies may impact your experience on our site and limit some functionality.
-                    </p>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mt-4">{{ __("Please note that blocking certain cookies may impact your experience on our site and limit some functionality.") }}</p>
                 </div>
 
                 {{-- Third-Party Cookies --}}
                 <div class="mb-16">
                     <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Third-Party Cookies</h2>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                        Some cookies on our site are set by third-party services that appear on our pages. We do not control these third-party cookies. Please refer to the respective third-party privacy policies for more information about their cookie practices.
-                    </p>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">Some cookies on our site are set by third-party services that appear on our pages. We do not control these third-party cookies. Please refer to the respective third-party privacy policies for more information about their cookie practices.</p>
                 </div>
 
                 {{-- Updates to Policy --}}
                 <div class="mb-16">
-                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Updates to This Policy</h2>
-                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                        We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We encourage you to review this page periodically for the latest information on our use of cookies.
-                    </p>
+                    <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Updates to This Policy") }}</h2>
+                    <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We may update this Cookie Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We encourage you to review this page periodically for the latest information on our use of cookies.") }}</p>
                 </div>
 
                 {{-- Contact CTA --}}
@@ -111,11 +91,9 @@
                             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30">
                                 <x-ui::icon name="mail" size="xl" class="text-white" />
                             </div>
-                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Questions About Cookies?</h3>
-                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">If you have any questions about our use of cookies, please don't hesitate to reach out.</p>
-                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                                Contact Us
-                            </x-ui::button>
+                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ __("Questions About Cookies?") }}</h3>
+                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">{{ __("If you have any questions about our use of cookies, please don't hesitate to reach out.") }}</p>
+                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">{{ __("Contact Us") }}</x-ui::button>
                         </div>
                     </x-ui::card>
                 </div>

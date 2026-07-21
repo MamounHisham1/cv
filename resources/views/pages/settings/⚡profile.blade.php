@@ -81,8 +81,7 @@ new #[Title('Profile settings')] class extends Component
                 <div>
                     <x-ui::input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" class="border-white/10 bg-zinc-900/50 text-zinc-100 placeholder:text-zinc-500 shadow-inner shadow-black/10 backdrop-blur-sm focus-visible:border-emerald-500/50 focus-visible:ring-emerald-500/20" />
 
-                    @if ($this->hasUnverifiedEmail)
-                        <div>
+                    @if ($this->hasUnverifiedEmail)<div>
                             <x-ui::text class="mt-4 !text-zinc-400">
                                 {{ __('Your email address is unverified.') }}
 
@@ -113,8 +112,7 @@ new #[Title('Profile settings')] class extends Component
             </form>
         </div>
 
-        @if ($this->showDeleteUser)
-            <livewire:pages::settings.delete-user-form />
+        @if ($this->showDeleteUser)<livewire:pages::settings.delete-user-form />
         @endif
     </x-pages::settings.layout>
 </section>

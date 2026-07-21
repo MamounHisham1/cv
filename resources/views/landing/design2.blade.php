@@ -18,26 +18,26 @@
                 <div class="animate-slide-up text-center mb-12">
                     <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white text-sm font-medium px-5 py-2 rounded-full mb-10 border border-white/15">
                         <x-ui::icon name="sparkles" size="sm" class="animate-pulse" />
-                        The Future of Resume Building
+                        {{ __('The Future of Resume Building') }}
                     </div>
                 </div>
 
                 <h1 class="animate-slide-up delay-100 text-center text-6xl md:text-7xl lg:text-[8rem] font-extrabold text-white leading-[0.9] tracking-tight mb-8">
-                    Build<br>
-                    <span class="text-emerald-200">Smarter</span><br>
-                    Resumes.
+                    {{ __('Build') }}<br>
+                    <span class="text-emerald-200">{{ __('Smarter') }}</span><br>
+                    {{ __('Resumes.') }}
                 </h1>
 
                 <p class="animate-slide-up delay-200 text-center text-xl md:text-2xl text-emerald-100/80 max-w-2xl mx-auto leading-relaxed mb-12">
-                    AI-powered CV creation that lands interviews. Join 10,000+ professionals who trust SeratyAI.
+                    {{ __('AI-powered CV creation that lands interviews. Join :count professionals who trust SeratyAI.', ['count' => '10,000+']) }}
                 </p>
 
                 <div class="animate-slide-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4">
                     <x-ui::button variant="primary" :href="route('cv.builder')" icon="arrow-right" class="bg-white text-emerald-700 hover:bg-emerald-50 shadow-2xl shadow-black/20 w-full sm:w-auto hover:-translate-y-1 transition-all duration-300 text-base px-10 py-4">
-                        Start Building Free
+                        {{ __('Start Building Free') }}
                     </x-ui::button>
                     <x-ui::button variant="ghost" class="text-white/80 hover:text-white hover:bg-white/10 border border-white/20 w-full sm:w-auto px-10 py-4 text-base">
-                        Watch Demo
+                        {{ __('Watch Demo') }}
                     </x-ui::button>
                 </div>
             </div>
@@ -70,7 +70,7 @@
         {{-- Logo Wall / Trust Bar --}}
         <section class="bg-zinc-950 py-12 border-b border-zinc-800">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
-                <p class="text-center text-xs uppercase tracking-widest text-zinc-500 mb-8">Trusted by professionals at</p>
+                <p class="text-center text-xs uppercase tracking-widest text-zinc-500 mb-8">{{ __('Trusted by professionals at') }}</p>
                 <div class="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-zinc-600">
                     @foreach(['Google', 'Stripe', 'Figma', 'Meta', 'Amazon', 'Apple'] as $company)
                     <span class="text-lg font-bold tracking-tight opacity-40 hover:opacity-70 transition-opacity duration-300">{{ $company }}</span>
@@ -82,16 +82,16 @@
         {{-- Features: Full-width alternating layout --}}
         <section id="features" class="relative bg-white dark:bg-zinc-950">
             @foreach([
-                ['icon' => 'sparkles', 'title' => 'AI-Powered Writing', 'desc' => 'Generate compelling bullet points, summaries, and cover letters tailored to your industry and experience level using advanced AI models.', 'color' => 'emerald', 'detail' => 'Powered by state-of-the-art language models fine-tuned on successful resumes across 50+ industries.'],
-                ['icon' => 'shield-check', 'title' => 'ATS Optimization', 'desc' => 'Ensure your CV passes Applicant Tracking Systems with keyword analysis, formatting checks, and real-time compatibility scoring.', 'color' => 'blue', 'detail' => '98% of Fortune 500 companies use ATS. Our engine ensures your CV gets through.'],
-                ['icon' => 'eye', 'title' => 'Real-Time Preview', 'desc' => 'See exactly how your CV will look as you edit. Our live preview updates instantly so you can perfect every detail.', 'color' => 'purple', 'detail' => 'Pixel-perfect rendering that matches the final PDF export exactly.'],
+                ['icon' => 'sparkles', 'title' => __('AI-Powered Writing'), 'desc' => __('Generate compelling bullet points, summaries, and cover letters tailored to your industry and experience level using advanced AI models.'), 'color' => 'emerald', 'detail' => __('Powered by state-of-the-art language models fine-tuned on successful resumes across 50+ industries.')],
+                ['icon' => 'shield-check', 'title' => __('ATS Optimization'), 'desc' => __('Ensure your CV passes Applicant Tracking Systems with keyword analysis, formatting checks, and real-time compatibility scoring.'), 'color' => 'blue', 'detail' => __('98% of Fortune 500 companies use ATS. Our engine ensures your CV gets through.')],
+                ['icon' => 'eye', 'title' => __('Real-Time Preview'), 'desc' => __('See exactly how your CV will look as you edit. Our live preview updates instantly so you can perfect every detail.'), 'color' => 'purple', 'detail' => __('Pixel-perfect rendering that matches the final PDF export exactly.')],
             ] as $index => $feature)
             <div class="{{ $index % 2 === 0 ? 'bg-white dark:bg-zinc-950' : 'bg-zinc-50 dark:bg-zinc-900' }}">
                 <div class="mx-auto max-w-7xl px-6 lg:px-8 py-20 lg:py-28">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center {{ $index % 2 !== 0 ? 'lg:flex-row-reverse' : '' }}">
                         <div class="{{ $index % 2 !== 0 ? 'lg:order-2' : '' }}">
                             <div class="inline-flex items-center gap-2 bg-{{ $feature['color'] }}-100 dark:bg-{{ $feature['color'] }}-900/30 text-{{ $feature['color'] }}-700 dark:text-{{ $feature['color'] }}-300 text-xs font-bold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wider">
-                                Feature {{ $index + 1 }}
+                                {{ __('Feature :number', ['number' => $index + 1]) }}
                             </div>
                             <h3 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-6 leading-tight">{{ $feature['title'] }}</h3>
                             <p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ $feature['desc'] }}</p>
@@ -114,9 +114,9 @@
                 <div class="mx-auto max-w-7xl px-6 lg:px-8 py-20">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         @foreach([
-                            ['icon' => 'document-text', 'title' => 'Professional Templates', 'desc' => 'Over 50 designs crafted by hiring managers and career experts.', 'color' => 'purple'],
-                            ['icon' => 'lightbulb', 'title' => 'Smart Suggestions', 'desc' => 'Intelligent recommendations for skills, action verbs, and improvements.', 'color' => 'pink'],
-                            ['icon' => 'arrow-down-tray', 'title' => 'Export Ready', 'desc' => 'Download polished CVs in PDF format. Share via link or email.', 'color' => 'teal']
+                            ['icon' => 'document-text', 'title' => __('Professional Templates'), 'desc' => __('Over 50 designs crafted by hiring managers and career experts.'), 'color' => 'purple'],
+                            ['icon' => 'lightbulb', 'title' => __('Smart Suggestions'), 'desc' => __('Intelligent recommendations for skills, action verbs, and improvements.'), 'color' => 'pink'],
+                            ['icon' => 'arrow-down-tray', 'title' => __('Export Ready'), 'desc' => __('Download polished CVs in PDF format. Share via link or email.'), 'color' => 'teal']
                         ] as $feature)
                         <x-ui::card class="group hover:shadow-2xl hover:shadow-{{ $feature['color'] }}-500/10 transition-all duration-500 hover:-translate-y-2 border hover:border-{{ $feature['color'] }}-300 dark:hover:border-{{ $feature['color'] }}-700">
                             <div class="p-8">
@@ -138,10 +138,10 @@
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-12">
                     @foreach([
-                        ['value' => '10,000+', 'label' => 'CVs Created', 'color' => 'emerald'],
-                        ['value' => '95%', 'label' => 'ATS Pass Rate', 'color' => 'blue'],
-                        ['value' => '50+', 'label' => 'Templates', 'color' => 'purple'],
-                        ['value' => '4.9/5', 'label' => 'User Rating', 'color' => 'amber']
+                        ['value' => '10,000+', 'label' => __('CVs Created'), 'color' => 'emerald'],
+                        ['value' => '95%', 'label' => __('ATS Pass Rate'), 'color' => 'blue'],
+                        ['value' => '50+', 'label' => __('Templates'), 'color' => 'purple'],
+                        ['value' => '4.9/5', 'label' => __('User Rating'), 'color' => 'amber']
                     ] as $stat)
                     <div class="group text-center">
                         <div class="text-5xl md:text-6xl font-extrabold text-{{ $stat['color'] }}-400 mb-3 group-hover:scale-110 transition-transform duration-300">{{ $stat['value'] }}</div>
@@ -156,17 +156,17 @@
         <section class="relative py-20 lg:py-28 bg-white dark:bg-zinc-950 overflow-hidden">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center mb-20">
-                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">Process</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">How It Works</h2>
+                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">{{ __('Process') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">{{ __('How It Works') }}</h2>
                 </div>
 
                 <div class="relative">
                     <div class="hidden lg:block absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 -translate-y-1/2"></div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8">
                         @foreach([
-                            ['step' => '01', 'title' => 'Fill Your Info', 'desc' => 'Enter your work experience, education, skills, and certifications with our guided form.', 'color' => 'emerald'],
-                            ['step' => '02', 'title' => 'AI Enhances', 'desc' => 'Our AI optimizes your content for impact with stronger action verbs and ATS-friendly formatting.', 'color' => 'blue'],
-                            ['step' => '03', 'title' => 'Download & Apply', 'desc' => 'Export a polished PDF and start applying with confidence.', 'color' => 'purple']
+                            ['step' => '01', 'title' => __('Fill Your Info'), 'desc' => __('Enter your work experience, education, skills, and certifications with our guided form.'), 'color' => 'emerald'],
+                            ['step' => '02', 'title' => __('AI Enhances'), 'desc' => __('Our AI optimizes your content for impact with stronger action verbs and ATS-friendly formatting.'), 'color' => 'blue'],
+                            ['step' => '03', 'title' => __('Download & Apply'), 'desc' => __('Export a polished PDF and start applying with confidence.'), 'color' => 'purple']
                         ] as $item)
                         <div class="relative text-center group">
                             <div class="relative z-10 w-20 h-20 rounded-full bg-gradient-to-br from-{{ $item['color'] }}-500 to-{{ $item['color'] }}-600 flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-{{ $item['color'] }}-500/30 group-hover:scale-110 transition-transform duration-300">
@@ -187,17 +187,17 @@
             <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400 rounded-full blur-[100px] opacity-20"></div>
 
             <div class="relative mx-auto max-w-5xl px-6 lg:px-8 text-center">
-                <p class="text-sm uppercase tracking-widest text-emerald-200 font-bold mb-6">Our Story</p>
-                <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">Empowering Careers<br>Through Technology</h2>
-                <p class="text-lg text-emerald-100/90 leading-relaxed mb-6 max-w-3xl mx-auto">SeratyAI was founded in 2024 by a team of hiring managers, career coaches, and software engineers who saw a critical gap in the job application process. Millions of talented professionals were being filtered out by ATS systems.</p>
-                <p class="text-lg text-emerald-100/90 leading-relaxed max-w-3xl mx-auto">Today, over <span class="font-bold text-white">10,000 professionals</span> trust SeratyAI with a <span class="font-bold text-white">95% ATS pass rate</span>. We're just getting started.</p>
+                <p class="text-sm uppercase tracking-widest text-emerald-200 font-bold mb-6">{{ __('Our Story') }}</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">{{ __('Empowering Careers') }}<br>{{ __('Through Technology') }}</h2>
+                <p class="text-lg text-emerald-100/90 leading-relaxed mb-6 max-w-3xl mx-auto">{{ __('SeratyAI was founded in 2024 by a team of hiring managers, career coaches, and software engineers who saw a critical gap in the job application process. Millions of talented professionals were being filtered out by ATS systems.') }}</p>
+                <p class="text-lg text-emerald-100/90 leading-relaxed max-w-3xl mx-auto">{{ __('Today, over') }} <span class="font-bold text-white">{{ __('10,000 professionals') }}</span> {{ __('trust SeratyAI with a') }} <span class="font-bold text-white">{{ __('95% ATS pass rate') }}</span>. {{ __("We're just getting started.") }}</p>
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
                     @foreach([
-                        ['icon' => 'graduation-cap', 'title' => 'Expertise', 'color' => 'white'],
-                        ['icon' => 'zap', 'title' => 'Speed', 'color' => 'emerald-200'],
-                        ['icon' => 'heart', 'title' => 'User Focused', 'color' => 'white'],
-                        ['icon' => 'shield-check', 'title' => 'Privacy', 'color' => 'emerald-200']
+                        ['icon' => 'graduation-cap', 'title' => __('Expertise'), 'color' => 'white'],
+                        ['icon' => 'zap', 'title' => __('Speed'), 'color' => 'emerald-200'],
+                        ['icon' => 'heart', 'title' => __('User Focused'), 'color' => 'white'],
+                        ['icon' => 'shield-check', 'title' => __('Privacy'), 'color' => 'emerald-200']
                     ] as $item)
                     <div class="bg-white/10 backdrop-blur-sm rounded-xl p-5 border border-white/15 hover:bg-white/20 transition-all duration-300 hover:-translate-y-1">
                         <x-ui::icon name="{{ $item['icon'] }}" size="lg" class="text-{{ $item['color'] }} mb-3" />
@@ -212,16 +212,16 @@
         <section class="relative py-20 lg:py-28 bg-white dark:bg-zinc-950">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">Team</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">The People Behind SeratyAI</h2>
+                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">{{ __('Team') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">{{ __('The People Behind SeratyAI') }}</h2>
                 </div>
 
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
                     @foreach([
-                        ['initials' => 'AJ', 'name' => 'Alex Johnson', 'role' => 'CEO & Co-Founder', 'desc' => 'Former VP of Talent Acquisition, 15 years experience.', 'color' => 'emerald'],
-                        ['initials' => 'MW', 'name' => 'Maria Williams', 'role' => 'CTO & Co-Founder', 'desc' => 'Full-stack engineer, NLP & ML specialist.', 'color' => 'blue'],
-                        ['initials' => 'DL', 'name' => 'David Lee', 'role' => 'Head of Product', 'desc' => 'Product leader, career platforms.', 'color' => 'purple'],
-                        ['initials' => 'RN', 'name' => 'Rachel Nguyen', 'role' => 'Head of Design', 'desc' => 'Award-winning UX designer.', 'color' => 'amber']
+                        ['initials' => 'AJ', 'name' => 'Alex Johnson', 'role' => __('CEO & Co-Founder'), 'desc' => __('Former VP of Talent Acquisition, 15 years experience.'), 'color' => 'emerald'],
+                        ['initials' => 'MW', 'name' => 'Maria Williams', 'role' => __('CTO & Co-Founder'), 'desc' => __('Full-stack engineer, NLP & ML specialist.'), 'color' => 'blue'],
+                        ['initials' => 'DL', 'name' => 'David Lee', 'role' => __('Head of Product'), 'desc' => __('Product leader, career platforms.'), 'color' => 'purple'],
+                        ['initials' => 'RN', 'name' => 'Rachel Nguyen', 'role' => __('Head of Design'), 'desc' => __('Award-winning UX designer.'), 'color' => 'amber']
                     ] as $member)
                     <div class="group text-center">
                         <div class="w-24 h-24 rounded-full bg-gradient-to-br from-{{ $member['color'] }}-500 to-{{ $member['color'] }}-600 flex items-center justify-center mx-auto mb-5 shadow-xl shadow-{{ $member['color'] }}-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
@@ -240,15 +240,15 @@
         <section class="relative py-20 lg:py-28 bg-zinc-50 dark:bg-zinc-900 overflow-hidden">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-sm uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold mb-4">Testimonials</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">What People Say</h2>
+                    <p class="text-sm uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold mb-4">{{ __('Testimonials') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">{{ __('What People Say') }}</h2>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     @foreach([
-                        ['name' => 'Sarah Rodriguez', 'role' => 'Software Engineer at Google', 'initials' => 'SR', 'color' => 'emerald', 'text' => 'SeratyAI completely transformed my job search. The AI suggestions made my experience descriptions so much stronger, and I started getting interview calls within a week.'],
-                        ['name' => 'Marcus Kim', 'role' => 'Product Manager at Stripe', 'initials' => 'MK', 'color' => 'blue', 'text' => 'As a career changer, I struggled to present my transferable skills. SeratyAI\'s AI helped me reframe my experience and within two months I landed a product management role.'],
-                        ['name' => 'Elena Petrova', 'role' => 'UX Designer at Figma', 'initials' => 'EP', 'color' => 'purple', 'text' => 'The templates are stunning and the real-time preview is incredibly useful. I customized a design that perfectly matched my personal brand.']
+                        ['name' => 'Sarah Rodriguez', 'role' => __('Software Engineer at Google'), 'initials' => 'SR', 'color' => 'emerald', 'text' => __('SeratyAI completely transformed my job search. The AI suggestions made my experience descriptions so much stronger, and I started getting interview calls within a week.')],
+                        ['name' => 'Marcus Kim', 'role' => __('Product Manager at Stripe'), 'initials' => 'MK', 'color' => 'blue', 'text' => __("As a career changer, I struggled to present my transferable skills. SeratyAI's AI helped me reframe my experience and within two months I landed a product management role.")],
+                        ['name' => 'Elena Petrova', 'role' => __('UX Designer at Figma'), 'initials' => 'EP', 'color' => 'purple', 'text' => __('The templates are stunning and the real-time preview is incredibly useful. I customized a design that perfectly matched my personal brand.')]
                     ] as $t)
                     <div class="group bg-white dark:bg-zinc-800 rounded-2xl p-8 shadow-sm border border-zinc-200 dark:border-zinc-700 hover:shadow-2xl hover:border-{{ $t['color'] }}-300 dark:hover:border-{{ $t['color'] }}-700 transition-all duration-500 hover:-translate-y-2">
                         <div class="flex items-center gap-1 mb-6">
@@ -276,21 +276,21 @@
         <section class="relative py-20 lg:py-28 bg-white dark:bg-zinc-950">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-sm uppercase tracking-widest text-purple-600 dark:text-purple-400 font-bold mb-4">Pricing</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">Simple Pricing</h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Start free, upgrade when you need more.</p>
+                    <p class="text-sm uppercase tracking-widest text-purple-600 dark:text-purple-400 font-bold mb-4">{{ __('Pricing') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">{{ __('Simple Pricing') }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __('Start free, upgrade when you need more.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     @foreach([
-                        ['name' => 'Free', 'price' => '$0', 'period' => '/month', 'btn' => 'Get Started', 'features' => ['1 CV with basic template', 'PDF export with watermark', 'Basic ATS check', '5 AI suggestions per CV'], 'unavailable' => ['Unlimited CVs', 'AI cover letter generator'], 'popular' => false],
-                        ['name' => 'Pro', 'price' => '$9', 'period' => '/month', 'btn' => 'Start Free Trial', 'features' => ['Unlimited CVs', 'All 50+ premium templates', 'Clean PDF export', 'Advanced ATS optimization', 'Unlimited AI suggestions', 'AI cover letter generator'], 'unavailable' => [], 'popular' => true],
-                        ['name' => 'Enterprise', 'price' => '$29', 'period' => '/month', 'btn' => 'Contact Sales', 'features' => ['Everything in Pro', 'Team management', 'Custom branding', 'Priority support', 'API access', 'SSO & security'], 'unavailable' => [], 'popular' => false]
+                        ['name' => __('Free'), 'price' => '$0', 'period' => __('/month'), 'btn' => __('Get Started'), 'features' => [__('1 CV with basic template'), __('PDF export with watermark'), __('Basic ATS check'), __('5 AI suggestions per CV')], 'unavailable' => [__('Unlimited CVs'), __('AI cover letter generator')], 'popular' => false],
+                        ['name' => __('Pro'), 'price' => '$9', 'period' => __('/month'), 'btn' => __('Start Free Trial'), 'features' => [__('Unlimited CVs'), __('All 50+ premium templates'), __('Clean PDF export'), __('Advanced ATS optimization'), __('Unlimited AI suggestions'), __('AI cover letter generator')], 'unavailable' => [], 'popular' => true],
+                        ['name' => __('Enterprise'), 'price' => '$29', 'period' => __('/month'), 'btn' => __('Contact Sales'), 'features' => [__('Everything in Pro'), __('Team management'), __('Custom branding'), __('Priority support'), __('API access'), __('SSO & security')], 'unavailable' => [], 'popular' => false]
                     ] as $plan)
                     <x-ui::card class="{{ $plan['popular'] ? 'ring-2 ring-emerald-500 relative shadow-2xl shadow-emerald-500/20' : '' }} hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
                         @if($plan['popular'])
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-                            <span class="bg-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">Most Popular</span>
+                            <span class="bg-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">{{ __('Most Popular') }}</span>
                         </div>
                         @endif
                         <div class="p-8 flex flex-col flex-1">
@@ -325,18 +325,18 @@
         <section class="relative py-20 lg:py-28 bg-zinc-50 dark:bg-zinc-900">
             <div class="mx-auto max-w-3xl px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">FAQ</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">Common Questions</h2>
+                    <p class="text-sm uppercase tracking-widest text-emerald-600 dark:text-emerald-400 font-bold mb-4">{{ __('FAQ') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white">{{ __('Common Questions') }}</h2>
                 </div>
 
                 <div class="space-y-4" x-data="{ open: null }">
                     @foreach([
-                        ['id' => 'd2q1', 'q' => 'What is SeratyAI?', 'a' => 'An AI-powered CV builder that helps you create professional, ATS-optimized resumes with real-time compatibility scoring.'],
-                        ['id' => 'd2q2', 'q' => 'Is my data secure?', 'a' => 'Yes. All data is encrypted at rest and in transit. We never sell or share your data. GDPR and SOC 2 compliant.'],
-                        ['id' => 'd2q3', 'q' => 'Is there a free trial?', 'a' => 'Every new account gets a 7-day Pro trial. No credit card required.'],
-                        ['id' => 'd2q4', 'q' => 'Can I cancel anytime?', 'a' => 'Yes, cancel anytime from settings. No fees. Access continues until end of billing period.'],
-                        ['id' => 'd2q5', 'q' => 'What export formats are available?', 'a' => 'High-quality PDF, the industry standard accepted by all ATS systems and hiring managers.'],
-                        ['id' => 'd2q6', 'q' => 'Can I create multiple CVs?', 'a' => 'Pro and Enterprise users can create unlimited CVs tailored to different applications.']
+                        ['id' => 'd2q1', 'q' => __('What is SeratyAI?'), 'a' => __('An AI-powered CV builder that helps you create professional, ATS-optimized resumes with real-time compatibility scoring.')],
+                        ['id' => 'd2q2', 'q' => __('Is my data secure?'), 'a' => __('Yes. All data is encrypted at rest and in transit. We never sell or share your data. GDPR and SOC 2 compliant.')],
+                        ['id' => 'd2q3', 'q' => __('Is there a free trial?'), 'a' => __('Every new account gets a 7-day Pro trial. No credit card required.')],
+                        ['id' => 'd2q4', 'q' => __('Can I cancel anytime?'), 'a' => __('Yes, cancel anytime from settings. No fees. Access continues until end of billing period.')],
+                        ['id' => 'd2q5', 'q' => __('What export formats are available?'), 'a' => __('High-quality PDF, the industry standard accepted by all ATS systems and hiring managers.')],
+                        ['id' => 'd2q6', 'q' => __('Can I create multiple CVs?'), 'a' => __('Pro and Enterprise users can create unlimited CVs tailored to different applications.')]
                     ] as $faq)
                     <div class="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden hover:border-emerald-300 dark:hover:border-emerald-700 transition-all duration-300">
                         <button @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'" class="w-full flex items-center justify-between px-6 py-5 text-left">
@@ -356,9 +356,9 @@
         <section class="relative py-20 lg:py-28 bg-white dark:bg-zinc-950">
             <div class="mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <p class="text-sm uppercase tracking-widest text-blue-600 dark:text-blue-400 font-bold mb-4">Contact</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">Get in Touch</h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">We typically respond within 24 hours.</p>
+                    <p class="text-sm uppercase tracking-widest text-blue-600 dark:text-blue-400 font-bold mb-4">{{ __('Contact') }}</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white mb-4">{{ __('Get in Touch') }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __('We typically respond within 24 hours.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
@@ -368,16 +368,16 @@
                                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                                     <x-ui::icon name="send" size="md" class="text-white" />
                                 </div>
-                                <h3 class="text-xl font-bold text-zinc-900 dark:text-white">Send Us a Message</h3>
+                                <h3 class="text-xl font-bold text-zinc-900 dark:text-white">{{ __('Send Us a Message') }}</h3>
                             </div>
                             <livewire:contact-form />
                         </x-ui::card>
                     </div>
                     <div class="lg:col-span-2 space-y-4">
                         @foreach([
-                            ['icon' => 'mail', 'title' => 'Email', 'value' => 'support@seratyai.com', 'sub' => 'Response within 24h', 'color' => 'emerald'],
-                            ['icon' => 'phone', 'title' => 'Phone', 'value' => '+1 (555) 123-4567', 'sub' => 'Mon-Fri, 9AM-6PM PST', 'color' => 'blue'],
-                            ['icon' => 'map-pin', 'title' => 'Office', 'value' => '123 Innovation Drive, San Francisco, CA 94107', 'sub' => 'By appointment only', 'color' => 'purple']
+                            ['icon' => 'mail', 'title' => __('Email'), 'value' => 'support@seratyai.com', 'sub' => __('Response within 24h'), 'color' => 'emerald'],
+                            ['icon' => 'phone', 'title' => __('Phone'), 'value' => '+1 (555) 123-4567', 'sub' => __('Mon-Fri, 9AM-6PM PST'), 'color' => 'blue'],
+                            ['icon' => 'map-pin', 'title' => __('Office'), 'value' => '123 Innovation Drive, San Francisco, CA 94107', 'sub' => __('By appointment only'), 'color' => 'purple']
                         ] as $info)
                         <x-ui::card class="group hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                             <div class="p-5 flex items-start gap-4">
@@ -404,10 +404,10 @@
                 <div class="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-emerald-500 rounded-full blur-[100px] opacity-15 animate-pulse-glow" style="animation-delay: 3s;"></div>
             </div>
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
-                <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">Ready to Build<br>Your Future?</h2>
-                <p class="text-xl text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed">Your next career move starts with a great CV. Join 10,000+ professionals today.</p>
+                <h2 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">{{ __('Ready to Build') }}<br>{{ __('Your Future?') }}</h2>
+                <p class="text-xl text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed">{{ __('Your next career move starts with a great CV. Join :count professionals today.', ['count' => '10,000+']) }}</p>
                 <x-ui::button variant="primary" :href="route('register')" icon="arrow-right" size="lg" class="bg-emerald-600 hover:bg-emerald-500 text-white shadow-2xl shadow-emerald-600/30 hover:-translate-y-1 transition-all duration-300 px-12 py-4 text-lg">
-                    Create Your CV Now
+                    {{ __('Create Your CV Now') }}
                 </x-ui::button>
             </div>
         </section>

@@ -1,22 +1,21 @@
 @php
     $navItems = [
-        ['route' => 'drafts', 'label' => 'My CVs', 'icon' => 'file-text', 'routeIs' => ['cv.builder', 'cv.edit', 'drafts']],
-        ['route' => 'cv.evaluator', 'label' => 'AI Evaluator', 'icon' => 'sparkles', 'routeIs' => ['cv.evaluator']],
-        ['route' => 'cover-letters.index', 'label' => 'Cover Letters', 'icon' => 'document-text', 'routeIs' => ['cover-letters.index']],
-        ['route' => 'job.match', 'label' => 'Job Match', 'icon' => 'search', 'routeIs' => ['job.match']],
-        ['route' => 'ai.interview', 'label' => 'AI Interviewer', 'icon' => 'microphone', 'routeIs' => ['ai.interview', 'interview.history']],
-        ['route' => 'referrals', 'label' => 'Referrals', 'icon' => 'gift', 'routeIs' => ['referrals']],
+        ['route' => 'drafts', 'label' => __('My CVs'), 'icon' => 'file-text', 'routeIs' => ['cv.builder', 'cv.edit', 'drafts']],
+        ['route' => 'cv.evaluator', 'label' => __('AI Evaluator'), 'icon' => 'sparkles', 'routeIs' => ['cv.evaluator']],
+        ['route' => 'cover-letters.index', 'label' => __('Cover Letters'), 'icon' => 'document-text', 'routeIs' => ['cover-letters.index']],
+        ['route' => 'job.match', 'label' => __('Job Match'), 'icon' => 'search', 'routeIs' => ['job.match']],
+        ['route' => 'ai.interview', 'label' => __('AI Interviewer'), 'icon' => 'microphone', 'routeIs' => ['ai.interview', 'interview.history']],
+        ['route' => 'referrals', 'label' => __('Referrals'), 'icon' => 'gift', 'routeIs' => ['referrals']],
     ];
 @endphp
 
 <header class="sticky top-0 z-50 w-full border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
-    @if(app(\App\Services\ImpersonateService::class)->isImpersonating())
-        <div class="bg-amber-600 px-4 py-2 text-center text-sm font-medium text-white">
-            You are impersonating <strong>{{ auth()->user()->name }}</strong> ({{ auth()->user()->email }})
+    @if(app(\App\Services\ImpersonateService::class)->isImpersonating())<div class="bg-amber-600 px-4 py-2 text-center text-sm font-medium text-white">
+            {{ __('You are impersonating :name (:email)', ['name' => auth()->user()->name, 'email' => auth()->user()->email]) }}
             <form method="POST" action="{{ route('impersonate.stop') }}" class="inline ml-3">
                 @csrf
                 <button type="submit" class="rounded bg-white/20 px-3 py-0.5 text-sm font-medium text-white hover:bg-white/30 transition-colors">
-                    Stop Impersonating
+                    {{ __('Stop Impersonating') }}
                 </button>
             </form>
         </div>
@@ -25,19 +24,17 @@
 
         <x-app-logo href="/" class="shrink-0" />
 
-        {{-- Desktop nav links --}}
-        <x-ui::navbar class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl lg:flex">
+        {{-- Desktop nav links — fills available space, pills spread evenly --}}
+        <x-ui::navbar class="hidden min-w-0 flex-1 items-stretch gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl [scrollbar-width:none] lg:flex lg:[&::-webkit-scrollbar]:hidden">
             @foreach ($navItems as $item)
                 @php
                     $isActive = request()->routeIs(...$item['routeIs']);
                 @endphp
-                <x-ui::navbar.item :href="route($item['route'])" icon="{{ $item['icon'] }}" :current="$isActive" wire:navigate class="!rounded-full !px-4 !py-2 {{ $isActive ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white' }}">
+                <x-ui::navbar.item :href="route($item['route'])" icon="{{ $item['icon'] }}" :current="$isActive" wire:navigate class="!flex-1 !shrink-0 !basis-0 !whitespace-nowrap !justify-center !rounded-full !px-2 !py-2 {{ $isActive ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white' }}">
                     {{ $item['label'] }}
                 </x-ui::navbar.item>
             @endforeach
         </x-ui::navbar>
-
-        <div class="flex-1"></div>
 
         {{-- Mobile: credits + bell next to hamburger --}}
         <div class="flex items-center gap-2 lg:hidden">
@@ -77,6 +74,10 @@
                         @endforeach
 
                         <div class="my-2 border-t border-white/10"></div>
+
+                        <div class="px-2 py-1">
+                            <x-locale-toggle class="w-full justify-start rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white" />
+                        </div>
 
                         <a href="{{ route('home') }}" wire:navigate
                             @click="open = false"
@@ -126,6 +127,8 @@
             <livewire:notification-bell />
 
             <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse">
+                <x-locale-toggle class="!rounded-full !px-3 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white" icon-size="sm" />
+
                 <x-ui::navbar.item :href="route('home')" icon="arrow-left" class="!rounded-full !px-4 !py-2 !text-zinc-300 hover:!bg-white/10 hover:!text-white">
                     {{ __('Back to site') }}
                 </x-ui::navbar.item>

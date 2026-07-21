@@ -25,19 +25,13 @@
 
         {{-- Page header --}}
         <div class="mb-10 text-center">
-            <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">
-                AI Powered
-            </div>
-            <h1 class="mb-3 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-                CV <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">Evaluator</span>
+            <div class="mb-4 inline-flex items-center rounded-full border border-emerald-400/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.22em] text-emerald-300">{{ __("AI Powered") }}</div>
+            <h1 class="mb-3 text-3xl font-bold text-white md:text-4xl lg:text-5xl">{{ __("CV") }}<span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">{{ __("Evaluator") }}</span>
             </h1>
-            <p class="mx-auto max-w-lg text-base text-zinc-400">
-                Upload your CV and get an instant AI-powered score across 10 key criteria with actionable feedback.
-            </p>
+            <p class="mx-auto max-w-lg text-base text-zinc-400">Upload your CV and get an instant AI-powered score across 10 key criteria with actionable feedback.</p>
             <div class="mt-4">
                 <a href="{{ route('evaluations.history') }}" wire:navigate class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
-                    <x-ui::icon name="clock" class="h-4 w-4" /> View Evaluation History
-                </a>
+                    <x-ui::icon name="clock" class="h-4 w-4" />{{ __("View Evaluation History") }}</a>
             </div>
         </div>
 
@@ -47,13 +41,9 @@
                 {{-- Mode toggle --}}
                 <div class="mb-6 flex w-fit rounded-full border border-white/10 bg-white/5 p-1">
                     <button wire:click="$set('inputMode','upload')"
-                        class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 {{ $inputMode === 'upload' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-white' }}">
-                        Upload File
-                    </button>
+                        class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 {{ $inputMode === 'upload' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-white' }}">{{ __("Upload File") }}</button>
                     <button wire:click="$set('inputMode','paste')"
-                        class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 {{ $inputMode === 'paste' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-white' }}">
-                        Paste Text
-                    </button>
+                        class="rounded-full px-5 py-2 text-sm font-medium transition-all duration-200 {{ $inputMode === 'paste' ? 'bg-white/10 text-white shadow' : 'text-zinc-400 hover:text-white' }}">{{ __("Paste Text") }}</button>
                 </div>
 
                 @if($inputMode === 'upload')
@@ -65,8 +55,8 @@
                             <x-ui::icon name="upload" class="h-8 w-8 text-zinc-400 group-hover:text-emerald-300" />
                         </div>
                         <div>
-                            <p class="mb-1 text-base font-semibold text-white">Drag & drop your CV here</p>
-                            <p class="text-sm text-zinc-500">or <span class="text-emerald-400">browse files</span> — PDF, DOC, DOCX, TXT up to 5 MB</p>
+                            <p class="mb-1 text-base font-semibold text-white">{{ __("Drag & drop your CV here") }}</p>
+                            <p class="text-sm text-zinc-500">{{ __("or") }}<span class="text-emerald-400">{{ __("browse files") }}</span>{{ __("— PDF, DOC, DOCX, TXT up to 5 MB") }}</p>
                         </div>
                         <input id="cv-upload" type="file" class="sr-only" wire:model="uploadedFile" accept=".pdf,.doc,.docx,.txt" />
                     </label>
@@ -106,8 +96,8 @@
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
                         </span>
-                        <span wire:loading.remove wire:target="evaluate">Evaluate My CV</span>
-                        <span wire:loading wire:target="evaluate">Evaluating…</span>
+                        <span wire:loading.remove wire:target="evaluate">{{ __("Evaluate My CV") }}</span>
+                        <span wire:loading wire:target="evaluate">{{ __("Evaluating…") }}</span>
                     </button>
                 </div>
             </div>
@@ -123,8 +113,8 @@
                 <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-500/10">
                     <x-ui::spinner size="lg" class="text-emerald-300" />
                 </div>
-                <h2 class="mb-3 text-xl font-bold text-white">Processing your CV…</h2>
-                <p class="text-sm text-zinc-400">Our AI is evaluating 10 key criteria. You can navigate away and come back later.</p>
+                <h2 class="mb-3 text-xl font-bold text-white">{{ __("Processing your CV…") }}</h2>
+                <p class="text-sm text-zinc-400">{{ __("Our AI is evaluating 10 key criteria. You can navigate away and come back later.") }}</p>
             </div>
         @endif
 
@@ -134,8 +124,8 @@
                 <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full border border-emerald-400/20 bg-emerald-500/10">
                     <x-ui::spinner size="lg" class="text-emerald-300" />
                 </div>
-                <h2 class="mb-3 text-xl font-bold text-white">Analysing your CV…</h2>
-                <p class="text-sm text-zinc-400">Our AI is evaluating 10 key criteria. This takes about 15–30 seconds.</p>
+                <h2 class="mb-3 text-xl font-bold text-white">{{ __("Analysing your CV…") }}</h2>
+                <p class="text-sm text-zinc-400">{{ __("Our AI is evaluating 10 key criteria. This takes about 15–30 seconds.") }}</p>
             </div>
         @endif
 
@@ -147,14 +137,13 @@
                         <x-ui::icon name="alert-triangle" class="h-6 w-6 text-red-400" />
                     </div>
                     <div class="flex-1">
-                        <h3 class="mb-1 font-semibold text-white">Evaluation Failed</h3>
+                        <h3 class="mb-1 font-semibold text-white">{{ __("Evaluation Failed") }}</h3>
                         <p class="text-sm text-zinc-400">{{ $errorMessage }}</p>
                     </div>
                 </div>
                 <div class="mt-6">
                     <button wire:click="restart" class="{{ $ghostBtn }}">
-                        <x-ui::icon name="refresh-cw" class="h-4 w-4" /> Try Again
-                    </button>
+                        <x-ui::icon name="refresh-cw" class="h-4 w-4" />{{ __("Try Again") }}</button>
                 </div>
             </div>
         @endif
@@ -169,28 +158,23 @@
                         <span class="text-xs font-semibold text-zinc-400">{{ $result['overall_score'] ?? 0 }}/100</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <h2 class="mb-2 text-2xl font-bold text-white">Your CV Score</h2>
+                        <h2 class="mb-2 text-2xl font-bold text-white">{{ __("Your CV Score") }}</h2>
                         <p class="leading-relaxed text-zinc-400">{{ $result['summary'] ?? '' }}</p>
 
                         {{-- Action buttons --}}
                         <div class="mt-4 flex flex-wrap gap-2">
                             @if($result['cv_id'] ?? null)
                                 <button wire:click="restart" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
-                                    <x-ui::icon name="upload" class="h-3.5 w-3.5" /> New CV
-                                </button>
+                                    <x-ui::icon name="upload" class="h-3.5 w-3.5" />{{ __("New CV") }}</button>
                                 <button wire:click="reevaluate({{ $result['cv_id'] }})" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
-                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" /> Re-evaluate
-                                </button>
+                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" />Re-evaluate</button>
                                 <a href="{{ route('cv.edit', $result['cv_id']) }}" wire:navigate class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500">
-                                    <x-ui::icon name="pencil" class="h-3.5 w-3.5" /> Edit CV
-                                </a>
+                                    <x-ui::icon name="pencil" class="h-3.5 w-3.5" />{{ __("Edit CV") }}</a>
                             @else
                                 <button wire:click="restart" class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white">
-                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" /> Evaluate Again
-                                </button>
+                                    <x-ui::icon name="refresh-cw" class="h-3.5 w-3.5" />{{ __("Evaluate Again") }}</button>
                                 <a href="{{ route('cv.builder') }}" wire:navigate class="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-3 py-1.5 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500">
-                                    <x-ui::icon name="plus" class="h-3.5 w-3.5" /> Build CV
-                                </a>
+                                    <x-ui::icon name="plus" class="h-3.5 w-3.5" />{{ __("Build CV") }}</a>
                             @endif
                         </div>
                     </div>
@@ -199,7 +183,7 @@
 
             {{-- Criteria breakdown --}}
             <div class="{{ $glassCard }} mb-6">
-                <h3 class="mb-6 text-lg font-bold text-white">Criteria Breakdown</h3>
+                <h3 class="mb-6 text-lg font-bold text-white">{{ __("Criteria Breakdown") }}</h3>
                 <div class="space-y-5">
                     @foreach($criteria as $key => $label)
                         @php
@@ -235,7 +219,7 @@
                         <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
                             <x-ui::icon name="check-circle" class="h-5 w-5 text-emerald-300" />
                         </div>
-                        <h3 class="font-bold text-white">Top Strengths</h3>
+                        <h3 class="font-bold text-white">{{ __("Top Strengths") }}</h3>
                     </div>
                     <ul class="space-y-3">
                         @foreach(($result['top_strengths'] ?? []) as $strength)
@@ -252,7 +236,7 @@
                         <div class="flex h-10 w-10 items-center justify-center rounded-2xl border border-amber-400/20 bg-amber-500/10">
                             <x-ui::icon name="alert-triangle" class="h-5 w-5 text-amber-300" />
                         </div>
-                        <h3 class="font-bold text-white">Critical Improvements</h3>
+                        <h3 class="font-bold text-white">{{ __("Critical Improvements") }}</h3>
                     </div>
                     <ul class="space-y-3">
                         @foreach(($result['critical_improvements'] ?? []) as $improvement)
@@ -271,14 +255,13 @@
         <div class="mt-10 {{ $glassCard }}">
             <div class="mb-6 flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-bold text-white">Evaluation History</h3>
-                    <p class="text-sm text-zinc-500">Select two evaluations to compare scores</p>
+                    <h3 class="text-lg font-bold text-white">{{ __("Evaluation History") }}</h3>
+                    <p class="text-sm text-zinc-500">{{ __("Select two evaluations to compare scores") }}</p>
                 </div>
                 @if(count($selectedEvaluationIds) > 0)
                     <button wire:click="clearSelection"
                         class="{{ $ghostBtn }} text-xs">
-                        <x-ui::icon name="x" class="h-3 w-3" /> Clear Selection
-                    </button>
+                        <x-ui::icon name="x" class="h-3 w-3" />{{ __("Clear Selection") }}</button>
                 @endif
             </div>
 
@@ -360,8 +343,8 @@
         <div class="mt-6 {{ $glassCard }}" wire:key="comparison-{{ implode('-', $selectedEvaluationIds) }}">
             <div class="mb-6 flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-bold text-white">Comparison</h3>
-                    <p class="text-sm text-zinc-500">Score differences between the two selected evaluations</p>
+                    <h3 class="text-lg font-bold text-white">{{ __("Comparison") }}</h3>
+                    <p class="text-sm text-zinc-500">{{ __("Score differences between the two selected evaluations") }}</p>
                 </div>
             </div>
 
@@ -396,7 +379,7 @@
                             @if($overallDiff > 0)+@endif{{ $overallDiff }}
                         </span>
                     </div>
-                    <p class="mt-1 text-xs text-zinc-500">overall change</p>
+                    <p class="mt-1 text-xs text-zinc-500">{{ __("overall change") }}</p>
                 </div>
 
                 {{-- Eval B --}}

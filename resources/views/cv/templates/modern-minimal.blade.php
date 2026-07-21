@@ -39,7 +39,7 @@
             @case('experience')
                 @if($cv->experiences->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Experience</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Experience') }} </h2>
                         @foreach($cv->experiences as $exp)
                             <div class="mb-6">
                                 <div class="flex justify-between items-start mb-1">
@@ -57,7 +57,7 @@
             @case('skills')
                 @if($cv->skills->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Skills</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Skills') }} </h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($cv->skills as $skill)
                                 <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $skill->name }}</span>
@@ -70,7 +70,7 @@
             @case('education')
                 @if($cv->educations->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Education</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Education') }} </h2>
                         @foreach($cv->educations as $edu)
                             <div class="mb-2">
                                 <div class="font-medium">{{ $edu->institution }}</div>
@@ -84,7 +84,7 @@
             @case('certifications')
                 @if($cv->certifications->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Certifications</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Certifications') }} </h2>
                         <div class="space-y-1">
                             @foreach($cv->certifications as $cert)
                                 <div class="text-sm">
@@ -100,7 +100,7 @@
             @case('projects')
                 @if($cv->projects->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Projects</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Projects') }} </h2>
                         @foreach($cv->projects as $project)
                             <div class="mb-4">
                                 <h3 class="font-semibold">{{ $project->name }}</h3>
@@ -123,10 +123,10 @@
             @case('languages')
                 @if($cv->languages->count() > 0)
                     <section class="mb-8">
-                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">Languages</h2>
+                        <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4"> {{ __('Languages') }} </h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($cv->languages as $lang)
-                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $lang->language }} <span class="text-gray-500">{{ ucfirst($lang->proficiency) }}</span></span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">{{ $lang->language }} <span class="text-gray-500">{{ ucfirst(__($lang->proficiency)) }}</span></span>
                             @endforeach
                         </div>
                     </section>

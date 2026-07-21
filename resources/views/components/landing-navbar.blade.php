@@ -33,33 +33,23 @@
             <a href="#home"
                 @click.prevent="scrollToSection('home')"
                 class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
-                :class="activeSection === '#home' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
-                Home
-            </a>
+                :class="activeSection === '#home' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">{{ __("Home") }}</a>
             <a href="#features"
                 @click.prevent="scrollToSection('features')"
                 class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
-                :class="activeSection === '#features' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
-                Features
-            </a>
+                :class="activeSection === '#features' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">{{ __("Features") }}</a>
             <a href="#about"
                 @click.prevent="scrollToSection('about')"
                 class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
-                :class="activeSection === '#about' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
-                About
-            </a>
+                :class="activeSection === '#about' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">{{ __("About") }}</a>
             <a href="#pricing"
                 @click.prevent="scrollToSection('pricing')"
                 class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
-                :class="activeSection === '#pricing' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
-                Pricing
-            </a>
+                :class="activeSection === '#pricing' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">{{ __("Pricing") }}</a>
             <a href="#faq"
                 @click.prevent="scrollToSection('faq')"
                 class="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors !rounded-full !px-4 !py-2"
-                :class="activeSection === '#faq' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">
-                FAQ
-            </a>
+                :class="activeSection === '#faq' ? '!bg-white/10 !text-white shadow-lg shadow-emerald-500/10' : '!text-zinc-400 hover:!bg-white/10 hover:!text-white'">{{ __("FAQ") }}</a>
         </div>
 
         <div class="flex-1"></div>
@@ -113,36 +103,29 @@
                     <a href="#home" @click.prevent="scrollToSection('home')"
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                         :class="activeSection === '#home' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-                        Home
-                    </a>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>{{ __("Home") }}</a>
                     <a href="#features" @click.prevent="scrollToSection('features')"
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                         :class="activeSection === '#features' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/></svg>
-                        Features
-                    </a>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z"/></svg>{{ __("Features") }}</a>
                     <a href="#about" @click.prevent="scrollToSection('about')"
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                         :class="activeSection === '#about' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
-                        About
-                    </a>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>{{ __("About") }}</a>
                     <a href="#pricing" @click.prevent="scrollToSection('pricing')"
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                         :class="activeSection === '#pricing' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>
-                        Pricing
-                    </a>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z"/></svg>{{ __("Pricing") }}</a>
                     <a href="#faq" @click.prevent="scrollToSection('faq')"
                         class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors"
                         :class="activeSection === '#faq' ? 'bg-white/10 text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"/></svg>
-                        FAQ
-                    </a>
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"/></svg>{{ __("FAQ") }}</a>
 
                     {{-- Mobile auth items --}}
                     <div class="my-2 border-t border-white/10"></div>
+                    <div class="px-2 py-1">
+                        <x-locale-toggle class="w-full justify-start rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white" />
+                    </div>
                     @guest
                         <a href="{{ route('login') }}" class="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-zinc-400 hover:bg-white/10 hover:text-white transition-colors">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
@@ -188,6 +171,7 @@
 
         {{-- Desktop auth items --}}
         <x-ui::navbar class="me-1.5 items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl rtl:space-x-reverse max-lg:hidden">
+            <x-locale-toggle class="!rounded-full !px-3 !py-2 !text-zinc-400 hover:!bg-white/10 hover:!text-white" icon-size="sm" />
             @guest
                 <x-ui::navbar.item :href="route('login')" icon="log-in" class="!rounded-full !px-4 !py-2 !text-zinc-400 hover:!bg-white/10 hover:!text-white">
                     {{ __('Login') }}

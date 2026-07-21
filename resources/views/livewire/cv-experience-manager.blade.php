@@ -13,17 +13,15 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-                <x-ui::heading size="lg" class="text-white">Work Experience</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Add your professional journey</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Work Experience") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Add your professional journey") }}</p>
             </div>
             <x-ui::button
                 wire:click="addExperience"
                 variant="primary"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Experience
-            </x-ui::button>
+            >{{ __("Add Experience") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -65,10 +63,10 @@
                 </div>
 
                 <x-ui::textarea wire:model.live.debounce.200ms="form.description" label="Description" placeholder="Describe your role, responsibilities, and achievements..." rows="4" required :error="$errors->first('form.description')" class="{{ $fieldClasses }} {{ $errors->has('form.description') ? $errorFieldClasses : '' }}" />
-                <x-ui::description class="text-zinc-400">Use action verbs and include quantifiable achievements when possible</x-ui::description>
+                <x-ui::description class="text-zinc-400">{{ __("Use action verbs and include quantifiable achievements when possible") }}</x-ui::description>
 
                 <div>
-                    <x-ui::label class="mb-3 block text-zinc-200">Key Skills & Technologies Used</x-ui::label>
+                    <x-ui::label class="mb-3 block text-zinc-200">{{ __("Key Skills & Technologies Used") }}</x-ui::label>
                     <div class="flex flex-wrap gap-2">
                         @foreach($commonSkills as $skill)
                             <label class="cursor-pointer">
@@ -87,7 +85,7 @@
                 </div>
 
                 <div>
-                    <x-ui::label class="mb-3 block text-zinc-200">Key Achievements</x-ui::label>
+                    <x-ui::label class="mb-3 block text-zinc-200">{{ __("Key Achievements") }}</x-ui::label>
                     @foreach($form['achievements'] as $index => $achievement)
                         <div class="flex items-center gap-2 mb-2">
                             <div class="flex-1">
@@ -100,9 +98,7 @@
                             <x-ui::button type="button" variant="ghost" size="icon" wire:click="removeAchievement({{ $index }})" icon="x" class="{{ $ghostButtonClasses }} shrink-0" aria-label="Remove achievement" />
                         </div>
                     @endforeach
-                    <x-ui::button type="button" variant="ghost" size="sm" wire:click="addAchievement" icon="plus" class="{{ $ghostButtonClasses }} mt-2">
-                        Add Achievement
-                    </x-ui::button>
+                    <x-ui::button type="button" variant="ghost" size="sm" wire:click="addAchievement" icon="plus" class="{{ $ghostButtonClasses }} mt-2">{{ __("Add Achievement") }}</x-ui::button>
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-end gap-3 border-t border-white/10 pt-4">
@@ -110,13 +106,11 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">
-                        Add Experience
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">{{ __("Add Experience") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
@@ -145,7 +139,7 @@
                                             {{ \Carbon\Carbon::parse($experience['start_date'])->format('M Y') }} -
                                             {{ $experience['is_current'] ? 'Present' : \Carbon\Carbon::parse($experience['end_date'])->format('M Y') }}
                                             @if($experience['location'])
-                                                <span class="mx-2">&bull;</span>
+                                                <span class="mx-2">{{ __("&bull;") }}</span>
                                                 <x-ui::icon name="map-pin" class="w-4 h-4 inline" />
                                                 {{ $experience['location'] }}
                                             @endif
@@ -171,9 +165,7 @@
 
                                 @if(!empty($experience['achievements']) && collect($experience['achievements'])->filter()->count() > 0)
                                     <div class="mt-3 border-t border-white/10 pt-3">
-                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-                                            Key Achievements
-                                        </p>
+                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-zinc-400">{{ __("Key Achievements") }}</p>
                                         <ul class="space-y-1">
                                             @foreach(collect($experience['achievements'])->filter() as $achievement)
                                                 <li class="flex items-start gap-2 text-sm text-zinc-300">
@@ -188,18 +180,18 @@
 
                             <div class="flex lg:flex-col gap-2 lg:shrink-0">
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $experience['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Up</span>
+                                    <span class="sr-only">{{ __("Move Up") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $experience['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Down</span>
+                                    <span class="sr-only">{{ __("Move Down") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="editExperience({{ $experience['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only lg:not-sr-only">Edit</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Edit") }}</span>
                                 </x-ui::button>
                                 <button type="button" @click="confirmAction({title: 'Delete this experience?', message: 'This cannot be undone.', method: 'deleteExperience', params: [{{ $experience['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                                     class="inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-1 text-sm text-red-300 transition flex-1 border border-red-400/20 bg-red-500/10 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
                                     <x-ui::icon name="trash-2" class="h-4 w-4" />
-                                    <span class="sr-only lg:not-sr-only">Delete</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Delete") }}</span>
                                 </button>
                             </div>
                         </div>
@@ -210,11 +202,9 @@
                     <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/60">
                         <x-ui::icon name="briefcase" class="w-8 h-8 text-emerald-300" />
                     </div>
-                    <x-ui::heading size="md" class="mb-2 text-white">No Experience Added Yet</x-ui::heading>
-                    <p class="mb-4 text-sm text-zinc-400">Start building your professional history</p>
-                    <x-ui::button wire:click="addExperience" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">
-                        Add Your First Experience
-                    </x-ui::button>
+                    <x-ui::heading size="md" class="mb-2 text-white">{{ __("No Experience Added Yet") }}</x-ui::heading>
+                    <p class="mb-4 text-sm text-zinc-400">{{ __("Start building your professional history") }}</p>
+                    <x-ui::button wire:click="addExperience" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">{{ __("Add Your First Experience") }}</x-ui::button>
                 </div>
             @endforelse
         </div>

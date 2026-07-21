@@ -9,13 +9,11 @@
     {{-- Page header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Interview History</h1>
-            <p class="mt-1 text-sm text-zinc-400">View your past mock interviews and results.</p>
+            <h1 class="text-2xl font-bold text-white">{{ __("Interview History") }}</h1>
+            <p class="mt-1 text-sm text-zinc-400">{{ __("View your past mock interviews and results.") }}</p>
         </div>
         <a href="{{ route('ai.interview') }}" wire:navigate class="{{ $primaryBtn }}">
-            <svg class="-ml-1 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-            New Interview
-        </a>
+            <svg class="-ml-1 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>{{ __("New Interview") }}</a>
     </div>
 
     {{-- Filter bar --}}
@@ -55,25 +53,20 @@
                     wire:click="setSortBy('highest-score')"
                     class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-zinc-300 transition-colors
                         {{ $sortBy === 'highest-score' ? 'bg-emerald-600 text-white' : 'hover:bg-white/10 hover:text-white' }}"
-                >
-                    Top Score
-                </button>
+                >{{ __("Top Score") }}</button>
             </div>
         </div>
     </div>
 
     {{-- Sessions list --}}
-    @if($sessions->isEmpty())
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
+    @if($sessions->isEmpty())<div class="rounded-2xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
             <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
                 <svg class="h-8 w-8 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
             </div>
-            <h3 class="mb-2 text-lg font-semibold text-white">No Interviews Yet</h3>
-            <p class="mb-6 text-sm text-zinc-400">Complete your first mock interview to see your results here.</p>
+            <h3 class="mb-2 text-lg font-semibold text-white">{{ __("No Interviews Yet") }}</h3>
+            <p class="mb-6 text-sm text-zinc-400">{{ __("Complete your first mock interview to see your results here.") }}</p>
             <a href="{{ route('ai.interview') }}" wire:navigate class="{{ $primaryBtn }}">
-                <svg class="-ml-1 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                Start Interview
-            </a>
+                <svg class="-ml-1 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>{{ __("Start Interview") }}</a>
         </div>
     @else
         <div class="space-y-3">
@@ -119,7 +112,7 @@
                     {{-- Score bar --}}
                     <div class="hidden w-32 sm:block">
                         <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                            <span>Score</span>
+                            <span>{{ __("Score") }}</span>
                             <span>{{ $score }}/100</span>
                         </div>
                         <div class="h-2 overflow-hidden rounded-full bg-white/10">

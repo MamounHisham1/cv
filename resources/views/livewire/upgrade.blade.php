@@ -2,8 +2,8 @@
     <div class="mx-auto max-w-5xl px-6 py-12 lg:px-8">
         {{-- Header --}}
         <div class="mb-12 text-center">
-            <h1 class="text-3xl font-bold text-white sm:text-4xl">Upgrade Your Plan</h1>
-            <p class="mt-3 text-base text-zinc-400">Get more credits to build CVs, practice interviews, and unlock AI features.</p>
+            <h1 class="text-3xl font-bold text-white sm:text-4xl">{{ __("Upgrade Your Plan") }}</h1>
+            <p class="mt-3 text-base text-zinc-400">{{ __("Get more credits to build CVs, practice interviews, and unlock AI features.") }}</p>
             @if ($currentPlan !== 'free')
                 <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-300">
                     <div class="h-2 w-2 rounded-full bg-emerald-400"></div>
@@ -24,16 +24,13 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-amber-200">Waiting for payment</p>
-                            <p class="mt-0.5 text-xs text-zinc-400">
-                                Send <span class="font-mono text-zinc-300">{{ $pendingPaymentNumber }}</span> via Vodafone Cash to confirm.
+                            <p class="text-sm font-medium text-amber-200">{{ __("Waiting for payment") }}</p>
+                            <p class="mt-0.5 text-xs text-zinc-400">{{ __("Send") }}<span class="font-mono text-zinc-300">{{ $pendingPaymentNumber }}</span> via Vodafone Cash to confirm.
                                 We'll detect it automatically.
                             </p>
                         </div>
                     </div>
-                    <button wire:click="cancelPending" class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/5 hover:text-white">
-                        Cancel
-                    </button>
+                    <button wire:click="cancelPending" class="shrink-0 rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:bg-white/5 hover:text-white">{{ __("Cancel") }}</button>
                 </div>
                 <div x-data="{ poll: null }"
                     x-init="poll = setInterval(() => $wire.checkPaymentStatus(), 5000)"
@@ -45,7 +42,7 @@
 
         {{-- Plans Section --}}
         <div class="mb-16">
-            <h2 class="mb-6 text-lg font-semibold text-white">Plans</h2>
+            <h2 class="mb-6 text-lg font-semibold text-white">{{ __("Plans") }}</h2>
             <div class="grid gap-4 sm:grid-cols-2">
                 @foreach ($plans as $key => $plan)
                     @php
@@ -57,13 +54,13 @@
                             <h3 class="text-lg font-semibold text-white">{{ $plan['name'] }}</h3>
                             <div class="text-right">
                                 <span class="text-2xl font-bold text-white">{{ number_format($plan['price_egp']) }}</span>
-                                <span class="text-sm text-zinc-500">EGP/mo</span>
+                                <span class="text-sm text-zinc-500">{{ __("EGP/mo") }}</span>
                             </div>
                         </div>
                         <p class="mb-5 text-sm text-zinc-400">{{ $plan['description'] }}</p>
                         <div class="mb-5 flex items-baseline gap-2">
                             <span class="text-3xl font-bold text-white">{{ $plan['credits'] }}</span>
-                            <span class="text-sm text-zinc-500">credits/month</span>
+                            <span class="text-sm text-zinc-500">{{ __("credits/month") }}</span>
                         </div>
                         <button
                             wire:click="selectPlan('{{ $key }}')"
@@ -83,9 +80,9 @@
                             @endif
                         </button>
                         @if ($key === 'pro')
-                            <div class="mt-3 text-center text-xs text-zinc-500">3 EGP per credit</div>
+                            <div class="mt-3 text-center text-xs text-zinc-500">{{ __("3 EGP per credit") }}</div>
                         @elseif ($key === 'enterprise')
-                            <div class="mt-3 text-center text-xs text-emerald-400">2 EGP per credit</div>
+                            <div class="mt-3 text-center text-xs text-emerald-400">{{ __("2 EGP per credit") }}</div>
                         @endif
                     </div>
                 @endforeach
@@ -113,20 +110,18 @@
                         <div class="mb-1 text-sm font-medium text-zinc-400">{{ $topup['name'] }}</div>
                         <div class="mb-1 flex items-baseline gap-1.5">
                             <span class="text-3xl font-bold text-white">{{ $topup['credits'] }}</span>
-                            <span class="text-sm text-zinc-500">credits</span>
+                            <span class="text-sm text-zinc-500">{{ __("credits") }}</span>
                         </div>
                         <div class="mb-5 text-sm text-zinc-400">
                             {{ number_format($topup['price_egp']) }} EGP
-                            <span class="text-zinc-600 mx-1">&middot;</span>
+                            <span class="text-zinc-600 mx-1">{{ __("&middot;") }}</span>
                             <span class="text-zinc-500">{{ number_format($topup['price_egp'] / $topup['credits'], 1) }} EGP/credit</span>
                         </div>
                         <button
                             wire:click="selectTopup('{{ $key }}')"
                             @disabled($hasPending)
                             class="w-full rounded-lg bg-white/10 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/15 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Buy Credits
-                        </button>
+                        >{{ __("Buy Credits") }}</button>
                     </div>
                 @endforeach
             </div>
@@ -147,8 +142,8 @@
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
 
-                <h3 class="mb-1 text-lg font-semibold text-white">Confirm Payment</h3>
-                <p class="mb-5 text-sm text-zinc-400">Enter your Vodafone Cash phone number.</p>
+                <h3 class="mb-1 text-lg font-semibold text-white">{{ __("Confirm Payment") }}</h3>
+                <p class="mb-5 text-sm text-zinc-400">{{ __("Enter your Vodafone Cash phone number.") }}</p>
 
                 @if ($selectedPlan)
                     @php $item = $plans[$selectedPlan]; @endphp
@@ -171,7 +166,7 @@
                 @endif
 
                 <div class="mb-4">
-                    <label for="phone" class="mb-1.5 block text-sm font-medium text-zinc-300">Vodafone Cash Number</label>
+                    <label for="phone" class="mb-1.5 block text-sm font-medium text-zinc-300">{{ __("Vodafone Cash Number") }}</label>
                     <input
                         type="tel"
                         id="phone"
@@ -193,13 +188,11 @@
                     wire:loading.attr="disabled"
                     class="w-full rounded-lg bg-emerald-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
                 >
-                    <span wire:loading.remove wire:target="confirmPurchase">Send Payment Request</span>
-                    <span wire:loading wire:target="confirmPurchase">Creating payment...</span>
+                    <span wire:loading.remove wire:target="confirmPurchase">{{ __("Send Payment Request") }}</span>
+                    <span wire:loading wire:target="confirmPurchase">{{ __("Creating payment...") }}</span>
                 </button>
 
-                <p class="mt-3 text-center text-xs text-zinc-500">
-                    You'll receive an SMS from Vodafone Cash to confirm the transfer.
-                </p>
+                <p class="mt-3 text-center text-xs text-zinc-500">{{ __("You'll receive an SMS from Vodafone Cash to confirm the transfer.") }}</p>
             </div>
         </div>
     @endif

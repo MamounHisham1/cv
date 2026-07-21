@@ -76,7 +76,7 @@
                             <div class="flex-1 mr-4">
                                 <h4 class="text-sm font-medium text-white flex items-center gap-2">
                                     {{ trans('cookie-consent::texts.necessary_label') }}
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">Required</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">{{ __("Required") }}</span>
                                 </h4>
                                 <p class="text-xs text-zinc-400 mt-1">{{ trans('cookie-consent::texts.necessary_description') }}</p>
                             </div>

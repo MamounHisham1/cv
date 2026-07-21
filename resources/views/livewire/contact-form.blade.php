@@ -1,11 +1,9 @@
 @if ($sent)
     <div class="rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-6 text-center">
         <x-ui::icon name="check-circle" class="size-10 text-emerald-600 dark:text-emerald-400 mx-auto mb-3" variant="solid" />
-        <h3 class="text-lg font-semibold text-zinc-900 dark:text-white mb-1">Message Sent</h3>
-        <p class="text-sm text-zinc-600 dark:text-zinc-400">Thank you for reaching out. We will get back to you within 24 hours.</p>
-        <x-ui::button variant="ghost" size="sm" wire:click="$set('sent', false)" class="mt-4">
-            Send Another Message
-        </x-ui::button>
+        <h3 class="text-lg font-semibold text-zinc-900 dark:text-white mb-1">{{ __("Message Sent") }}</h3>
+        <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ __("Thank you for reaching out. We will get back to you within 24 hours.") }}</p>
+        <x-ui::button variant="ghost" size="sm" wire:click="$set('sent', false)" class="mt-4">{{ __("Send Another Message") }}</x-ui::button>
     </div>
 @else
     @php
@@ -72,8 +70,6 @@
             @enderror
         </div>
 
-        <x-ui::button type="submit" variant="primary" icon="send" class="w-full sm:w-auto" wire:loading.attr="disabled">
-            Send Message
-        </x-ui::button>
+        <x-ui::button type="submit" variant="primary" icon="send" class="w-full sm:w-auto" wire:loading.attr="disabled">{{ __("Send Message") }}</x-ui::button>
     </form>
 @endif

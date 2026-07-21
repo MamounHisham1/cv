@@ -13,8 +13,8 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <x-ui::heading size="lg" class="text-white">Education</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Showcase your academic background</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Education") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Showcase your academic background") }}</p>
             </div>
             <x-ui::button
                 wire:click="addEducation"
@@ -22,9 +22,7 @@
                 size="sm"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Education
-            </x-ui::button>
+            >{{ __("Add Education") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -123,13 +121,11 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        Add Education
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">{{ __("Add Education") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
@@ -161,7 +157,7 @@
                                             {{ \Carbon\Carbon::parse($education['start_date'])->format('M Y') }} -
                                             {{ $education['is_current'] ? 'Present' : \Carbon\Carbon::parse($education['end_date'])->format('M Y') }}
                                             @if($education['location'])
-                                                <span class="mx-2">&bull;</span>
+                                                <span class="mx-2">{{ __("&bull;") }}</span>
                                                 {{ $education['location'] }}
                                             @endif
                                         </p>
@@ -177,18 +173,18 @@
 
                             <div class="flex lg:flex-col gap-2 lg:shrink-0">
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $education['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Up</span>
+                                    <span class="sr-only">{{ __("Move Up") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $education['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only">Move Down</span>
+                                    <span class="sr-only">{{ __("Move Down") }}</span>
                                 </x-ui::button>
                                 <x-ui::button variant="ghost" size="sm" wire:click="editEducation({{ $education['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} flex-1 lg:flex-none">
-                                    <span class="sr-only lg:not-sr-only">Edit</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Edit") }}</span>
                                 </x-ui::button>
                                 <button type="button" @click="confirmAction({title: 'Delete this education?', message: 'This cannot be undone.', method: 'deleteEducation', params: [{{ $education['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                                     class="inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-1 text-sm text-red-300 transition flex-1 border border-red-400/20 bg-red-500/10 transition-all duration-300 hover:bg-red-500/15 hover:text-red-200 lg:flex-none">
                                     <x-ui::icon name="trash-2" class="h-4 w-4" />
-                                    <span class="sr-only lg:not-sr-only">Delete</span>
+                                    <span class="sr-only lg:not-sr-only">{{ __("Delete") }}</span>
                                 </button>
                             </div>
                         </div>
@@ -199,11 +195,9 @@
                     <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/60">
                         <x-ui::icon name="graduation-cap" class="w-8 h-8 text-emerald-300" />
                     </div>
-                    <x-ui::heading size="md" class="mb-2 text-white">No Education Added Yet</x-ui::heading>
-                    <p class="mb-4 text-sm text-zinc-400">Add your academic qualifications</p>
-                    <x-ui::button wire:click="addEducation" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">
-                        Add Your First Education
-                    </x-ui::button>
+                    <x-ui::heading size="md" class="mb-2 text-white">{{ __("No Education Added Yet") }}</x-ui::heading>
+                    <p class="mb-4 text-sm text-zinc-400">{{ __("Add your academic qualifications") }}</p>
+                    <x-ui::button wire:click="addEducation" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">{{ __("Add Your First Education") }}</x-ui::button>
                 </div>
             @endforelse
         </div>

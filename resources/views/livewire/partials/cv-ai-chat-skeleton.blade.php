@@ -29,7 +29,7 @@
         </div>
         <div class="flex items-center gap-2 text-xs text-zinc-500">
             <x-ui::icon name="sparkles" class="w-4 h-4 text-emerald-500" />
-            <span>Loading conversation…</span>
+            <span>{{ __("Loading conversation…") }}</span>
         </div>
     </div>
 

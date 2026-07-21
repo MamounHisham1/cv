@@ -34,17 +34,15 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <div>
-                <x-ui::heading size="lg" class="text-white">Skills</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Showcase your expertise</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Skills") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Showcase your expertise") }}</p>
             </div>
             <x-ui::button
                 wire:click="addSkill"
                 variant="primary"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Skill
-            </x-ui::button>
+            >{{ __("Add Skill") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -100,7 +98,7 @@
                     @click.away="if (!focused) open = false"
                     class="form-field"
                 >
-                    <label class="mb-1.5 block text-sm font-medium text-zinc-300">Category</label>
+                    <label class="mb-1.5 block text-sm font-medium text-zinc-300">{{ __("Category") }}</label>
                     <div class="relative">
                         <div class="relative">
                             <x-ui::icon name="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
@@ -148,7 +146,7 @@
                                             class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors"
                                         >
                                             <x-ui::icon name="plus" class="w-3.5 h-3.5 shrink-0" />
-                                            <span>Create "<span x-text="query"></span>"</span>
+                                            <span>{{ __('Create "') }}<span x-text="query"></span>"</span>
                                         </button>
                                     </div>
                                 </template>
@@ -166,19 +164,17 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">
-                        Add Skill
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" icon="check" class="{{ $primaryButtonClasses }}">{{ __("Add Skill") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
 
         <div class="mb-8">
-            <h4 class="mb-3 text-sm font-semibold text-zinc-200">Quick Add Common Skills</h4>
+            <h4 class="mb-3 text-sm font-semibold text-zinc-200">{{ __("Quick Add Common Skills") }}</h4>
             <div class="flex flex-wrap gap-2">
                 @foreach(array_slice($commonSkills, 0, 15) as $skill)
                     <button
@@ -222,10 +218,10 @@
                                         </div>
                                         <div class="flex items-center gap-1 transition-opacity duration-200">
                                             <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $skill['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }} shrink-0">
-                                                <span class="sr-only">Move Up</span>
+                                                <span class="sr-only">{{ __("Move Up") }}</span>
                                             </x-ui::button>
                                             <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $skill['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }} shrink-0">
-                                                <span class="sr-only">Move Down</span>
+                                                <span class="sr-only">{{ __("Move Down") }}</span>
                                             </x-ui::button>
                                             <x-ui::button variant="ghost" size="sm" wire:click="editSkill({{ $skill['id'] }})" icon="pencil" class="{{ $ghostButtonClasses }} shrink-0" />
                                             <button type="button" @click="confirmAction({title: 'Delete this skill?', message: 'This cannot be undone.', method: 'deleteSkill', params: [{{ $skill['id'] }}], source: $el, danger: true, confirmLabel: 'Delete'})"
@@ -247,11 +243,9 @@
                 <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/60">
                     <x-ui::icon name="zap" class="w-8 h-8 text-emerald-300" />
                 </div>
-                <x-ui::heading size="md" class="mb-2 text-white">No Skills Added Yet</x-ui::heading>
-                <p class="mb-4 text-sm text-zinc-400">Start showcasing your technical and soft skills</p>
-                <x-ui::button wire:click="addSkill" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">
-                    Add Your First Skill
-                </x-ui::button>
+                <x-ui::heading size="md" class="mb-2 text-white">{{ __("No Skills Added Yet") }}</x-ui::heading>
+                <p class="mb-4 text-sm text-zinc-400">{{ __("Start showcasing your technical and soft skills") }}</p>
+                <x-ui::button wire:click="addSkill" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">{{ __("Add Your First Skill") }}</x-ui::button>
             </div>
         @endif
     </x-ui::card>

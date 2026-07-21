@@ -1,14 +1,14 @@
 <div class="space-y-6">
     <div>
-        <h2 class="text-lg font-semibold text-zinc-100">Notification Preferences</h2>
-        <p class="text-sm text-zinc-400 mt-1">Manage how you receive notifications</p>
+        <h2 class="text-lg font-semibold text-zinc-100">{{ __("Notification Preferences") }}</h2>
+        <p class="text-sm text-zinc-400 mt-1">{{ __("Manage how you receive notifications") }}</p>
     </div>
 
     <div class="space-y-4">
         <div class="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3">
             <div>
-                <p class="text-sm font-medium text-zinc-100">Email Notifications</p>
-                <p class="text-xs text-zinc-400">Receive notifications via email</p>
+                <p class="text-sm font-medium text-zinc-100">{{ __("Email Notifications") }}</p>
+                <p class="text-xs text-zinc-400">{{ __("Receive notifications via email") }}</p>
             </div>
             <label class="relative inline-flex cursor-pointer items-center">
                 <input
@@ -22,8 +22,8 @@
 
         <div class="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3">
             <div>
-                <p class="text-sm font-medium text-zinc-100">Browser Push Notifications</p>
-                <p class="text-xs text-zinc-400">Receive push notifications in your browser</p>
+                <p class="text-sm font-medium text-zinc-100">{{ __("Browser Push Notifications") }}</p>
+                <p class="text-xs text-zinc-400">{{ __("Receive push notifications in your browser") }}</p>
             </div>
             <label class="relative inline-flex cursor-pointer items-center">
                 <input
@@ -37,14 +37,14 @@
     </div>
 
     <div class="space-y-4">
-        <h3 class="text-sm font-semibold text-zinc-300">Notification Types</h3>
+        <h3 class="text-sm font-semibold text-zinc-300">{{ __("Notification Types") }}</h3>
 
         <div class="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3">
             <div class="flex items-center gap-3">
                 <x-ui::icon name="check-circle" size="sm" class="text-emerald-400" />
                 <div>
-                    <p class="text-sm font-medium text-zinc-100">CV Evaluations</p>
-                    <p class="text-xs text-zinc-400">When your CV evaluation is complete</p>
+                    <p class="text-sm font-medium text-zinc-100">{{ __("CV Evaluations") }}</p>
+                    <p class="text-xs text-zinc-400">{{ __("When your CV evaluation is complete") }}</p>
                 </div>
             </div>
             <label class="relative inline-flex cursor-pointer items-center">
@@ -61,8 +61,8 @@
             <div class="flex items-center gap-3">
                 <x-ui::icon name="alert-triangle" size="sm" class="text-amber-400" />
                 <div>
-                    <p class="text-sm font-medium text-zinc-100">Low Credits</p>
-                    <p class="text-xs text-zinc-400">When your credits are running low</p>
+                    <p class="text-sm font-medium text-zinc-100">{{ __("Low Credits") }}</p>
+                    <p class="text-xs text-zinc-400">{{ __("When your credits are running low") }}</p>
                 </div>
             </div>
             <label class="relative inline-flex cursor-pointer items-center">
@@ -79,8 +79,8 @@
             <div class="flex items-center gap-3">
                 <x-ui::icon name="users" size="sm" class="text-blue-400" />
                 <div>
-                    <p class="text-sm font-medium text-zinc-100">Referrals</p>
-                    <p class="text-xs text-zinc-400">When someone joins using your referral</p>
+                    <p class="text-sm font-medium text-zinc-100">{{ __("Referrals") }}</p>
+                    <p class="text-xs text-zinc-400">{{ __("When someone joins using your referral") }}</p>
                 </div>
             </div>
             <label class="relative inline-flex cursor-pointer items-center">

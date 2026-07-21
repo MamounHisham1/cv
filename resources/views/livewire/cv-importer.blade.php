@@ -3,8 +3,8 @@
     @if($step === 'choose')
     <div>
         <div class="mb-6">
-            <h2 class="mb-2 text-2xl font-bold text-white">Pick a template</h2>
-            <p class="text-sm text-zinc-400">Choose a layout, then start from scratch or upload an existing CV</p>
+            <h2 class="mb-2 text-2xl font-bold text-white">{{ __("Pick a template") }}</h2>
+            <p class="text-sm text-zinc-400">{{ __("Choose a layout, then start from scratch or upload an existing CV") }}</p>
         </div>
 
         <div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
@@ -39,16 +39,12 @@
                 wire:click="startFromScratch"
                 class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500"
             >
-                <x-ui::icon name="pencil" class="h-4 w-4" />
-                Start from Scratch
-            </button>
+                <x-ui::icon name="pencil" class="h-4 w-4" />{{ __("Start from Scratch") }}</button>
             <button
                 wire:click="showUpload"
                 class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-semibold text-zinc-300 transition-all duration-300 hover:bg-white/10 hover:text-white"
             >
-                <x-ui::icon name="upload" class="h-4 w-4" />
-                Upload Existing CV
-            </button>
+                <x-ui::icon name="upload" class="h-4 w-4" />{{ __("Upload Existing CV") }}</button>
         </div>
     </div>
     @endif
@@ -57,13 +53,11 @@
     @if($step === 'upload')
     <div @if($importStage === 'extracting') wire:poll.2s="checkExtractionStatus" @endif>
         <button wire:click="showChoose" class="mb-6 inline-flex items-center gap-2 text-sm text-zinc-400 transition-colors hover:text-white">
-            <x-ui::icon name="arrow-left" class="h-4 w-4" />
-            Back to templates
-        </button>
+            <x-ui::icon name="arrow-left" class="h-4 w-4" />{{ __("Back to templates") }}</button>
 
         <div class="mb-6">
-            <h2 class="mb-2 text-2xl font-bold text-white">Upload your CV</h2>
-            <p class="text-sm text-zinc-400">We'll extract your information and fill in the fields automatically</p>
+            <h2 class="mb-2 text-2xl font-bold text-white">{{ __("Upload your CV") }}</h2>
+            <p class="text-sm text-zinc-400">{{ __("We'll extract your information and fill in the fields automatically") }}</p>
         </div>
 
         @if($errorMessage)
@@ -82,12 +76,10 @@
                 <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-white/5">
                     <x-ui::icon name="upload-cloud" class="h-8 w-8 text-zinc-400" />
                 </div>
-                <p class="mb-1 text-sm font-medium text-white">Drag & drop your CV here</p>
-                <p class="mb-4 text-xs text-zinc-500">PDF, DOC, DOCX, or TXT up to 5MB</p>
+                <p class="mb-1 text-sm font-medium text-white">{{ __("Drag & drop your CV here") }}</p>
+                <p class="mb-4 text-xs text-zinc-500">{{ __("PDF, DOC, DOCX, or TXT up to 5MB") }}</p>
                 <label class="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-zinc-300 transition-all duration-200 hover:bg-white/10 hover:text-white">
-                    <x-ui::icon name="folder-open" class="h-4 w-4" />
-                    Browse Files
-                    <input type="file" wire:model="uploadedFile" class="hidden" accept=".pdf,.doc,.docx,.txt" />
+                    <x-ui::icon name="folder-open" class="h-4 w-4" />{{ __("Browse Files") }}<input type="file" wire:model="uploadedFile" class="hidden" accept=".pdf,.doc,.docx,.txt" />
                 </label>
             </div>
         </div>
@@ -118,12 +110,10 @@
                     <span wire:loading wire:target="importCv">
                         <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
                     </span>
-                    <span wire:loading.remove wire:target="importCv">Import & Continue</span>
-                    <span wire:loading wire:target="importCv">Processing your CV...</span>
+                    <span wire:loading.remove wire:target="importCv">{{ __("Import & Continue") }}</span>
+                    <span wire:loading wire:target="importCv">{{ __("Processing your CV...") }}</span>
                 </button>
-                <button wire:click="showChoose" class="rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white">
-                    Cancel
-                </button>
+                <button wire:click="showChoose" class="rounded-xl border border-white/10 bg-white/5 px-6 py-3.5 text-sm font-medium text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white">{{ __("Cancel") }}</button>
             </div>
         @endif
     </div>

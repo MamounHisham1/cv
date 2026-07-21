@@ -26,15 +26,11 @@
                 <div class="max-w-3xl mx-auto text-center">
                     {{-- Badge --}}
                     <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-semibold px-5 py-2.5 rounded-full mb-8 border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-300">
-                        <x-ui::icon name="sparkles" size="sm" class="animate-pulse" />
-                        AI-Powered Resume Building
-                    </div>
+                        <x-ui::icon name="sparkles" size="sm" class="animate-pulse" />AI-Powered Resume Building</div>
 
                     {{-- Main Heading --}}
-                    <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-                        Build Your Perfect CV
-                        <span class="relative inline-block mt-2">
-                            <span class="relative z-10">with AI</span>
+                    <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">{{ __("Build Your Perfect CV") }}<span class="relative inline-block mt-2">
+                            <span class="relative z-10">{{ __("with AI") }}</span>
                             <svg class="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M2 8C50 2 150 2 198 8" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round"/>
                             </svg>
@@ -42,34 +38,22 @@
                     </h1>
 
                     {{-- Subtitle --}}
-                    <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 leading-relaxed mb-10 max-w-2xl mx-auto">
-                        Create professional, ATS-optimized resumes in minutes. Our AI analyzes job descriptions and tailors your CV to maximize your chances of landing interviews.
-                    </p>
+                    <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 leading-relaxed mb-10 max-w-2xl mx-auto">Create professional, ATS-optimized resumes in minutes. Our AI analyzes job descriptions and tailors your CV to maximize your chances of landing interviews.</p>
 
                     {{-- CTA Buttons --}}
                     <div class="animate-slide-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <x-ui::button variant="primary" :href="route('cv.builder')" icon="arrow-right" class="bg-white text-emerald-700 hover:bg-emerald-50 shadow-2xl shadow-emerald-900/30 w-full sm:w-auto hover:shadow-emerald-900/50 hover:-translate-y-1 transition-all duration-300 text-base px-8 py-3">
-                            Get Started Free
-                        </x-ui::button>
-                        <x-ui::button variant="ghost" href="#features" icon="graduation-cap" class="text-white hover:bg-white/15 border-2 border-white/30 w-full sm:w-auto hover:-translate-y-1 transition-all duration-300 text-base px-8 py-3">
-                            Learn More
-                        </x-ui::button>
+                        <x-ui::button variant="primary" :href="route('cv.builder')" icon="arrow-right" class="bg-white text-emerald-700 hover:bg-emerald-50 shadow-2xl shadow-emerald-900/30 w-full sm:w-auto hover:shadow-emerald-900/50 hover:-translate-y-1 transition-all duration-300 text-base px-8 py-3">{{ __("Get Started Free") }}</x-ui::button>
+                        <x-ui::button variant="ghost" href="#features" icon="graduation-cap" class="text-white hover:bg-white/15 border-2 border-white/30 w-full sm:w-auto hover:-translate-y-1 transition-all duration-300 text-base px-8 py-3">{{ __("Learn More") }}</x-ui::button>
                     </div>
 
                     {{-- Trust Indicators --}}
                     <div class="animate-fade-in delay-500 mt-16 flex flex-wrap items-center justify-center gap-6 text-white/90 text-sm">
                         <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                            <x-ui::icon name="check-circle" size="sm" class="text-emerald-300" />
-                            Free to start
-                        </div>
+                            <x-ui::icon name="check-circle" size="sm" class="text-emerald-300" />{{ __("Free to start") }}</div>
                         <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                            <x-ui::icon name="zap" size="sm" class="text-yellow-300" />
-                            AI-powered
-                        </div>
+                            <x-ui::icon name="zap" size="sm" class="text-yellow-300" />AI-powered</div>
                         <div class="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                            <x-ui::icon name="shield-check" size="sm" class="text-blue-300" />
-                            ATS-friendly
-                        </div>
+                            <x-ui::icon name="shield-check" size="sm" class="text-blue-300" />ATS-friendly</div>
                     </div>
                 </div>
             </div>
@@ -87,15 +71,9 @@
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm font-semibold px-4 py-2 rounded-full mb-6">
-                        <x-ui::icon name="sparkles" size="sm" />
-                        Features
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">
-                        Everything You Need to Land Your Dream Job
-                    </h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">
-                        Our comprehensive toolkit helps you create, optimize, and manage professional resumes with ease.
-                    </p>
+                        <x-ui::icon name="sparkles" size="sm" />{{ __("Features") }}</div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Everything You Need to Land Your Dream Job") }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __("Our comprehensive toolkit helps you create, optimize, and manage professional resumes with ease.") }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -130,15 +108,9 @@
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-semibold px-4 py-2 rounded-full mb-6">
-                        <x-ui::icon name="bolt" size="sm" />
-                        How It Works
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">
-                        Three Simple Steps to Your Perfect CV
-                    </h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">
-                        Creating a professional resume has never been easier. Our streamlined process gets you from zero to polished in minutes.
-                    </p>
+                        <x-ui::icon name="bolt" size="sm" />{{ __("How It Works") }}</div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Three Simple Steps to Your Perfect CV") }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __("Creating a professional resume has never been easier. Our streamlined process gets you from zero to polished in minutes.") }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
@@ -197,15 +169,9 @@
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-sm font-semibold px-4 py-2 rounded-full mb-6">
-                        <x-ui::icon name="chat-bubble-left-right" size="sm" />
-                        Testimonials
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">
-                        Trusted by Professionals Worldwide
-                    </h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">
-                        Hear from people who landed their dream jobs using SeratyAI.
-                    </p>
+                        <x-ui::icon name="chat-bubble-left-right" size="sm" />{{ __("Testimonials") }}</div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Trusted by Professionals Worldwide") }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __("Hear from people who landed their dream jobs using SeratyAI.") }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
@@ -252,15 +218,9 @@
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-semibold px-4 py-2 rounded-full mb-6">
-                        <x-ui::icon name="currency-dollar" size="sm" />
-                        Pricing
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">
-                        Simple, Transparent Pricing
-                    </h2>
-                    <p class="text-lg text-zinc-600 dark:text-zinc-400">
-                        Start free and upgrade when you need more. No hidden fees, cancel anytime.
-                    </p>
+                        <x-ui::icon name="currency-dollar" size="sm" />{{ __("Pricing") }}</div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Simple, Transparent Pricing") }}</h2>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">{{ __("Start free and upgrade when you need more. No hidden fees, cancel anytime.") }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
@@ -323,7 +283,7 @@
                     <x-ui::card class="{{ $plan['popular'] ? 'ring-2 ring-' . $plan['color'] . '-500 relative scale-105 shadow-2xl shadow-' . $plan['color'] . '-500/20' : '' }} hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                         @if($plan['popular'])
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-                            <span class="bg-{{ $plan['color'] }}-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">Most Popular</span>
+                            <span class="bg-{{ $plan['color'] }}-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">{{ __("Most Popular") }}</span>
                         </div>
                         @endif
                         <div class="p-6 lg:p-8 flex flex-col flex-1">
@@ -364,15 +324,9 @@
             <div class="absolute bottom-20 right-1/4 w-2 h-2 bg-emerald-200 rounded-full animate-float-reverse opacity-40" style="animation-delay: 1.5s;"></div>
 
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8 py-20 lg:py-28 text-center">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">
-                    Ready to Stand Out?
-                </h2>
-                <p class="text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto mb-10 leading-relaxed">
-                    Join thousands of professionals who have already transformed their job search. Your next career move starts with a great CV.
-                </p>
-                <x-ui::button variant="primary" :href="route('register')" icon="arrow-right" size="lg" class="bg-white text-emerald-700 hover:bg-emerald-50 shadow-2xl shadow-emerald-900/40 hover:shadow-emerald-900/60 hover:-translate-y-1 transition-all duration-300 px-10 py-4 text-base">
-                    Create Your CV Now
-                </x-ui::button>
+                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-6 leading-tight">{{ __("Ready to Stand Out?") }}</h2>
+                <p class="text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto mb-10 leading-relaxed">{{ __("Join thousands of professionals who have already transformed their job search. Your next career move starts with a great CV.") }}</p>
+                <x-ui::button variant="primary" :href="route('register')" icon="arrow-right" size="lg" class="bg-white text-emerald-700 hover:bg-emerald-50 shadow-2xl shadow-emerald-900/40 hover:shadow-emerald-900/60 hover:-translate-y-1 transition-all duration-300 px-10 py-4 text-base">{{ __("Create Your CV Now") }}</x-ui::button>
             </div>
         </section>
     </main>

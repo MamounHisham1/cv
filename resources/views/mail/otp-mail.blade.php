@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Verification Code</title>
+    <title>{{ __("Your Verification Code") }}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f4f5; font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 40px 20px;">
@@ -22,12 +22,8 @@
                     <!-- Greeting -->
                     <tr>
                         <td style="padding: 20px 40px;">
-                            <p style="margin: 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">
-                                Hello,
-                            </p>
-                            <p style="margin: 12px 0 0 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">
-                                Use the following code to verify your email address:
-                            </p>
+                            <p style="margin: 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">{{ __("Hello,") }}</p>
+                            <p style="margin: 12px 0 0 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">{{ __("Use the following code to verify your email address:") }}</p>
                         </td>
                     </tr>
 
@@ -45,8 +41,7 @@
                     <!-- Expiry Notice -->
                     <tr>
                         <td style="padding: 0 40px 20px 40px;">
-                            <p style="margin: 0; font-size: 14px; color: #71717a; text-align: center;">
-                                This code will expire in <strong>{{ $expiresInMinutes }} minutes</strong>.
+                            <p style="margin: 0; font-size: 14px; color: #71717a; text-align: center;">{{ __("This code will expire in") }}<strong>{{ $expiresInMinutes }} minutes</strong>.
                             </p>
                         </td>
                     </tr>
@@ -62,17 +57,14 @@
                     <tr>
                         <td style="padding: 20px 40px;">
                             <p style="margin: 0; font-size: 13px; color: #a1a1aa; line-height: 1.6;">
-                                <strong style="color: #71717a;">Security tip:</strong> Never share this code with anyone. Our team will never ask for your verification code.
-                            </p>
+                                <strong style="color: #71717a;">{{ __("Security tip:") }}</strong>{{ __("Never share this code with anyone. Our team will never ask for your verification code.") }}</p>
                         </td>
                     </tr>
 
                     <!-- Footer -->
                     <tr>
                         <td style="padding: 20px 40px 40px 40px; text-align: center;">
-                            <p style="margin: 0; font-size: 12px; color: #a1a1aa;">
-                                If you didn't request this code, you can safely ignore this email.
-                            </p>
+                            <p style="margin: 0; font-size: 12px; color: #a1a1aa;">{{ __("If you didn't request this code, you can safely ignore this email.") }}</p>
                             <p style="margin: 12px 0 0 0; font-size: 12px; color: #a1a1aa;">
                                 &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
                             </p>

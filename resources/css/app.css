@@ -428,3 +428,31 @@
         transform: translateX(0);
     }
 }
+
+/* ----------------------------------------------------------------------------
+ * RTL (Arabic) support
+ * The <html dir="rtl"> attribute flips layout, but a handful of utilities
+ * that bake a physical direction into the class name (left/right, ml/mr,
+ * space-x, etc.) need a manual mirror under RTL. These aliases keep the
+ * markup declarative — authors write the LTR class as usual and we apply
+ * the flipped effect only when [dir="rtl"].
+ * -------------------------------------------------------------------------- */
+
+[dir="rtl"] body {
+    font-family: 'IBM Plex Sans Arabic', 'Tajawal', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Logical-space fallback: flip side-specific Tailwind utilities under RTL. */
+[dir="rtl"] .rtl\:flip-left { right: var(--tw-flip, auto); }
+[dir="rtl"] .rtl\:flip-right { left: var(--tw-flip, auto); }
+
+/* Mirror physical-position icons (chevrons, arrows) used for navigation. */
+[dir="rtl"] .rtl\:mirror {
+    transform: scaleX(-1);
+}
+
+/* Keep number/Latin segments readable inside RTL flow. */
+[dir="rtl"] .ltr-numerals {
+    direction: ltr;
+    unicode-bidi: embed;
+}

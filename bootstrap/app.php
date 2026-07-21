@@ -3,6 +3,7 @@
 use App\Http\Middleware\CaptureReferralCode;
 use App\Http\Middleware\EnsureOtpIsVerified;
 use App\Http\Middleware\Impersonate;
+use App\Http\Middleware\SetAppLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->web(append: [
+            SetAppLocale::class,
             Impersonate::class,
         ]);
 

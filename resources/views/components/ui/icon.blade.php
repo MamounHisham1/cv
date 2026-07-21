@@ -82,6 +82,8 @@ $heroiconMap = [
     'database' => 'circle-stack',
     'bell' => 'bell',
     'arrow-right-left' => 'arrows-right-left',
+    'languages' => 'language',
+    'language' => 'language',
 ];
 
 $heroiconName = $heroiconMap[$name] ?? $name;

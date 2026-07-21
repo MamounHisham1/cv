@@ -32,7 +32,7 @@
     >
         <div class="flex items-center gap-3 rounded-2xl border border-emerald-400/20 bg-zinc-950/90 px-5 py-3 text-white shadow-xl shadow-emerald-500/20 backdrop-blur-xl">
             <x-ui::icon name="check-circle" class="w-5 h-5 shrink-0" />
-            <span class="text-sm font-medium">CV updated by AI assistant</span>
+            <span class="text-sm font-medium">{{ __("CV updated by AI assistant") }}</span>
         </div>
     </div>
 
@@ -83,7 +83,7 @@
                 Welcome — Let's get started
             </div>
             <h1 class="mb-4 text-3xl font-bold text-white md:text-4xl lg:text-5xl">
-                Choose your <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">template</span>
+                Choose your <span class="bg-gradient-to-r from-emerald-400 to-emerald-300 bg-clip-text text-transparent">{{ __("template") }}</span>
             </h1>
             <p class="mx-auto max-w-xl text-base text-zinc-400">
                 Pick the layout that fits your career goals. You can always switch later.
@@ -404,7 +404,7 @@
                                 {{-- Amber sidebar with profile circle, dot skill indicators --}}
                                 <div class="flex h-full text-gray-900">
                                     <div class="w-[38%] bg-amber-50 p-3 flex flex-col items-center">
-                                        <div class="w-8 h-8 rounded-full bg-amber-200 mb-1.5 flex items-center justify-center text-xs font-bold text-amber-800">JD</div>
+                                        <div class="w-8 h-8 rounded-full bg-amber-200 mb-1.5 flex items-center justify-center text-xs font-bold text-amber-800">{{ __("JD") }}</div>
                                         <div class="h-1.5 w-12 rounded bg-gray-900 mb-0.5"></div>
                                         <div class="h-1 w-8 rounded bg-amber-400 mb-2"></div>
                                         <div class="w-full space-y-1 mb-2">
@@ -538,7 +538,7 @@
                         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-emerald-400/20 bg-emerald-500/10">
                             <x-ui::icon name="document-text" class="w-7 h-7 text-emerald-300" />
                         </div>
-                        <h2 class="text-xl font-bold text-white">How would you like to start?</h2>
+                        <h2 class="text-xl font-bold text-white">{{ __("How would you like to start?") }}</h2>
                         <p class="mt-1 text-sm text-zinc-400">Using the {{ $templates[$selectedTemplate]['name'] ?? '' }} template</p>
                     </div>
 
@@ -551,8 +551,8 @@
                                 <x-ui::icon name="pencil" class="w-5 h-5 text-emerald-300" />
                             </div>
                             <div>
-                                <div class="font-semibold text-white">Create from Scratch</div>
-                                <div class="text-xs text-zinc-400">Start with a blank CV and fill in your details</div>
+                                <div class="font-semibold text-white">{{ __("Create from Scratch") }}</div>
+                                <div class="text-xs text-zinc-400">{{ __("Start with a blank CV and fill in your details") }}</div>
                             </div>
                             <x-ui::icon name="chevron-right" class="ml-auto w-4 h-4 shrink-0 text-zinc-500" />
                         </button>
@@ -565,7 +565,7 @@
                                 <x-ui::icon name="upload" class="w-5 h-5 text-blue-300" />
                             </div>
                             <div>
-                                <div class="font-semibold text-white">Import Existing CV</div>
+                                <div class="font-semibold text-white">{{ __("Import Existing CV") }}</div>
                                 <div class="text-xs text-zinc-400">Upload a file and we'll fill in the forms for you</div>
                             </div>
                             <x-ui::icon name="chevron-right" class="ml-auto w-4 h-4 shrink-0 text-zinc-500" />
@@ -586,8 +586,8 @@
                         <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-blue-400/20 bg-blue-500/10">
                             <x-ui::icon name="upload" class="w-7 h-7 text-blue-300" />
                         </div>
-                        <h2 class="text-xl font-bold text-white">Import Your CV</h2>
-                        <p class="mt-1 text-sm text-zinc-400">Upload a PDF, DOCX, DOC, or TXT file</p>
+                        <h2 class="text-xl font-bold text-white">{{ __("Import Your CV") }}</h2>
+                        <p class="mt-1 text-sm text-zinc-400">{{ __("Upload a PDF, DOCX, DOC, or TXT file") }}</p>
                     </div>
 
                     @if($importError)
@@ -626,8 +626,8 @@
                             </div>
                         @else
                             <x-ui::icon name="cloud-arrow-up" class="mx-auto mb-3 w-8 h-8 text-zinc-500" />
-                            <div class="text-sm text-zinc-300">Click to upload or drag and drop</div>
-                            <div class="mt-1 text-xs text-zinc-500">PDF, DOCX, DOC, TXT — Max 5 MB</div>
+                            <div class="text-sm text-zinc-300">{{ __("Click to upload or drag and drop") }}</div>
+                            <div class="mt-1 text-xs text-zinc-500">{{ __("PDF, DOCX, DOC, TXT — Max 5 MB") }}</div>
                         @endif
                     </div>
 
@@ -691,15 +691,15 @@
                         class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-zinc-300 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:text-white sm:px-4"
                     >
                         <x-ui::icon name="plus" class="h-4 w-4" />
-                        <span class="hidden sm:inline">New CV</span>
+                        <span class="hidden sm:inline">{{ __("New CV") }}</span>
                     </button>
                     @if($cv->exists)
                         <x-ui::button variant="ghost" href="{{ route('cv.evaluator', $cv) }}" wire:navigate icon="sparkles" class="{{ $secondaryButtonClasses }}">
-                            <span class="hidden sm:inline">Evaluate</span>
+                            <span class="hidden sm:inline">{{ __("Evaluate") }}</span>
                         </x-ui::button>
                         <x-ui::button variant="ghost" href="{{ route('cv.preview', $cv) }}" target="_blank" icon="external-link" class="{{ $secondaryButtonClasses }}">
-                            <span class="hidden sm:inline">Open Preview</span>
-                            <span class="sm:hidden">Preview</span>
+                            <span class="hidden sm:inline">{{ __("Open Preview") }}</span>
+                            <span class="sm:hidden">{{ __("Preview") }}</span>
                         </x-ui::button>
                         @if($cv->exists)
                         <x-ui::button variant="ghost" icon="eye" wire:click="togglePreview" class="{{ $secondaryButtonClasses }}">
@@ -713,8 +713,8 @@
                             class="relative"
                         >
                             <x-ui::button variant="ghost" icon="download" class="{{ $secondaryButtonClasses }}" @click="open = !open">
-                                <span class="hidden sm:inline">Download</span>
-                                <span class="sm:hidden">PDF</span>
+                                <span class="hidden sm:inline">{{ __("Download") }}</span>
+                                <span class="sm:hidden">{{ __("PDF") }}</span>
                             </x-ui::button>
                             <div
                                 x-show="open"
@@ -758,8 +758,8 @@
                                 </button>
                             @else
                                 <x-ui::button variant="ghost" icon="globe" wire:click="enableSharing" class="{{ $secondaryButtonClasses }}">
-                                    <span class="hidden sm:inline">Share</span>
-                                    <span class="sm:hidden">Share</span>
+                                    <span class="hidden sm:inline">{{ __("Share") }}</span>
+                                    <span class="sm:hidden">{{ __("Share") }}</span>
                                 </x-ui::button>
                             @endif
                         </div>
@@ -769,7 +769,7 @@
 
             @if($cv->exists)
             <div class="mb-4" x-data="{ selected: @entangle('selectedTemplate').live }">
-                <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">Template</div>
+                <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">{{ __("Template") }}</div>
                 <div class="flex flex-wrap gap-2">
                     @foreach($templates as $id => $template)
                         <button
@@ -785,36 +785,6 @@
                         </button>
                     @endforeach
                 </div>
-            </div>
-            <div class="mb-4" x-data="{ selected: @entangle('selectedIndustryPack').live }">
-                <div class="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-500">Industry focus</div>
-                <div class="flex flex-wrap gap-2">
-                    <button
-                        type="button"
-                        @click="selected = null; $wire.updateIndustryPack('generic')"
-                        class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
-                        :class="!selected
-                            ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
-                            : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200'"
-                    >
-                        General
-                    </button>
-                    @foreach($industryPacks as $packId => $packName)
-                        @if($packId !== 'generic')
-                            <button
-                                type="button"
-                                @click="selected = '{{ $packId }}'; $wire.updateIndustryPack('{{ $packId }}')"
-                                class="cursor-pointer inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all duration-200"
-                                :class="selected === '{{ $packId }}'
-                                    ? 'border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 shadow-sm shadow-emerald-500/10'
-                                    : 'border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:bg-white/10 hover:text-zinc-200'"
-                            >
-                                {{ $packName }}
-                            </button>
-                        @endif
-                    @endforeach
-                </div>
-                <p class="mt-1.5 text-xs text-zinc-500">Tailors quick-add suggestions and AI advice to the chosen field.</p>
             </div>
             @endif
         </div>
@@ -977,7 +947,7 @@
                     </nav>
 
                     <div class="mt-3 px-1">
-                        <p class="text-xs text-zinc-600">Drag to reorder sections</p>
+                        <p class="text-xs text-zinc-600">{{ __("Drag to reorder sections") }}</p>
                     </div>
                 </div>
             </aside>
@@ -992,8 +962,8 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
-                            <h3 class="mb-1 text-lg font-semibold text-white">Importing your CV...</h3>
-                            <p class="text-sm text-zinc-400">Extracting text and parsing your information with AI</p>
+                            <h3 class="mb-1 text-lg font-semibold text-white">{{ __("Importing your CV...") }}</h3>
+                            <p class="text-sm text-zinc-400">{{ __("Extracting text and parsing your information with AI") }}</p>
                         </div>
                     </x-ui::card>
                 @elseif($importStatus === 'failed')
@@ -1002,8 +972,8 @@
                             <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-red-400/20 bg-red-500/10">
                                 <x-ui::icon name="exclamation-triangle" class="h-7 w-7 text-red-400" />
                             </div>
-                            <h3 class="mb-1 text-lg font-semibold text-white">Import Failed</h3>
-                            <p class="mb-6 text-sm text-zinc-400">Something went wrong while importing your CV. You can still edit it manually.</p>
+                            <h3 class="mb-1 text-lg font-semibold text-white">{{ __("Import Failed") }}</h3>
+                            <p class="mb-6 text-sm text-zinc-400">{{ __("Something went wrong while importing your CV. You can still edit it manually.") }}</p>
                             <button
                                 wire:click="importStatus = 'completed'"
                                 class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-all duration-300 hover:bg-white/10 hover:text-white"
@@ -1018,8 +988,8 @@
                 <div x-show="activeTab === 'personal'" x-cloak style="display: none;">
                     <x-ui::card class="{{ $glassCardClasses }}">
                         <div class="mb-6">
-                            <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">Personal Information</h2>
-                            <p class="text-sm text-zinc-400">Start with your basic contact details</p>
+                            <h2 class="mb-2 text-xl font-bold text-white md:text-2xl">{{ __("Personal Information") }}</h2>
+                            <p class="text-sm text-zinc-400">{{ __("Start with your basic contact details") }}</p>
                         </div>
                         <div class="space-y-6">
                             @php
@@ -1029,7 +999,7 @@
                                 <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
                                     <div class="mb-3 flex items-center gap-2">
                                         <x-ui::icon name="user" class="w-4 h-4 text-emerald-300" />
-                                        <h3 class="text-sm font-semibold text-white">Profile Photo <span class="font-normal text-zinc-500">(optional)</span></h3>
+                                        <h3 class="text-sm font-semibold text-white">{{ __("Profile Photo") }}<span class="font-normal text-zinc-500">(optional)</span></h3>
                                     </div>
                                     <p class="mb-3 text-xs text-zinc-400">The {{ \App\CvTemplates::name($this->selectedTemplate) }} template shows your photo. Without one, your initials are shown instead.</p>
                                     <div class="flex items-center gap-4">
@@ -1042,15 +1012,15 @@
                                         </div>
                                         <div class="flex-1">
                                             <input type="file" wire:model="photoUpload" accept="image/png,image/jpeg,image/webp" class="block w-full text-sm text-zinc-300 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-500/20 file:px-3 file:py-1.5 file:text-emerald-300 hover:file:bg-emerald-500/30 file:cursor-pointer" />
-                                            <div wire:loading wire:target="photoUpload" class="mt-1 text-xs text-zinc-400">Uploading…</div>
+                                            <div wire:loading wire:target="photoUpload" class="mt-1 text-xs text-zinc-400">{{ __("Uploading…") }}</div>
                                             @error('photoUpload')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
                                             @if(!empty($personalInfo['photo']))
-                                                <button type="button" wire:click="removePhoto" wire:loading.attr="disabled" class="mt-2 text-xs text-red-300 hover:text-red-200">Remove photo</button>
+                                                <button type="button" wire:click="removePhoto" wire:loading.attr="disabled" class="mt-2 text-xs text-red-300 hover:text-red-200">{{ __("Remove photo") }}</button>
                                             @endif
                                         </div>
                                     </div>
                                     @if(!empty($photoUpload))
-                                        <button type="button" wire:click="savePhoto" class="mt-3 rounded-lg border border-emerald-400/20 bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-500/25">Save photo</button>
+                                        <button type="button" wire:click="savePhoto" class="mt-3 rounded-lg border border-emerald-400/20 bg-emerald-500/15 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:bg-emerald-500/25">{{ __("Save photo") }}</button>
                                     @endif
                                 </div>
                             @endif
@@ -1065,7 +1035,7 @@
                             </div>
 
                             <x-ui::input wire:model.live.debounce.200ms="title" label="Job Title" placeholder="e.g., Senior Software Engineer" required :error="$errors->first('title')" class="{{ $fieldClasses }} {{ $errors->has('title') ? $errorFieldClasses : '' }}" />
-                            <x-ui::description class="text-zinc-400">How you want to be known professionally</x-ui::description>
+                            <x-ui::description class="text-zinc-400">{{ __("How you want to be known professionally") }}</x-ui::description>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div class="form-field">
@@ -1199,8 +1169,8 @@
                         <x-ui::icon name="sparkles" class="w-5 h-5 text-emerald-300" />
                     </div>
                     <div>
-                        <x-ui::heading size="md" class="text-white">AI Assistant</x-ui::heading>
-                        <x-ui::text size="sm" class="text-zinc-400">Always here to help</x-ui::text>
+                        <x-ui::heading size="md" class="text-white">{{ __("AI Assistant") }}</x-ui::heading>
+                        <x-ui::text size="sm" class="text-zinc-400">{{ __("Always here to help") }}</x-ui::text>
                     </div>
                 </div>
                 <button

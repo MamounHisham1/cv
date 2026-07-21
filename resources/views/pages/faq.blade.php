@@ -20,15 +20,9 @@
 
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
                 <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
-                    <x-ui::icon name="sparkles" size="sm" />
-                    Support Center
-                </div>
-                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                    Frequently Asked Questions
-                </h1>
-                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Find answers to the most common questions about SeratyAI. Can't find what you need? Our support team is here to help.
-                </p>
+                    <x-ui::icon name="sparkles" size="sm" />{{ __("Support Center") }}</div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">{{ __("Frequently Asked Questions") }}</h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">{{ __("Find answers to the most common questions about SeratyAI. Can't find what you need? Our support team is here to help.") }}</p>
             </div>
         </section>
 
@@ -41,7 +35,7 @@
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                             <x-ui::icon name="globe" size="lg" class="text-white" />
                         </div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">General Questions</h2>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __("General Questions") }}</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -82,7 +76,7 @@
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                             <x-ui::icon name="sparkles" size="lg" class="text-white" />
                         </div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Features & Capabilities</h2>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __("Features & Capabilities") }}</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -123,7 +117,7 @@
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                             <x-ui::icon name="briefcase" size="lg" class="text-white" />
                         </div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Pricing & Subscriptions</h2>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __("Pricing & Subscriptions") }}</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -163,7 +157,7 @@
                         <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
                             <x-ui::icon name="code" size="lg" class="text-white" />
                         </div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">Technical Support</h2>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white">{{ __("Technical Support") }}</h2>
                     </div>
 
                     <div class="space-y-4">
@@ -207,11 +201,9 @@
                             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30 animate-pulse">
                                 <x-ui::icon name="mail" size="xl" class="text-white" />
                             </div>
-                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Still Have Questions?</h3>
-                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">Our support team is ready to help you with anything you need. We typically respond within 24 hours.</p>
-                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                                Contact Support
-                            </x-ui::button>
+                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ __("Still Have Questions?") }}</h3>
+                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">{{ __("Our support team is ready to help you with anything you need. We typically respond within 24 hours.") }}</p>
+                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">{{ __("Contact Support") }}</x-ui::button>
                         </div>
                     </x-ui::card>
                 </div>

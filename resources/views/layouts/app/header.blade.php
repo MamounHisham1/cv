@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="@dir" class="dark">
     <head>
         @include('partials.head')
     </head>
@@ -24,6 +24,8 @@
                 </x-ui::navbar>
 
                 <div class="flex-1"></div>
+
+                <x-locale-toggle class="!rounded-full !px-3 !py-2 !text-zinc-500 hover:!bg-zinc-100 hover:!text-zinc-900 dark:!text-zinc-300 dark:hover:!bg-white/10 dark:hover:!text-white" icon-size="sm" />
 
                 <x-ui::navbar class="me-1.5 space-x-0.5 rtl:space-x-reverse py-0">
                     <x-ui::tooltip :content="__('Search')" position="bottom">

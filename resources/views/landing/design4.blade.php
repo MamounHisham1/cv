@@ -17,24 +17,24 @@
                 <div class="text-center max-w-4xl mx-auto">
                     <div class="animate-slide-up inline-flex items-center gap-2 bg-white/5 backdrop-blur-xl text-emerald-300 text-sm font-medium px-5 py-2.5 rounded-full mb-10 border border-white/10">
                         <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        AI-Powered Resume & Mock Interview Platform
+                        {{ __('AI-Powered Resume & Mock Interview Platform') }}
                     </div>
 
                     <h1 class="animate-slide-up delay-100 text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-8">
-                        Build, Enhance & Evaluate
-                        <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">Your CV — All with AI.</span>
+                        {{ __('Build, Enhance & Evaluate') }}
+                        <span class="bg-gradient-to-r from-emerald-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">{{ __('Your CV — All with AI.') }}</span>
                     </h1>
 
                     <p class="animate-slide-up delay-200 text-lg md:text-xl text-zinc-400 leading-relaxed mb-12 max-w-2xl mx-auto">
-                        Build professional, ATS-optimized CVs & practice interactive voice mock interviews with the power of AI. Land your dream job faster.
+                        {{ __('Build professional, ATS-optimized CVs & practice interactive voice mock interviews with the power of AI. Land your dream job faster.') }}
                     </p>
 
                     <div class="animate-slide-up delay-300 flex flex-col sm:flex-row items-center justify-center gap-4">
                         <x-ui::button variant="primary" :href="route('cv.builder')" icon="arrow-right" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-400/50 hover:-translate-y-1 transition-all duration-300 px-10 py-4 text-base">
-                            Get Started Free
+                            {{ __('Get Started Free') }}
                         </x-ui::button>
                         <x-ui::button variant="ghost" href="#features" class="text-zinc-300 hover:text-white bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 px-10 py-4 text-base">
-                            Explore Features
+                            {{ __('Explore Features') }}
                         </x-ui::button>
                     </div>
                 </div>
@@ -48,12 +48,12 @@
                                     <x-ui::icon name="sparkles" size="sm" class="text-white" />
                                 </div>
                                 <div>
-                                    <div class="text-sm font-medium text-white">AI Writing Active</div>
-                                    <div class="text-xs text-zinc-500">Analyzing your experience...</div>
+                                    <div class="text-sm font-medium text-white">{{ __('AI Writing Active') }}</div>
+                                    <div class="text-xs text-zinc-500">{{ __('Analyzing your experience...') }}</div>
                                 </div>
                                 <div class="ml-auto flex items-center gap-2">
                                     <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                                    <span class="text-xs text-emerald-400">Live</span>
+                                    <span class="text-xs text-emerald-400">{{ __('Live') }}</span>
                                 </div>
                             </div>
                             <div class="space-y-3">
@@ -61,8 +61,8 @@
                                 <div class="h-3 bg-zinc-800 rounded-full w-4/5"></div>
                                 <div class="h-3 bg-zinc-800 rounded-full w-3/5"></div>
                                 <div class="flex items-center gap-2 mt-4">
-                                    <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">ATS Score: 95%</span>
-                                    <span class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30">50+ Keywords</span>
+                                    <span class="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">{{ __('ATS Score: 95%') }}</span>
+                                    <span class="text-xs bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full border border-blue-500/30">{{ __('50+ Keywords') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -109,26 +109,26 @@
                     <div class="max-w-3xl">
                         <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-4 py-2 text-sm font-semibold text-purple-300">
                             <x-ui::icon name="document-text" size="sm" />
-                            Template Gallery
+                            {{ __('Template Gallery') }}
                         </div>
-                        <h2 class="text-3xl font-bold text-white md:text-4xl">Different resume templates for every career path</h2>
+                        <h2 class="text-3xl font-bold text-white md:text-4xl">{{ __('Different resume templates for every career path') }}</h2>
                         <p class="mt-4 text-lg leading-relaxed text-zinc-400">
-                            Explore <span class="font-semibold text-white">10 distinct resume templates</span> inspired by the real designs inside the builder — from classic and ATS-first layouts to modern, creative, and executive styles.
+                            {{ __('Explore') }} <span class="font-semibold text-white">{{ __('10 distinct resume templates') }}</span> {{ __('inspired by the real designs inside the builder — from classic and ATS-first layouts to modern, creative, and executive styles.') }}
                         </p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                         <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
                             <div class="text-2xl font-bold text-emerald-400">10</div>
-                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">Live Templates</div>
+                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">{{ __('Live Templates') }}</div>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
                             <div class="text-2xl font-bold text-blue-400">ATS</div>
-                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">To Creative</div>
+                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">{{ __('To Creative') }}</div>
                         </div>
                         <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl sm:col-span-1 col-span-2">
-                            <div class="text-2xl font-bold text-purple-400">Switch</div>
-                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">Anytime</div>
+                            <div class="text-2xl font-bold text-purple-400">{{ __('Switch') }}</div>
+                            <div class="text-xs uppercase tracking-[0.2em] text-zinc-500">{{ __('Anytime') }}</div>
                         </div>
                     </div>
                 </div>
@@ -297,10 +297,10 @@
 
                                         <div class="relative mt-4 flex items-start justify-between gap-3">
                                             <div>
-                                                <h3 class="text-sm font-semibold text-white">{{ $template['name'] }}</h3>
-                                                <p class="mt-1 text-xs leading-relaxed text-zinc-400">{{ $template['description'] }}</p>
+                                                <h3 class="text-sm font-semibold text-white">{{ __($template['name']) }}</h3>
+                                                <p class="mt-1 text-xs leading-relaxed text-zinc-400">{{ __($template['description']) }}</p>
                                             </div>
-                                            <span class="rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] {{ $template['badge_classes'] }}">{{ $template['tag'] }}</span>
+                                            <span class="rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] {{ $template['badge_classes'] }}">{{ __($template['tag']) }}</span>
                                         </div>
                                     </article>
                                 @endforeach
@@ -320,20 +320,20 @@
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
                         <x-ui::icon name="sparkles" size="sm" />
-                        Features
+                        {{ __('Features') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Everything You Need to Land Your Dream Job</h2>
-                    <p class="text-lg text-zinc-400">Our comprehensive toolkit helps you create, optimize, and manage professional resumes.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ __('Everything You Need to Land Your Dream Job') }}</h2>
+                    <p class="text-lg text-zinc-400">{{ __('Our comprehensive toolkit helps you create, optimize, and manage professional resumes.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach([
-                        ['icon' => 'sparkles', 'title' => 'AI-Powered Writing', 'desc' => 'Generate compelling bullet points, summaries, and cover letters tailored to your industry and experience level.', 'color' => 'emerald', 'glow' => 'emerald'],
-                        ['icon' => 'shield-check', 'title' => 'ATS Optimization', 'desc' => 'Ensure your CV passes Applicant Tracking Systems with keyword analysis, formatting checks, and real-time scoring.', 'color' => 'blue', 'glow' => 'blue'],
-                        ['icon' => 'document-text', 'title' => 'Professional Templates', 'desc' => 'Choose from five distinct resume templates, from ATS-first layouts to creative and executive styles.', 'color' => 'purple', 'glow' => 'purple'],
-                        ['icon' => 'eye', 'title' => 'Real-Time Preview', 'desc' => 'See exactly how your CV will look as you edit. Live preview updates instantly.', 'color' => 'amber', 'glow' => 'amber'],
-                        ['icon' => 'microphone', 'title' => 'Voice Mock Interviews', 'desc' => 'Practice speaking with realistic voice AI customized to your CV and target job description, and get instant detailed grading.', 'color' => 'pink', 'glow' => 'pink'],
-                        ['icon' => 'arrow-down-tray', 'title' => 'Export Ready', 'desc' => 'Download polished CVs in PDF format, perfectly formatted and ready to submit.', 'color' => 'teal', 'glow' => 'teal']
+                        ['icon' => 'sparkles', 'title' => __('AI-Powered Writing'), 'desc' => __('Generate compelling bullet points, summaries, and cover letters tailored to your industry and experience level.'), 'color' => 'emerald', 'glow' => 'emerald'],
+                        ['icon' => 'shield-check', 'title' => __('ATS Optimization'), 'desc' => __('Ensure your CV passes Applicant Tracking Systems with keyword analysis, formatting checks, and real-time scoring.'), 'color' => 'blue', 'glow' => 'blue'],
+                        ['icon' => 'document-text', 'title' => __('Professional Templates'), 'desc' => __('Choose from five distinct resume templates, from ATS-first layouts to creative and executive styles.'), 'color' => 'purple', 'glow' => 'purple'],
+                        ['icon' => 'eye', 'title' => __('Real-Time Preview'), 'desc' => __('See exactly how your CV will look as you edit. Live preview updates instantly.'), 'color' => 'amber', 'glow' => 'amber'],
+                        ['icon' => 'microphone', 'title' => __('Voice Mock Interviews'), 'desc' => __('Practice speaking with realistic voice AI customized to your CV and target job description, and get instant detailed grading.'), 'color' => 'pink', 'glow' => 'pink'],
+                        ['icon' => 'arrow-down-tray', 'title' => __('Export Ready'), 'desc' => __('Download polished CVs in PDF format, perfectly formatted and ready to submit.'), 'color' => 'teal', 'glow' => 'teal']
                     ] as $feature)
                     <div class="group relative h-full">
                         <div class="absolute inset-0 bg-gradient-to-br from-{{ $feature['glow'] }}-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"></div>
@@ -358,18 +358,18 @@
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-blue-500/10 text-blue-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-blue-500/20">
                         <x-ui::icon name="zap" size="sm" />
-                        How It Works
+                        {{ __('How It Works') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Three Simple Steps</h2>
-                    <p class="text-lg text-zinc-400">From blank page to interview-ready in minutes.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ __('Three Simple Steps') }}</h2>
+                    <p class="text-lg text-zinc-400">{{ __('From blank page to interview-ready in minutes.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     @foreach([
-                        ['step' => 1, 'title' => 'Upload or Build', 'desc' => 'Start from scratch with our guided builder or upload your existing CV to get started instantly.', 'color' => 'emerald'],
-                        ['step' => 2, 'title' => 'AI Evaluates & Enhances', 'desc' => 'Get scored across 10 criteria and receive AI-powered improvements with actionable feedback.', 'color' => 'blue'],
-                        ['step' => 3, 'title' => 'AI Mock Interview', 'desc' => 'Practice speaking with realistic voice AI customized to your CV and target job description.', 'color' => 'pink'],
-                        ['step' => 4, 'title' => 'Download & Apply', 'desc' => 'Export your polished, ATS-optimized CV and start applying with maximum confidence.', 'color' => 'purple']
+                        ['step' => 1, 'title' => __('Upload or Build'), 'desc' => __('Start from scratch with our guided builder or upload your existing CV to get started instantly.'), 'color' => 'emerald'],
+                        ['step' => 2, 'title' => __('AI Evaluates & Enhances'), 'desc' => __('Get scored across 10 criteria and receive AI-powered improvements with actionable feedback.'), 'color' => 'blue'],
+                        ['step' => 3, 'title' => __('AI Mock Interview'), 'desc' => __('Practice speaking with realistic voice AI customized to your CV and target job description.'), 'color' => 'pink'],
+                        ['step' => 4, 'title' => __('Download & Apply'), 'desc' => __('Export your polished, ATS-optimized CV and start applying with maximum confidence.'), 'color' => 'purple']
                     ] as $item)
                     <div class="group text-center">
                         <div class="relative mb-8">
@@ -392,10 +392,10 @@
             <div class="relative mx-auto max-w-7xl px-6 lg:px-8">
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach([
-                        ['icon' => 'document-text', 'value' => '5', 'label' => 'Professional Templates', 'desc' => 'From classic to creative, find the right format for your industry', 'color' => 'emerald'],
-                        ['icon' => 'chart-bar', 'value' => '10', 'label' => 'AI Evaluation Criteria', 'desc' => 'Comprehensive scoring with actionable feedback and letter grades', 'color' => 'blue'],
-                        ['icon' => 'microphone', 'value' => 'Voice', 'label' => 'AI Mock Interviews', 'desc' => 'Interactive behavioral and technical interview prep customized to your CV', 'color' => 'purple'],
-                        ['icon' => 'database', 'value' => '17K+', 'label' => 'Resume Benchmarks', 'desc' => 'RAG-powered analysis compares your CV against real-world samples', 'color' => 'amber']
+                        ['icon' => 'document-text', 'value' => '5', 'label' => __('Professional Templates'), 'desc' => __('From classic to creative, find the right format for your industry'), 'color' => 'emerald'],
+                        ['icon' => 'chart-bar', 'value' => '10', 'label' => __('AI Evaluation Criteria'), 'desc' => __('Comprehensive scoring with actionable feedback and letter grades'), 'color' => 'blue'],
+                        ['icon' => 'microphone', 'value' => __('Voice'), 'label' => __('AI Mock Interviews'), 'desc' => __('Interactive behavioral and technical interview prep customized to your CV'), 'color' => 'purple'],
+                        ['icon' => 'database', 'value' => '17K+', 'label' => __('Resume Benchmarks'), 'desc' => __('RAG-powered analysis compares your CV against real-world samples'), 'color' => 'amber']
                     ] as $cap)
                     <div class="group bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-{{ $cap['color'] }}-500/30 transition-all duration-300 hover:-translate-y-1 text-center">
                         <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-{{ $cap['color'] }}-500/20 to-{{ $cap['color'] }}-500/5 flex items-center justify-center mx-auto mb-4 border border-{{ $cap['color'] }}-500/20 group-hover:scale-110 transition-all duration-300">
@@ -418,20 +418,20 @@
                     <div>
                         <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
                             <x-ui::icon name="heart" size="sm" />
-                            Our Mission
+                            {{ __('Our Mission') }}
                         </div>
-                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">Built from Frustration, Made for Everyone</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">{{ __('Built from Frustration, Made for Everyone') }}</h2>
                         <div class="space-y-4">
-                            <p class="text-zinc-400 leading-relaxed">SeratyAI started with a simple frustration — I needed to update my CV, but every tool I found fell short. None of them did what I actually needed.</p>
-                            <p class="text-zinc-400 leading-relaxed">So I built my own. What started as a personal project became something bigger: a platform where anyone can create a professional CV and harness AI tools to stand out — no subscriptions, no gatekeeping.</p>
+                            <p class="text-zinc-400 leading-relaxed">{{ __('SeratyAI started with a simple frustration — I needed to update my CV, but every tool I found fell short. None of them did what I actually needed.') }}</p>
+                            <p class="text-zinc-400 leading-relaxed">{{ __('So I built my own. What started as a personal project became something bigger: a platform where anyone can create a professional CV and harness AI tools to stand out — no subscriptions, no gatekeeping.') }}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         @foreach([
-                            ['icon' => 'sparkles', 'title' => 'AI-Powered', 'desc' => 'Real AI scoring, chat assistant, and smart CV parsing.', 'color' => 'emerald'],
-                            ['icon' => 'database', 'title' => 'Smart Benchmarks', 'desc' => 'Evaluated against 17,000+ real resume samples.', 'color' => 'blue'],
-                            ['icon' => 'gift', 'title' => 'Free to Start', 'desc' => '30 free credits/month, referral rewards, no paywall.', 'color' => 'purple'],
-                            ['icon' => 'eye', 'title' => 'Open & Transparent', 'desc' => 'Built with modern open-source tools and honest AI.', 'color' => 'amber']
+                            ['icon' => 'sparkles', 'title' => __('AI-Powered'), 'desc' => __('Real AI scoring, chat assistant, and smart CV parsing.'), 'color' => 'emerald'],
+                            ['icon' => 'database', 'title' => __('Smart Benchmarks'), 'desc' => __('Evaluated against 17,000+ real resume samples.'), 'color' => 'blue'],
+                            ['icon' => 'gift', 'title' => __('Free to Start'), 'desc' => __('30 free credits/month, referral rewards, no paywall.'), 'color' => 'purple'],
+                            ['icon' => 'eye', 'title' => __('Open & Transparent'), 'desc' => __('Built with modern open-source tools and honest AI.'), 'color' => 'amber']
                         ] as $f)
                         <div class="group bg-white/5 backdrop-blur-xl rounded-xl p-5 border border-white/10 hover:border-{{ $f['color'] }}-500/30 transition-all duration-300 hover:-translate-y-1">
                             <x-ui::icon name="{{ $f['icon'] }}" size="md" class="text-{{ $f['color'] }}-400 mb-3" />
@@ -451,9 +451,9 @@
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-purple-500/10 text-purple-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-purple-500/20">
                         <x-ui::icon name="user" size="sm" />
-                        The Founder
+                        {{ __('The Founder') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Built by One Engineer</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ __('Built by One Engineer') }}</h2>
                 </div>
 
                 <div class="max-w-md mx-auto">
@@ -465,8 +465,8 @@
                             <div class="absolute inset-0 rounded-2xl bg-purple-500/10 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                         </div>
                         <h3 class="text-lg font-bold text-white mb-1">Mamoun Hisham</h3>
-                        <p class="text-sm font-medium text-purple-400 mb-4">Founder & Software Engineer</p>
-                        <p class="text-sm text-zinc-400 leading-relaxed">Software engineer passionate about building products that solve real problems. SeratyAI is the result of a love for engineering and a drive to create tools that actually help people.</p>
+                        <p class="text-sm font-medium text-purple-400 mb-4">{{ __('Founder & Software Engineer') }}</p>
+                        <p class="text-sm text-zinc-400 leading-relaxed">{{ __('Software engineer passionate about building products that solve real problems. SeratyAI is the result of a love for engineering and a drive to create tools that actually help people.') }}</p>
                     </div>
                 </div>
             </div>
@@ -479,10 +479,10 @@
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-amber-500/10 text-amber-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-amber-500/20">
                         <x-ui::icon name="arrow-right-left" size="sm" />
-                        See the Difference
+                        {{ __('See the Difference') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Before & After AI Enhancement</h2>
-                    <p class="text-lg text-zinc-400">Real examples of how SeratyAI transforms a generic CV into an interview-worthy one.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ __('Before & After AI Enhancement') }}</h2>
+                    <p class="text-lg text-zinc-400">{{ __('Real examples of how SeratyAI transforms a generic CV into an interview-worthy one.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-end">
@@ -490,7 +490,7 @@
                     {{-- ===== BEFORE ===== --}}
                     <div class="relative">
                         <div class="absolute -top-3 left-6 z-10">
-                            <span class="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-red-500/30">Before</span>
+                            <span class="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-red-500/30">{{ __('Before') }}</span>
                         </div>
                         <div class="relative bg-red-950/30 rounded-2xl border border-red-500/20 overflow-hidden">
                             <div class="p-7 space-y-6">
@@ -501,7 +501,7 @@
                                     </div>
                                     <div class="min-w-0">
                                         <h3 class="text-base font-bold text-red-300/60">John Doe</h3>
-                                        <p class="text-xs text-red-400/40 mt-0.5">Software Developer</p>
+                                        <p class="text-xs text-red-400/40 mt-0.5">{{ __('Software Developer') }}</p>
                                         <div class="flex items-center gap-1.5 mt-2">
                                             <svg class="w-3 h-3 text-red-500/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                                             <span class="text-[11px] text-red-400/35">john.doe@email.com</span>
@@ -513,23 +513,23 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Summary</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">{{ __('Summary') }}</span>
                                     </div>
-                                    <p class="text-sm text-red-300/40 leading-relaxed italic pl-3.5">"Hardworking professional looking for new opportunities. I have experience in many things and am a team player."</p>
+                                    <p class="text-sm text-red-300/40 leading-relaxed italic pl-3.5">{{ __('"Hardworking professional looking for new opportunities. I have experience in many things and am a team player."') }}</p>
                                 </div>
 
                                 {{-- Experience --}}
                                 <div>
                                     <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Experience</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">{{ __('Experience') }}</span>
                                     </div>
                                     <div class="relative pl-5 border-l-2 border-red-500/10 ml-0.5">
                                         <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-red-500/20 border border-red-500/30"></div>
                                         <div>
-                                            <h5 class="text-sm font-semibold text-red-300/50">Software Developer</h5>
-                                            <p class="text-xs text-red-400/35 mt-0.5">Some Company</p>
-                                            <p class="text-[12px] text-red-300/30 mt-2 leading-relaxed italic">"Worked on various projects and helped the team with coding tasks."</p>
+                                            <h5 class="text-sm font-semibold text-red-300/50">{{ __('Software Developer') }}</h5>
+                                            <p class="text-xs text-red-400/35 mt-0.5">{{ __('Some Company') }}</p>
+                                            <p class="text-[12px] text-red-300/30 mt-2 leading-relaxed italic">{{ __('"Worked on various projects and helped the team with coding tasks."') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -538,10 +538,10 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-3">
                                         <div class="w-1.5 h-1.5 rounded-full bg-red-500/40"></div>
-                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">Skills</span>
+                                        <span class="text-[11px] font-bold text-red-400/60 uppercase tracking-wider">{{ __('Skills') }}</span>
                                     </div>
                                     <div class="flex flex-wrap gap-2">
-                                        @foreach(['Microsoft Office', 'Communication', 'Teamwork'] as $skill)
+                                        @foreach([__('Microsoft Office'), __('Communication'), __('Teamwork')] as $skill)
                                         <span class="text-xs bg-red-500/5 text-red-400/30 px-3 py-1.5 rounded-full border border-red-500/10">{{ $skill }}</span>
                                         @endforeach
                                     </div>
@@ -556,13 +556,13 @@
                                             <span class="text-xs font-black text-red-400/50">D</span>
                                         </div>
                                         <div>
-                                            <span class="text-[10px] text-red-400/40 font-medium">ATS Score</span>
+                                            <span class="text-[10px] text-red-400/40 font-medium">{{ __('ATS Score') }}</span>
                                             <div class="w-20 h-1 bg-red-500/10 rounded-full mt-1 overflow-hidden">
                                                 <div class="h-full w-[23%] bg-red-500/30 rounded-full"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <span class="text-[10px] font-bold text-red-400/40 uppercase tracking-wider bg-red-500/5 px-2.5 py-1 rounded-full border border-red-500/10">Likely Rejected</span>
+                                    <span class="text-[10px] font-bold text-red-400/40 uppercase tracking-wider bg-red-500/5 px-2.5 py-1 rounded-full border border-red-500/10">{{ __('Likely Rejected') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -571,7 +571,7 @@
                     {{-- ===== AFTER ===== --}}
                     <div class="relative">
                         <div class="absolute -top-3 left-6 z-10">
-                            <span class="bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">After — SeratyAI</span>
+                            <span class="bg-emerald-500 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">{{ __('After — SeratyAI') }}</span>
                         </div>
                         <div class="relative bg-emerald-950/20 rounded-2xl border border-emerald-500/30 overflow-hidden shadow-lg shadow-emerald-500/5">
                             <div class="p-7 space-y-6">
@@ -582,7 +582,7 @@
                                     </div>
                                     <div class="min-w-0">
                                         <h3 class="text-base font-bold text-white">John Doe</h3>
-                                        <p class="text-xs text-emerald-400/80 mt-0.5 font-medium">Senior Full-Stack Developer</p>
+                                        <p class="text-xs text-emerald-400/80 mt-0.5 font-medium">{{ __('Senior Full-Stack Developer') }}</p>
                                         <div class="flex items-center gap-3 mt-2">
                                             <span class="inline-flex items-center gap-1.5 text-[11px] text-emerald-300/70">
                                                 <svg class="w-3 h-3 text-emerald-400/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
@@ -600,33 +600,33 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Summary</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">{{ __('Summary') }}</span>
                                     </div>
-                                    <p class="text-sm text-zinc-300/90 leading-relaxed pl-3.5">"Results-driven Full-Stack Developer with 4+ years of experience building scalable web applications. Proven track record of reducing deployment time by 40% and mentoring junior developers."</p>
+                                    <p class="text-sm text-zinc-300/90 leading-relaxed pl-3.5">{{ __('"Results-driven Full-Stack Developer with 4+ years of experience building scalable web applications. Proven track record of reducing deployment time by 40% and mentoring junior developers."') }}</p>
                                 </div>
 
                                 {{-- Experience --}}
                                 <div>
                                     <div class="flex items-center gap-2 mb-2.5">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Experience</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">{{ __('Experience') }}</span>
                                     </div>
                                     <div class="relative pl-5 border-l-2 border-emerald-500/30 ml-0.5">
                                         <div class="absolute -left-[5px] top-1 w-2 h-2 rounded-full bg-emerald-400 border border-emerald-500/50 shadow shadow-emerald-400/30"></div>
                                         <div>
                                             <div class="flex items-start justify-between gap-2">
-                                                <h5 class="text-sm font-semibold text-white">Senior Software Developer</h5>
-                                                <span class="text-[10px] text-emerald-400/60 font-medium shrink-0 mt-0.5">2021 — Present</span>
+                                                <h5 class="text-sm font-semibold text-white">{{ __('Senior Software Developer') }}</h5>
+                                                <span class="text-[10px] text-emerald-400/60 font-medium shrink-0 mt-0.5">{{ __('2021 — Present') }}</span>
                                             </div>
                                             <p class="text-xs text-emerald-300/70 mt-0.5 font-medium">TechCorp Inc.</p>
                                             <ul class="mt-2 space-y-1.5">
                                                 <li class="flex gap-2 text-[12px] text-zinc-400/80 leading-relaxed">
                                                     <span class="text-emerald-400 mt-0.5 shrink-0">&#8226;</span>
-                                                    Architected microservices serving <span class="text-emerald-300 font-medium">50K+ daily users</span>, reducing API latency by 35%.
+                                                    {!! __('Architected microservices serving <span class="text-emerald-300 font-medium">50K+ daily users</span>, reducing API latency by 35%.') !!}
                                                 </li>
                                                 <li class="flex gap-2 text-[12px] text-zinc-400/80 leading-relaxed">
                                                     <span class="text-emerald-400 mt-0.5 shrink-0">&#8226;</span>
-                                                    Led a team of <span class="text-emerald-300 font-medium">5 engineers</span> through 3 successful product launches.
+                                                    {!! __('Led a team of <span class="text-emerald-300 font-medium">5 engineers</span> through 3 successful product launches.') !!}
                                                 </li>
                                             </ul>
                                         </div>
@@ -637,7 +637,7 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-3">
                                         <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
-                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">Skills</span>
+                                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider">{{ __('Skills') }}</span>
                                     </div>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach(['Laravel', 'React', 'AWS', 'Docker', 'PostgreSQL', 'CI/CD'] as $skill)
@@ -655,13 +655,13 @@
                                             <span class="text-xs font-black text-emerald-400">A</span>
                                         </div>
                                         <div>
-                                            <span class="text-[10px] text-emerald-400/60 font-medium">ATS Score</span>
+                                            <span class="text-[10px] text-emerald-400/60 font-medium">{{ __('ATS Score') }}</span>
                                             <div class="w-20 h-1 bg-emerald-500/10 rounded-full mt-1 overflow-hidden">
                                                 <div class="h-full w-[92%] bg-emerald-400 rounded-full"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Top Candidate</span>
+                                    <span class="text-[10px] font-bold text-emerald-300 uppercase tracking-wider bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">{{ __('Top Candidate') }}</span>
                                 </div>
                             </div>
                         </div>
@@ -677,17 +677,17 @@
                 <div class="text-center max-w-2xl mx-auto mb-16">
                     <div class="inline-flex items-center gap-2 bg-purple-500/10 text-purple-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-purple-500/20">
                         <x-ui::icon name="briefcase" size="sm" />
-                        Pricing
+                        {{ __('Pricing') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
-                    <p class="text-lg text-zinc-400">Start free and upgrade when you need more.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">{{ __('Simple, Transparent Pricing') }}</h2>
+                    <p class="text-lg text-zinc-400">{{ __('Start free and upgrade when you need more.') }}</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     @foreach([
-                        ['name' => 'Free', 'price' => '0', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Get Started', 'btn_href' => route('register'), 'features' => ['30 credits/month', 'AI voice mock interviews', '5 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Referral rewards'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
-                        ['name' => 'Pro', 'price' => '300', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Upgrade to Pro', 'btn_href' => route('upgrade'), 'features' => ['100 credits/month', 'AI voice mock interviews', '50 AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Priority support'], 'unavailable' => [], 'popular' => true, 'coming_soon' => false],
-                        ['name' => 'Enterprise', 'price' => '1,000', 'currency' => 'EGP', 'period' => '/month', 'btn' => 'Upgrade to Enterprise', 'btn_href' => route('upgrade'), 'features' => ['500 credits/month', 'AI voice mock interviews', 'Unlimited AI builder messages', 'All 10 resume templates', 'AI CV evaluation', 'AI chat assistant', 'Team management & API'], 'unavailable' => [], 'popular' => false, 'coming_soon' => false]
+                        ['name' => __('Free'), 'price' => '0', 'currency' => 'EGP', 'period' => __('/month'), 'btn' => __('Get Started'), 'btn_href' => route('register'), 'features' => [__('30 credits/month'), __('AI voice mock interviews'), __('5 AI builder messages'), __('All 10 resume templates'), __('AI CV evaluation'), __('AI chat assistant'), __('Referral rewards')], 'unavailable' => [], 'popular' => false, 'coming_soon' => false],
+                        ['name' => __('Pro'), 'price' => '300', 'currency' => 'EGP', 'period' => __('/month'), 'btn' => __('Upgrade to Pro'), 'btn_href' => route('upgrade'), 'features' => [__('100 credits/month'), __('AI voice mock interviews'), __('50 AI builder messages'), __('All 10 resume templates'), __('AI CV evaluation'), __('AI chat assistant'), __('Priority support')], 'unavailable' => [], 'popular' => true, 'coming_soon' => false],
+                        ['name' => __('Enterprise'), 'price' => '1,000', 'currency' => 'EGP', 'period' => __('/month'), 'btn' => __('Upgrade to Enterprise'), 'btn_href' => route('upgrade'), 'features' => [__('500 credits/month'), __('AI voice mock interviews'), __('Unlimited AI builder messages'), __('All 10 resume templates'), __('AI CV evaluation'), __('AI chat assistant'), __('Team management & API')], 'unavailable' => [], 'popular' => false, 'coming_soon' => false]
                     ] as $plan)
                     <div class="relative group {{ $plan['popular'] ? 'md:-mt-4 md:mb-[-1rem]' : '' }}">
                         @if($plan['popular'])
@@ -696,7 +696,7 @@
                         <div class="relative bg-white/5 backdrop-blur-xl rounded-2xl p-8 border {{ $plan['popular'] ? 'border-emerald-500/30' : 'border-white/10' }} hover:border-emerald-500/30 transition-all duration-500 hover:-translate-y-2 h-full flex flex-col">
                             @if($plan['popular'])
                             <div class="absolute -top-3 left-1/2 -translate-x-1/2">
-                                <span class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">Most Popular</span>
+                                <span class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">{{ __('Most Popular') }}</span>
                             </div>
                             @endif
                             <h3 class="text-xl font-bold text-white mb-1">{{ $plan['name'] }}</h3>
@@ -733,22 +733,22 @@
                 <div class="text-center mb-16">
                     <div class="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 text-sm font-semibold px-4 py-2 rounded-full mb-6 border border-emerald-500/20">
                         <x-ui::icon name="help" size="sm" />
-                        FAQ
+                        {{ __('FAQ') }}
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white">Frequently Asked Questions</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">{{ __('Frequently Asked Questions') }}</h2>
                 </div>
 
                 <div class="space-y-3" x-data="{ open: null }">
                     @foreach([
-                        ['id' => 'd4q1', 'q' => 'What is SeratyAI?', 'a' => 'SeratyAI is an AI-powered CV builder that creates professional, ATS-optimized resumes. It includes an AI chat assistant, real-time compatibility scoring, smart CV parsing, and 10 beautifully designed templates.'],
-                        ['id' => 'd4q2', 'q' => 'Is SeratyAI free to use?', 'a' => 'Yes! The free plan gives you 30 credits per month and 5 AI builder messages — no credit card required. You can also earn more credits through our referral program.'],
-                        ['id' => 'd4q3', 'q' => 'What can I spend credits on?', 'a' => 'Each credit can be used for an AI evaluation, AI CV parsing, an AI mock interview, or an AI builder message. Your credits reset monthly based on your plan.'],
-                        ['id' => 'd4q4', 'q' => 'How does the referral program work?', 'a' => 'Share your referral link and earn 10 credits when someone signs up (they get 8 too). If they upgrade to a paid plan, you both earn an additional 15 credits.'],
-                        ['id' => 'd4q5', 'q' => 'How many CV templates are available?', 'a' => 'SeratyAI offers 10 professionally designed templates including Professional Classic, Modern Minimal, Swiss, Executive, Creative, Bold, Compact, Timeline, Warm, and Technical ATS.'],
-                        ['id' => 'd4q6', 'q' => 'What export formats are supported?', 'a' => 'You can export your CV as a high-quality PDF, ready for printing or submitting to job applications.'],
-                        ['id' => 'd4q7', 'q' => 'Can I import an existing CV?', 'a' => 'Yes! You can paste your existing CV content and our AI will intelligently parse it into structured sections — saving you from starting from scratch.'],
-                        ['id' => 'd4q8', 'q' => 'Is my data secure?', 'a' => 'Absolutely. Your data is encrypted at rest and in transit. We never sell or share your personal information.'],
-                        ['id' => 'd4q9', 'q' => 'How does the AI Mock Interview feature work?', 'a' => 'Our AI interviewer uses real-time voice streaming to conduct a realistic behavioral or technical mock interview customized to your CV and target job description. At the end, you get a detailed, comprehensive evaluation with an overall score, letter grade, and actionable suggestions for improvement.']
+                        ['id' => 'd4q1', 'q' => __('What is SeratyAI?'), 'a' => __('SeratyAI is an AI-powered CV builder that creates professional, ATS-optimized resumes. It includes an AI chat assistant, real-time compatibility scoring, smart CV parsing, and 10 beautifully designed templates.')],
+                        ['id' => 'd4q2', 'q' => __('Is SeratyAI free to use?'), 'a' => __('Yes! The free plan gives you 30 credits per month and 5 AI builder messages — no credit card required. You can also earn more credits through our referral program.')],
+                        ['id' => 'd4q3', 'q' => __('What can I spend credits on?'), 'a' => __('Each credit can be used for an AI evaluation, AI CV parsing, an AI mock interview, or an AI builder message. Your credits reset monthly based on your plan.')],
+                        ['id' => 'd4q4', 'q' => __('How does the referral program work?'), 'a' => __('Share your referral link and earn 10 credits when someone signs up (they get 8 too). If they upgrade to a paid plan, you both earn an additional 15 credits.')],
+                        ['id' => 'd4q5', 'q' => __('How many CV templates are available?'), 'a' => __('SeratyAI offers 10 professionally designed templates including Professional Classic, Modern Minimal, Swiss, Executive, Creative, Bold, Compact, Timeline, Warm, and Technical ATS.')],
+                        ['id' => 'd4q6', 'q' => __('What export formats are supported?'), 'a' => __('You can export your CV as a high-quality PDF, ready for printing or submitting to job applications.')],
+                        ['id' => 'd4q7', 'q' => __('Can I import an existing CV?'), 'a' => __('Yes! You can paste your existing CV content and our AI will intelligently parse it into structured sections — saving you from starting from scratch.')],
+                        ['id' => 'd4q8', 'q' => __('Is my data secure?'), 'a' => __('Absolutely. Your data is encrypted at rest and in transit. We never sell or share your personal information.')],
+                        ['id' => 'd4q9', 'q' => __('How does the AI Mock Interview feature work?'), 'a' => __('Our AI interviewer uses real-time voice streaming to conduct a realistic behavioral or technical mock interview customized to your CV and target job description. At the end, you get a detailed, comprehensive evaluation with an overall score, letter grade, and actionable suggestions for improvement.')]
                     ] as $faq)
                     <div class="overflow-hidden rounded-xl border bg-white/5 backdrop-blur-xl transition-all duration-300" x-bind:class="open === '{{ $faq['id'] }}' ? 'border-emerald-500/30 bg-emerald-500/5 shadow-lg shadow-emerald-500/10' : 'border-white/10 hover:border-emerald-500/20'">
                         <button type="button" @click="open = open === '{{ $faq['id'] }}' ? null : '{{ $faq['id'] }}'" x-bind:aria-expanded="open === '{{ $faq['id'] }}'" class="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-white/5">
@@ -771,10 +771,10 @@
             <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/40 via-zinc-950 to-blue-900/40"></div>
             <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/15 rounded-full blur-[120px]"></div>
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">Ready to Stand Out?</h2>
-                <p class="text-lg text-zinc-400 max-w-2xl mx-auto mb-10">Build a CV that actually represents you. Your next career move starts here.</p>
+                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">{{ __('Ready to Stand Out?') }}</h2>
+                <p class="text-lg text-zinc-400 max-w-2xl mx-auto mb-10">{{ __('Build a CV that actually represents you. Your next career move starts here.') }}</p>
                 <x-ui::button variant="primary" :href="route('register')" icon="arrow-right" size="lg" class="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white shadow-2xl shadow-emerald-500/30 hover:-translate-y-1 transition-all duration-300 px-10 py-4">
-                    Create Your CV Now
+                    {{ __('Create Your CV Now') }}
                 </x-ui::button>
             </div>
         </section>

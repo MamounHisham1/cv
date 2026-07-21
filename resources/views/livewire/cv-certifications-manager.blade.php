@@ -13,8 +13,8 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <x-ui::heading size="lg" class="text-white">Certifications</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Highlight the credentials that strengthen your profile.</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Certifications") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Highlight the credentials that strengthen your profile.") }}</p>
             </div>
             <x-ui::button
                 wire:click="addCertification"
@@ -22,9 +22,7 @@
                 size="sm"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Certification
-            </x-ui::button>
+            >{{ __("Add Certification") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -106,13 +104,11 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        Add Certification
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">{{ __("Add Certification") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
@@ -137,10 +133,10 @@
                     </div>
                     <div class="flex gap-1">
                         <x-ui::button variant="ghost" size="sm" wire:click="moveUp({{ $cert['id'] }})" icon="chevron-up" class="{{ $ghostButtonClasses }}">
-                            <span class="sr-only">Move Up</span>
+                            <span class="sr-only">{{ __("Move Up") }}</span>
                         </x-ui::button>
                         <x-ui::button variant="ghost" size="sm" wire:click="moveDown({{ $cert['id'] }})" icon="chevron-down" class="{{ $ghostButtonClasses }}">
-                            <span class="sr-only">Move Down</span>
+                            <span class="sr-only">{{ __("Move Down") }}</span>
                         </x-ui::button>
                         <x-ui::button
                             wire:click="editCertification({{ $cert['id'] }})"
@@ -158,8 +154,8 @@
             @empty
                 <div class="rounded-3xl border border-dashed border-white/10 bg-white/5 py-10 text-center text-zinc-400 backdrop-blur-xl">
                     <x-ui::icon name="trophy" class="mx-auto mb-2 w-12 h-12 text-emerald-300/70" />
-                    <p class="text-white">No certifications added yet.</p>
-                    <p class="text-sm text-zinc-400">Add your professional certifications.</p>
+                    <p class="text-white">{{ __("No certifications added yet.") }}</p>
+                    <p class="text-sm text-zinc-400">{{ __("Add your professional certifications.") }}</p>
                 </div>
             @endforelse
         </div>

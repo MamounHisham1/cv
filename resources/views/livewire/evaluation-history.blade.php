@@ -10,12 +10,11 @@
     {{-- Page header --}}
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Evaluation History</h1>
-            <p class="mt-1 text-sm text-zinc-400">View and compare your past CV evaluations.</p>
+            <h1 class="text-2xl font-bold text-white">{{ __("Evaluation History") }}</h1>
+            <p class="mt-1 text-sm text-zinc-400">{{ __("View and compare your past CV evaluations.") }}</p>
         </div>
         <a href="{{ route('cv.evaluator') }}" wire:navigate class="{{ $primaryBtn }}">
-            <x-ui::icon name="plus" class="h-4 w-4" /> New Evaluation
-        </a>
+            <x-ui::icon name="plus" class="h-4 w-4" />{{ __("New Evaluation") }}</a>
     </div>
 
     {{-- Filter bar --}}
@@ -41,7 +40,7 @@
                     wire:change="setGradeFilter($event.target.value)"
                     class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-zinc-300 focus:outline-none focus:ring-1 focus:ring-emerald-500/40"
                 >
-                    <option value="">All Grades</option>
+                    <option value="">{{ __("All Grades") }}</option>
                     @foreach(['A+', 'A', 'B+', 'B', 'C+', 'C', 'D', 'F'] as $grade)
                         <option value="{{ $grade }}" {{ $gradeFilter === $grade ? 'selected' : '' }}>{{ $grade }}</option>
                     @endforeach
@@ -80,15 +79,11 @@
                     {{ count($compareSelections) }} / 2 selected
                 </span>
                 @if(count($compareSelections) > 0)
-                    <button wire:click="clearSelection" class="text-xs text-zinc-400 hover:text-white">
-                        Clear
-                    </button>
+                    <button wire:click="clearSelection" class="text-xs text-zinc-400 hover:text-white">{{ __("Clear") }}</button>
                 @endif
             </div>
             <div class="flex gap-2">
-                <button wire:click="toggleCompareMode" class="{{ $ghostBtn }} text-xs">
-                    Cancel
-                </button>
+                <button wire:click="toggleCompareMode" class="{{ $ghostBtn }} text-xs">{{ __("Cancel") }}</button>
             </div>
         </div>
     @endif
@@ -98,12 +93,11 @@
         <div class="{{ $glassCard }}" wire:key="comparison-{{ implode('-', $compareSelections) }}">
             <div class="mb-6 flex items-center justify-between">
                 <div>
-                    <h3 class="text-lg font-bold text-white">Comparison</h3>
-                    <p class="text-sm text-zinc-500">Score differences between the two selected evaluations</p>
+                    <h3 class="text-lg font-bold text-white">{{ __("Comparison") }}</h3>
+                    <p class="text-sm text-zinc-500">{{ __("Score differences between the two selected evaluations") }}</p>
                 </div>
                 <button wire:click="clearSelection" class="{{ $ghostBtn }} text-xs">
-                    <x-ui::icon name="x" class="h-3 w-3" /> Clear
-                </button>
+                    <x-ui::icon name="x" class="h-3 w-3" />{{ __("Clear") }}</button>
             </div>
 
             {{-- Overall score comparison --}}
@@ -135,7 +129,7 @@
                             @if($overallDiff > 0)+@endif{{ $overallDiff }}
                         </span>
                     </div>
-                    <p class="mt-1 text-xs text-zinc-500">overall change</p>
+                    <p class="mt-1 text-xs text-zinc-500">{{ __("overall change") }}</p>
                 </div>
 
                 <div class="text-center">
@@ -199,16 +193,14 @@
     @endif
 
     {{-- Evaluations list --}}
-    @if($evaluations->isEmpty())
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
+    @if($evaluations->isEmpty())<div class="rounded-2xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
             <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/5">
                 <x-ui::icon name="file-text" class="h-8 w-8 text-zinc-500" />
             </div>
-            <h3 class="mb-2 text-lg font-semibold text-white">No Evaluations Yet</h3>
+            <h3 class="mb-2 text-lg font-semibold text-white">{{ __("No Evaluations Yet") }}</h3>
             <p class="mb-6 text-sm text-zinc-400">Upload your first CV to get started with AI-powered evaluation.</p>
             <a href="{{ route('cv.evaluator') }}" wire:navigate class="{{ $primaryBtn }}">
-                <x-ui::icon name="upload" class="h-4 w-4" /> Evaluate My CV
-            </a>
+                <x-ui::icon name="upload" class="h-4 w-4" />{{ __("Evaluate My CV") }}</a>
         </div>
     @else
         <div class="space-y-3">
@@ -252,7 +244,7 @@
                     {{-- Score bar --}}
                     <div class="w-full sm:w-32">
                         <div class="flex items-center justify-between text-xs text-zinc-400 mb-1">
-                            <span>Score</span>
+                            <span>{{ __("Score") }}</span>
                             <span>{{ $evaluation->overall_score ?? 0 }}/100</span>
                         </div>
                         <div class="h-2 overflow-hidden rounded-full bg-white/10">
@@ -263,8 +255,7 @@
                     {{-- Status badge --}}
                     <div class="shrink-0">
                         <span class="{{ $this->statusBadge($evaluation->status) }}">
-                            @if($evaluation->status === \App\Models\CvEvaluation::STATUS_PENDING || $evaluation->status === \App\Models\CvEvaluation::STATUS_PROCESSING)
-                                <span class="h-1.5 w-1.5 rounded-full bg-current animate-pulse"></span>
+                            @if($evaluation->status === \App\Models\CvEvaluation::STATUS_PENDING || $evaluation->status === \App\Models\CvEvaluation::STATUS_PROCESSING)<span class="h-1.5 w-1.5 rounded-full bg-current animate-pulse"></span>
                             @endif
                             {{ $this->statusLabel($evaluation->status) }}
                         </span>
@@ -303,8 +294,7 @@
     @if(!$compareMode && $evaluations->count() >= 2)
         <div class="flex justify-center">
             <button wire:click="toggleCompareMode" class="{{ $ghostBtn }}">
-                <x-ui::icon name="git-compare" class="h-4 w-4" /> Compare Evaluations
-            </button>
+                <x-ui::icon name="git-compare" class="h-4 w-4" />{{ __("Compare Evaluations") }}</button>
         </div>
     @endif
 
@@ -319,7 +309,7 @@
                 {{-- Modal header --}}
                 <div class="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 bg-zinc-900/95 px-6 py-4 backdrop-blur-xl">
                     <div>
-                        <h2 class="text-lg font-bold text-white">Evaluation Details</h2>
+                        <h2 class="text-lg font-bold text-white">{{ __("Evaluation Details") }}</h2>
                         <p class="text-xs text-zinc-400">{{ $detailEvaluation->created_at->format('M j, Y \a\t g:i A') }}</p>
                     </div>
                     <button wire:click="closeModal" class="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white">
@@ -343,7 +333,7 @@
                     {{-- Score bar --}}
                     <div>
                         <div class="flex items-center justify-between text-sm text-zinc-400 mb-2">
-                            <span>Overall Score</span>
+                            <span>{{ __("Overall Score") }}</span>
                             <span class="font-bold text-white">{{ $detailEvaluation->overall_score ?? 0 }}/100</span>
                         </div>
                         <div class="h-3 overflow-hidden rounded-full bg-white/10">
@@ -352,9 +342,8 @@
                     </div>
 
                     {{-- Criteria breakdown --}}
-                    @if($detailEvaluation->criteria)
-                        <div>
-                            <h4 class="mb-4 text-sm font-bold text-white">Criteria Breakdown</h4>
+                    @if($detailEvaluation->criteria)<div>
+                            <h4 class="mb-4 text-sm font-bold text-white">{{ __("Criteria Breakdown") }}</h4>
                             <div class="space-y-4">
                                 @foreach([
                                     'contact_information' => 'Contact Information',
@@ -396,13 +385,11 @@
                     @endif
 
                     {{-- Strengths & improvements --}}
-                    @if($detailEvaluation->top_strengths || $detailEvaluation->critical_improvements)
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            @if($detailEvaluation->top_strengths)
-                                <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+                    @if($detailEvaluation->top_strengths || $detailEvaluation->critical_improvements)<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            @if($detailEvaluation->top_strengths)<div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
                                     <div class="mb-3 flex items-center gap-2">
                                         <x-ui::icon name="check-circle" class="h-5 w-5 text-emerald-400" />
-                                        <h4 class="font-bold text-white">Top Strengths</h4>
+                                        <h4 class="font-bold text-white">{{ __("Top Strengths") }}</h4>
                                     </div>
                                     <ul class="space-y-2">
                                         @foreach($detailEvaluation->top_strengths as $strength)
@@ -415,11 +402,10 @@
                                 </div>
                             @endif
 
-                            @if($detailEvaluation->critical_improvements)
-                                <div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
+                            @if($detailEvaluation->critical_improvements)<div class="rounded-xl border border-white/5 bg-white/[0.02] p-4">
                                     <div class="mb-3 flex items-center gap-2">
                                         <x-ui::icon name="alert-triangle" class="h-5 w-5 text-amber-400" />
-                                        <h4 class="font-bold text-white">Critical Improvements</h4>
+                                        <h4 class="font-bold text-white">{{ __("Critical Improvements") }}</h4>
                                     </div>
                                     <ul class="space-y-2">
                                         @foreach($detailEvaluation->critical_improvements as $improvement)
@@ -435,12 +421,11 @@
                     @endif
 
                     {{-- Error message --}}
-                    @if($detailEvaluation->status === \App\Models\CvEvaluation::STATUS_FAILED && $detailEvaluation->error_message)
-                        <div class="rounded-xl border border-red-400/20 bg-red-500/10 p-4">
+                    @if($detailEvaluation->status === \App\Models\CvEvaluation::STATUS_FAILED && $detailEvaluation->error_message)<div class="rounded-xl border border-red-400/20 bg-red-500/10 p-4">
                             <div class="flex items-start gap-3">
                                 <x-ui::icon name="alert-triangle" class="h-5 w-5 text-red-400 shrink-0" />
                                 <div>
-                                    <h4 class="font-bold text-white">Error</h4>
+                                    <h4 class="font-bold text-white">{{ __("Error") }}</h4>
                                     <p class="text-sm text-zinc-300">{{ $detailEvaluation->error_message }}</p>
                                 </div>
                             </div>
@@ -449,15 +434,12 @@
 
                     {{-- Actions --}}
                     <div class="flex justify-end gap-3 pt-4 border-t border-white/10">
-                        <button wire:click="closeModal" class="{{ $ghostBtn }}">
-                            Close
-                        </button>
+                        <button wire:click="closeModal" class="{{ $ghostBtn }}">{{ __("Close") }}</button>
                         <button
                             @click="confirmAction({title: 'Delete this evaluation?', message: 'This cannot be undone.', method: 'delete', params: [{{ $detailEvaluation->id }}], source: $el, danger: true, confirmLabel: 'Delete'})"
                             class="{{ $dangerBtn }}"
                         >
-                            <x-ui::icon name="trash-2" class="h-4 w-4" /> Delete
-                        </button>
+                            <x-ui::icon name="trash-2" class="h-4 w-4" />{{ __("Delete") }}</button>
                     </div>
                 </div>
             </div>

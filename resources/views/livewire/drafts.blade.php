@@ -12,13 +12,13 @@
         <div>
             <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
-                    <h1 class="mb-2 text-3xl font-bold text-white md:text-4xl">My CVs</h1>
-                    <p class="text-sm text-zinc-400">You have {{ $cvs->count() }} CV{{ $cvs->count() > 1 ? 's' : '' }}</p>
+                    <h1 class="mb-2 text-3xl font-bold text-white md:text-4xl">{{ __('My CVs') }}</h1>
+                    <p class="text-sm text-zinc-400">{{ trans_choice('You have :count CV|You have :count CVs', $cvs->count()) }}</p>
                 </div>
                 <a href="{{ route('cv.builder', ['onboarding' => 1]) }}" wire:navigate
                    class="inline-flex items-center justify-center gap-2 rounded-full border border-emerald-400/20 bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:-translate-y-0.5 hover:from-emerald-400 hover:to-emerald-500 hover:shadow-xl hover:shadow-emerald-500/30">
                     <x-ui::icon name="plus" class="h-4 w-4" />
-                    Create New CV
+                    {{ __('Create New CV') }}
                 </a>
             </div>
 
@@ -49,7 +49,7 @@
                             @if($cv->isShared())
                                 <span class="inline-flex items-center gap-1 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
                                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                                    Shared
+                                    {{ __('Shared') }}
                                 </span>
                             @endif
                         </div>
@@ -58,25 +58,25 @@
                     {{-- Body --}}
                     <div class="flex flex-1 flex-col p-5">
                         <h3 class="mb-0.5 truncate text-base font-semibold text-white" title="{{ $cv->title }}">{{ $cv->title }}</h3>
-                        <p class="mb-4 text-xs text-zinc-500">Last edited {{ $cv->updated_at->diffForHumans() }}</p>
+                        <p class="mb-4 text-xs text-zinc-500">{{ __('Last edited :time', ['time' => $cv->updated_at->diffForHumans()]) }}</p>
 
                         @if($isEmpty)
                             <div class="mb-4 flex items-center gap-2 rounded-lg border border-amber-400/20 bg-amber-500/5 px-3 py-2 text-xs text-amber-300/80">
                                 <x-ui::icon name="lightbulb" class="h-3.5 w-3.5" />
-                                <span>Empty CV — start adding content</span>
+                                <span>{{ __('Empty CV — start adding content') }}</span>
                             </div>
                         @else
                             {{-- Compact stat row --}}
                             <div class="mb-5 flex items-center gap-4 text-xs text-zinc-400">
-                                <span class="flex items-center gap-1.5" title="{{ $expCount }} experience{{ $expCount != 1 ? 's' : '' }}">
+                                <span class="flex items-center gap-1.5" title="{{ trans_choice(':count experience|:count experiences', $expCount) }}">
                                     <x-ui::icon name="briefcase" class="h-3.5 w-3.5 text-zinc-500" />
                                     {{ $expCount }}
                                 </span>
-                                <span class="flex items-center gap-1.5" title="{{ $skillCount }} skill{{ $skillCount != 1 ? 's' : '' }}">
+                                <span class="flex items-center gap-1.5" title="{{ trans_choice(':count skill|:count skills', $skillCount) }}">
                                     <x-ui::icon name="zap" class="h-3.5 w-3.5 text-zinc-500" />
                                     {{ $skillCount }}
                                 </span>
-                                <span class="flex items-center gap-1.5" title="{{ $certCount }} certification{{ $certCount != 1 ? 's' : '' }}">
+                                <span class="flex items-center gap-1.5" title="{{ trans_choice(':count certification|:count certifications', $certCount) }}">
                                     <x-ui::icon name="trophy" class="h-3.5 w-3.5 text-zinc-500" />
                                     {{ $certCount }}
                                 </span>
@@ -88,15 +88,15 @@
                             <div class="flex items-center gap-2">
                                 <a href="{{ route('cv.edit', $cv) }}" wire:navigate
                                    class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition-all duration-200 hover:from-emerald-400 hover:to-emerald-500">
-                                    <span>Edit</span>
+                                    <span>{{ __('Edit') }}</span>
                                     <x-ui::icon name="arrow-right" class="h-4 w-4" />
                                 </a>
                                 <a href="{{ route('cv.preview', $cv) }}" target="_blank"
-                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Preview">
+                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="{{ __('Preview') }}">
                                     <x-ui::icon name="eye" class="h-4 w-4" />
                                 </a>
                                 <a href="{{ route('cv.export', [$cv, 'pdf']) }}"
-                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="Download PDF">
+                                   class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 transition-all duration-200 hover:bg-white/10 hover:text-white" title="{{ __('Download PDF') }}">
                                     <x-ui::icon name="download" class="h-4 w-4" />
                                 </a>
                             </div>
@@ -104,31 +104,31 @@
                             {{-- Secondary actions: single centered icon row, subtle --}}
                             <div class="mt-2.5 flex items-center justify-center gap-1 border-t border-white/5 pt-2.5">
                                 <a href="{{ route('cv.evaluator', $cv) }}" wire:navigate
-                                   class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Evaluate">
+                                   class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="{{ __('Evaluate') }}">
                                     <x-ui::icon name="sparkles" class="h-4 w-4" />
                                 </a>
                                 <button type="button" wire:click="duplicate({{ $cv->id }})" wire:loading.attr="disabled"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30" title="Duplicate">
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200 disabled:opacity-30" title="{{ __('Duplicate') }}">
                                     <x-ui::icon name="copy" class="h-4 w-4" />
                                 </button>
                                 <button type="button" wire:click="viewVersions({{ $cv->id }})"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="Version history">
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200" title="{{ __('Version history') }}">
                                     <x-ui::icon name="clock" class="h-4 w-4" />
                                 </button>
                                 <span class="mx-1 h-4 w-px bg-white/10"></span>
                                 @if($cv->isShared())
                                     <button type="button" wire:click="confirmUnshare({{ $cv->id }})"
-                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-400 transition-colors hover:bg-emerald-500/10" title="Manage sharing">
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-emerald-400 transition-colors hover:bg-emerald-500/10" title="{{ __('Manage sharing') }}">
                                         <x-ui::icon name="globe" class="h-4 w-4" />
                                     </button>
                                 @else
                                     <button type="button" wire:click="share({{ $cv->id }})"
-                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300" title="Create share link">
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300" title="{{ __('Create share link') }}">
                                         <x-ui::icon name="globe" class="h-4 w-4" />
                                     </button>
                                 @endif
                                 <button type="button" wire:click="confirmDelete({{ $cv->id }})"
-                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-red-500/10 hover:text-red-400" title="Delete">
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-600 transition-colors hover:bg-red-500/10 hover:text-red-400" title="{{ __('Delete') }}">
                                     <x-ui::icon name="trash" class="h-4 w-4" />
                                 </button>
                             </div>
@@ -144,11 +144,11 @@
     @if($confirmingDelete)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" wire:click="cancelConfirm">
         <div class="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl" wire:click.stop>
-            <h3 class="mb-2 text-lg font-semibold text-white">Delete this CV?</h3>
-            <p class="mb-5 text-sm text-zinc-400">This permanently removes the CV and all of its sections. This cannot be undone.</p>
+            <h3 class="mb-2 text-lg font-semibold text-white">{{ __('Delete this CV?') }}</h3>
+            <p class="mb-5 text-sm text-zinc-400">{{ __('This permanently removes the CV and all of its sections. This cannot be undone.') }}</p>
             <div class="flex justify-end gap-2">
-                <button type="button" wire:click="cancelConfirm" class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 hover:bg-white/10">Cancel</button>
-                <button type="button" wire:click="delete" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500">Delete CV</button>
+                <button type="button" wire:click="cancelConfirm" class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 hover:bg-white/10">{{ __('Cancel') }}</button>
+                <button type="button" wire:click="delete" class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-500">{{ __('Delete CV') }}</button>
             </div>
         </div>
     </div>
@@ -158,11 +158,11 @@
     @if($confirmingUnshare)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" wire:click="cancelConfirm">
         <div class="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl" wire:click.stop>
-            <h3 class="mb-2 text-lg font-semibold text-white">Disable public sharing?</h3>
-            <p class="mb-5 text-sm text-zinc-400">The share link will stop working immediately. Anyone who has it open will lose access.</p>
+            <h3 class="mb-2 text-lg font-semibold text-white">{{ __('Disable public sharing?') }}</h3>
+            <p class="mb-5 text-sm text-zinc-400">{{ __('The share link will stop working immediately. Anyone who has it open will lose access.') }}</p>
             <div class="flex justify-end gap-2">
-                <button type="button" wire:click="cancelConfirm" class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 hover:bg-white/10">Cancel</button>
-                <button type="button" wire:click="unshare" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500">Disable sharing</button>
+                <button type="button" wire:click="cancelConfirm" class="rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-sm text-zinc-300 hover:bg-white/10">{{ __('Cancel') }}</button>
+                <button type="button" wire:click="unshare" class="rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-500">{{ __('Disable sharing') }}</button>
             </div>
         </div>
     </div>
@@ -173,29 +173,29 @@
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" wire:click="closeVersions">
         <div class="w-full max-w-lg rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl" wire:click.stop>
             <div class="mb-4 flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-white">Version history</h3>
+                <h3 class="text-lg font-semibold text-white">{{ __('Version history') }}</h3>
                 <button type="button" wire:click="closeVersions" class="text-zinc-400 hover:text-white">
                     <x-ui::icon name="x" class="h-5 w-5" />
                 </button>
             </div>
             @if($versionsFor && $versionsFor->isNotEmpty())
-                <p class="mb-3 text-xs text-zinc-500">Snapshots are captured automatically when you export a CV. Reverting restores that state and captures your current state first so you can undo it.</p>
+                <p class="mb-3 text-xs text-zinc-500">{{ __('Snapshots are captured automatically when you export a CV. Reverting restores that state and captures your current state first so you can undo it.') }}</p>
                 <div class="max-h-80 space-y-2 overflow-y-auto pr-1">
                     @foreach($versionsFor as $version)
                         <div class="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                             <div class="min-w-0">
-                                <p class="truncate text-sm font-medium text-zinc-200">{{ $version->label ?: 'Snapshot' }}</p>
+                                <p class="truncate text-sm font-medium text-zinc-200">{{ $version->label ?: __('Snapshot') }}</p>
                                 <p class="text-xs text-zinc-500">{{ $version->created_at->toDayDateTimeString() }}</p>
                             </div>
                             <button type="button" wire:click="revertTo({{ $version->id }})" wire:loading.attr="disabled" wire:target="revertTo({{ $version->id }})"
                                     class="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-white/10 hover:text-white disabled:opacity-30">
-                                Restore
+                                {{ __('Restore') }}
                             </button>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p class="py-6 text-center text-sm text-zinc-500">No versions yet. They're created automatically when you export this CV.</p>
+                <p class="py-6 text-center text-sm text-zinc-500">{{ __("No versions yet. They're created automatically when you export this CV.") }}</p>
             @endif
         </div>
     </div>

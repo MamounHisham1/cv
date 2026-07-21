@@ -22,8 +22,8 @@
     <x-ui::card class="{{ $glassCardClasses }}">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <x-ui::heading size="lg" class="text-white">Languages</x-ui::heading>
-                <p class="mt-1 text-sm text-zinc-400">Showcase your language skills</p>
+                <x-ui::heading size="lg" class="text-white">{{ __("Languages") }}</x-ui::heading>
+                <p class="mt-1 text-sm text-zinc-400">{{ __("Showcase your language skills") }}</p>
             </div>
             <x-ui::button
                 wire:click="addLanguage"
@@ -31,9 +31,7 @@
                 size="sm"
                 icon="plus"
                 class="{{ $primaryButtonClasses }} w-full sm:w-auto"
-            >
-                Add Language
-            </x-ui::button>
+            >{{ __("Add Language") }}</x-ui::button>
         </div>
 
         @if($showForm)
@@ -68,13 +66,11 @@
                         {{ $editingId ? 'Done' : 'Cancel' }}
                     </x-ui::button>
                     @if(! $editingId)
-                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">
-                        Add Language
-                    </x-ui::button>
+                    <x-ui::button type="submit" variant="primary" class="{{ $primaryButtonClasses }}">{{ __("Add Language") }}</x-ui::button>
                     @endif
                 </div>
                 @if($editingId)
-                <p class="text-right text-xs text-zinc-500">Changes save automatically.</p>
+                <p class="text-right text-xs text-zinc-500">{{ __("Changes save automatically.") }}</p>
                 @endif
             </form>
         @endif
@@ -111,18 +107,16 @@
                     <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/60">
                         <x-ui::icon name="globe" class="w-8 h-8 text-emerald-300" />
                     </div>
-                    <x-ui::heading size="md" class="mb-2 text-white">No Languages Added Yet</x-ui::heading>
-                    <p class="mb-4 text-sm text-zinc-400">Add the languages you speak</p>
-                    <x-ui::button wire:click="addLanguage" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">
-                        Add Your First Language
-                    </x-ui::button>
+                    <x-ui::heading size="md" class="mb-2 text-white">{{ __("No Languages Added Yet") }}</x-ui::heading>
+                    <p class="mb-4 text-sm text-zinc-400">{{ __("Add the languages you speak") }}</p>
+                    <x-ui::button wire:click="addLanguage" variant="primary" icon="plus" class="{{ $primaryButtonClasses }}">{{ __("Add Your First Language") }}</x-ui::button>
                 </div>
             @endforelse
         </div>
 
         @if(!$showForm && count($languages) < 5)
             <div class="mt-4">
-                <p class="mb-3 text-xs font-medium uppercase tracking-wide text-zinc-400">Quick Add</p>
+                <p class="mb-3 text-xs font-medium uppercase tracking-wide text-zinc-400">{{ __("Quick Add") }}</p>
                 <div class="flex flex-wrap gap-2">
                     @foreach($commonLanguages as $lang)
                         <button

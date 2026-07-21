@@ -1,13 +1,11 @@
 <div class="mx-auto max-w-3xl space-y-6 p-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Credit History</h1>
-            <p class="mt-1 text-sm text-zinc-400">Track all your credit transactions.</p>
+            <h1 class="text-2xl font-bold text-white">{{ __("Credit History") }}</h1>
+            <p class="mt-1 text-sm text-zinc-400">{{ __("Track all your credit transactions.") }}</p>
         </div>
         <a href="{{ route('referrals') }}" class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-zinc-300 transition-colors hover:bg-white/10 hover:text-white">
-            <x-ui::icon name="gift" class="h-4 w-4" />
-            Earn Credits
-        </a>
+            <x-ui::icon name="gift" class="h-4 w-4" />{{ __("Earn Credits") }}</a>
     </div>
 
     <div class="flex gap-2">
@@ -22,10 +20,9 @@
         @endforeach
     </div>
 
-    @if ($this->transactions->isEmpty())
-        <div class="rounded-xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
+    @if ($this->transactions->isEmpty())<div class="rounded-xl border border-white/10 bg-white/5 p-12 text-center backdrop-blur-xl">
             <x-credit-coin size="lg" class="mx-auto mb-3 opacity-30" />
-            <p class="text-sm text-zinc-500">No transactions yet.</p>
+            <p class="text-sm text-zinc-500">{{ __("No transactions yet.") }}</p>
         </div>
     @else
         <div class="space-y-2">

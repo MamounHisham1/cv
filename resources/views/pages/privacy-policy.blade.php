@@ -17,15 +17,9 @@
 
             <div class="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
                 <div class="animate-slide-up inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white text-sm font-medium px-5 py-2.5 rounded-full mb-6 border border-white/20 shadow-lg">
-                    <x-ui::icon name="shield-check" size="sm" />
-                    Legal
-                </div>
-                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                    Privacy Policy
-                </h1>
-                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
-                    Your privacy matters to us. Learn how we collect, use, and protect your information.
-                </p>
+                    <x-ui::icon name="shield-check" size="sm" />{{ __("Legal") }}</div>
+                <h1 class="animate-slide-up delay-100 text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">{{ __("Privacy Policy") }}</h1>
+                <p class="animate-slide-up delay-200 text-lg md:text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">{{ __("Your privacy matters to us. Learn how we collect, use, and protect your information.") }}</p>
             </div>
         </section>
 
@@ -34,84 +28,68 @@
             <div class="mx-auto max-w-4xl px-6 lg:px-8">
                 <div class="space-y-12">
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Information We Collect</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                            When you use SeratyAI, we collect the following types of information:
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Information We Collect") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ __("When you use SeratyAI, we collect the following types of information:") }}</p>
                         <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                            <li><strong class="text-zinc-900 dark:text-white">Account Information:</strong> Your name, email address, password (hashed), and authentication details when you create an account. If you register via Google OAuth, we also store your Google ID and avatar.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">CV Content:</strong> The resume data you enter, including work experience, education, skills, projects, certifications, languages, and personal details. CV text may be stored as embeddings in a vector database for AI-powered evaluation features.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Voice Data:</strong> When you use the AI voice interview feature, your speech is transcribed by Deepgram (a third-party speech-to-text service). We do not store voice recordings after transcription.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Usage Data:</strong> Information about how you interact with our platform, including features used and actions taken.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Device Information:</strong> Browser type, operating system, and IP address for security and fraud prevention purposes.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Referral Tracking:</strong> If you arrive via a referral link, a 6-character referral code is used to credit your referrer at registration.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">OTP Codes:</strong> During registration, a one-time password is generated and stored temporarily (expiring after 10 minutes) for email verification.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Communication Records:</strong> If you contact us via the contact form, we receive your name, email, and message. We also store records of emails sent to you for service delivery purposes.</li>
-                            <li><strong class="text-zinc-900 dark:text-white">Push Subscriptions:</strong> If you enable browser notifications, your push subscription endpoint and encryption keys are stored to deliver those notifications.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Account Information:") }}</strong>Your name, email address, password (hashed), and authentication details when you create an account. If you register via Google OAuth, we also store your Google ID and avatar.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("CV Content:") }}</strong>The resume data you enter, including work experience, education, skills, projects, certifications, languages, and personal details. CV text may be stored as embeddings in a vector database for AI-powered evaluation features.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Voice Data:") }}</strong>When you use the AI voice interview feature, your speech is transcribed by Deepgram (a third-party speech-to-text service). We do not store voice recordings after transcription.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Usage Data:") }}</strong>{{ __("Information about how you interact with our platform, including features used and actions taken.") }}</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Device Information:") }}</strong>{{ __("Browser type, operating system, and IP address for security and fraud prevention purposes.") }}</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Referral Tracking:") }}</strong>If you arrive via a referral link, a 6-character referral code is used to credit your referrer at registration.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("OTP Codes:") }}</strong>During registration, a one-time password is generated and stored temporarily (expiring after 10 minutes) for email verification.</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Communication Records:") }}</strong>{{ __("If you contact us via the contact form, we receive your name, email, and message. We also store records of emails sent to you for service delivery purposes.") }}</li>
+                            <li><strong class="text-zinc-900 dark:text-white">{{ __("Push Subscriptions:") }}</strong>{{ __("If you enable browser notifications, your push subscription endpoint and encryption keys are stored to deliver those notifications.") }}</li>
                         </ul>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">How We Use Your Information</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                            We use the information we collect to:
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("How We Use Your Information") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ __("We use the information we collect to:") }}</p>
                         <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                            <li>Provide, maintain, and improve our services</li>
+                            <li>{{ __("Provide, maintain, and improve our services") }}</li>
                             <li>Generate AI-powered suggestions and evaluations for your CV</li>
-                            <li>Send you important account and service updates</li>
-                            <li>Monitor and analyze usage trends to improve user experience</li>
-                            <li>Detect, prevent, and address technical issues and security threats</li>
+                            <li>{{ __("Send you important account and service updates") }}</li>
+                            <li>{{ __("Monitor and analyze usage trends to improve user experience") }}</li>
+                            <li>{{ __("Detect, prevent, and address technical issues and security threats") }}</li>
                         </ul>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Data Security</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We take the security of your data seriously. Data transmitted between your browser and our servers is encrypted using TLS/HTTPS. Session data is encrypted before storage. Passwords are hashed using bcrypt. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Data Security") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We take the security of your data seriously. Data transmitted between your browser and our servers is encrypted using TLS/HTTPS. Session data is encrypted before storage. Passwords are hashed using bcrypt. We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Data Sharing</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We do not sell, trade, or rent your personal information to third parties. We may share your data only in the following circumstances: with your explicit consent, to comply with legal obligations, to protect our rights and safety, or with trusted service providers who assist us in operating our platform under strict confidentiality agreements.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Data Sharing") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We do not sell, trade, or rent your personal information to third parties. We may share your data only in the following circumstances: with your explicit consent, to comply with legal obligations, to protect our rights and safety, or with trusted service providers who assist us in operating our platform under strict confidentiality agreements.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Your Rights</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
-                            You have the right to:
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Your Rights") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">{{ __("You have the right to:") }}</p>
                         <ul class="list-disc pl-6 text-base text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
-                            <li>Access and download your personal data</li>
-                            <li>Request correction of inaccurate information</li>
-                            <li>Request deletion of your account and associated data</li>
+                            <li>{{ __("Access and download your personal data") }}</li>
+                            <li>{{ __("Request correction of inaccurate information") }}</li>
+                            <li>{{ __("Request deletion of your account and associated data") }}</li>
                             <li>Opt out of non-essential communications</li>
-                            <li>Withdraw consent at any time</li>
+                            <li>{{ __("Withdraw consent at any time") }}</li>
                         </ul>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Data Retention</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We retain your personal data for as long as your account is active or as needed to provide you services. If you delete your account, we will delete your personal information within 30 days, except where we are required to retain it for legal, regulatory, or security purposes.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Data Retention") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We retain your personal data for as long as your account is active or as needed to provide you services. If you delete your account, we will delete your personal information within 30 days, except where we are required to retain it for legal, regulatory, or security purposes.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Internal Access to Your Data</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            Our administrators have the ability to access user accounts for support, troubleshooting, and abuse prevention purposes. This access is logged and restricted to authorized personnel. Administrators may view CV data, account details, and usage history only when necessary to maintain the platform or respond to your requests.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Internal Access to Your Data") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("Our administrators have the ability to access user accounts for support, troubleshooting, and abuse prevention purposes. This access is logged and restricted to authorized personnel. Administrators may view CV data, account details, and usage history only when necessary to maintain the platform or respond to your requests.") }}</p>
                     </div>
 
                     <div>
-                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">Changes to This Policy</h2>
-                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                            We may update this Privacy Policy from time to time. Significant changes will be posted on this page with an updated effective date. We encourage you to review this policy periodically.
-                        </p>
+                        <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-4">{{ __("Changes to This Policy") }}</h2>
+                        <p class="text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">{{ __("We may update this Privacy Policy from time to time. Significant changes will be posted on this page with an updated effective date. We encourage you to review this policy periodically.") }}</p>
                     </div>
                 </div>
 
@@ -125,11 +103,9 @@
                             <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/30">
                                 <x-ui::icon name="mail" size="xl" class="text-white" />
                             </div>
-                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">Questions About Privacy?</h3>
-                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">If you have any questions about this Privacy Policy, please don't hesitate to reach out.</p>
-                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
-                                Contact Us
-                            </x-ui::button>
+                            <h3 class="text-2xl font-bold text-zinc-900 dark:text-white mb-3">{{ __("Questions About Privacy?") }}</h3>
+                            <p class="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">{{ __("If you have any questions about this Privacy Policy, please don't hesitate to reach out.") }}</p>
+                            <x-ui::button variant="primary" href="/contact" icon="arrow-right" size="lg" class="shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">{{ __("Contact Us") }}</x-ui::button>
                         </div>
                     </x-ui::card>
                 </div>

@@ -25,7 +25,7 @@
 
     @if($name)
     <div class="mt-8">
-        <p>Sincerely,</p>
+        <p>{{ __('Sincerely,') }}</p>
         <p class="mt-3 font-bold">{{ $name }}</p>
     </div>
     @endif

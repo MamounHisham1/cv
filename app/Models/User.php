@@ -19,7 +19,7 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use NotificationChannels\WebPush\PushSubscription;
 
-#[Fillable(['name', 'email', 'password', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'google_id', 'avatar'])]
+#[Fillable(['name', 'email', 'password', 'otp_code', 'otp_expires_at', 'otp_verified_at', 'google_id', 'avatar', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {

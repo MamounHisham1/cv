@@ -24,15 +24,13 @@
         style="display: none;"
     >
         <div class="flex items-center justify-between border-b border-zinc-800 px-4 py-3">
-            <h3 class="text-sm font-semibold text-zinc-100">Notifications</h3>
+            <h3 class="text-sm font-semibold text-zinc-100">{{ __("Notifications") }}</h3>
             @if ($unreadCount > 0)
                 <button
                     type="button"
                     wire:click="markAllAsRead"
                     class="text-xs text-emerald-400 hover:text-emerald-300"
-                >
-                    Mark all as read
-                </button>
+                >{{ __("Mark all as read") }}</button>
             @endif
         </div>
 
@@ -63,7 +61,7 @@
             @empty
                 <div class="px-4 py-8 text-center">
                     <x-ui::icon name="bell" size="lg" class="mx-auto text-zinc-600" />
-                    <p class="mt-2 text-sm text-zinc-500">No notifications yet</p>
+                    <p class="mt-2 text-sm text-zinc-500">{{ __("No notifications yet") }}</p>
                 </div>
             @endforelse
         </div>

@@ -33,7 +33,7 @@
                 >
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-6">
-                            <h3 class="text-lg font-semibold text-white" id="modal-title">Cookie Preferences</h3>
+                            <h3 class="text-lg font-semibold text-white" id="modal-title">{{ __("Cookie Preferences") }}</h3>
                             <button
                                 wire:click="close"
                                 class="text-zinc-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/5"
@@ -44,18 +44,14 @@
                             </button>
                         </div>
 
-                        <p class="text-sm text-zinc-400 mb-6">
-                            Manage your cookie preferences below. Necessary cookies are always enabled for the site to function properly.
-                        </p>
+                        <p class="text-sm text-zinc-400 mb-6">{{ __("Manage your cookie preferences below. Necessary cookies are always enabled for the site to function properly.") }}</p>
 
                         <div class="space-y-4">
                             <div class="flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 border border-white/5">
                                 <div class="flex-1 mr-4">
-                                    <h4 class="text-sm font-medium text-white flex items-center gap-2">
-                                        Necessary
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">Required</span>
+                                    <h4 class="text-sm font-medium text-white flex items-center gap-2">{{ __("Necessary") }}<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400">{{ __("Required") }}</span>
                                     </h4>
-                                    <p class="text-xs text-zinc-400 mt-1">Required for the website to function properly.</p>
+                                    <p class="text-xs text-zinc-400 mt-1">{{ __("Required for the website to function properly.") }}</p>
                                 </div>
                                 <div class="relative">
                                     <input type="checkbox" checked disabled class="sr-only peer">
@@ -65,8 +61,8 @@
 
                             <div class="flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 border border-white/5">
                                 <div class="flex-1 mr-4">
-                                    <h4 class="text-sm font-medium text-white">Analytics</h4>
-                                    <p class="text-xs text-zinc-400 mt-1">Help us improve with anonymous usage statistics.</p>
+                                    <h4 class="text-sm font-medium text-white">{{ __("Analytics") }}</h4>
+                                    <p class="text-xs text-zinc-400 mt-1">{{ __("Help us improve with anonymous usage statistics.") }}</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" wire:model.live="analytics" class="sr-only peer">
@@ -76,8 +72,8 @@
 
                             <div class="flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 border border-white/5">
                                 <div class="flex-1 mr-4">
-                                    <h4 class="text-sm font-medium text-white">Marketing</h4>
-                                    <p class="text-xs text-zinc-400 mt-1">Personalized content and targeted advertising.</p>
+                                    <h4 class="text-sm font-medium text-white">{{ __("Marketing") }}</h4>
+                                    <p class="text-xs text-zinc-400 mt-1">{{ __("Personalized content and targeted advertising.") }}</p>
                                 </div>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" wire:model.live="marketing" class="sr-only peer">
@@ -90,15 +86,11 @@
                             <button
                                 wire:click="close"
                                 class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/5 transition-colors"
-                            >
-                                Cancel
-                            </button>
+                            >{{ __("Cancel") }}</button>
                             <button
                                 wire:click="save"
                                 class="inline-flex items-center justify-center px-6 py-2 rounded-lg text-sm font-medium bg-emerald-500 text-white hover:bg-emerald-400 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 focus:ring-offset-zinc-900"
-                            >
-                                Save Preferences
-                            </button>
+                            >{{ __("Save Preferences") }}</button>
                         </div>
                     </div>
                 </div>

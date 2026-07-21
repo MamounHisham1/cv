@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interview Evaluation Ready</title>
+    <title>{{ __("Interview Evaluation Ready") }}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f4f5; font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f4f5; padding: 40px 20px;">
@@ -38,9 +38,7 @@
                         <p style="margin: 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">
                             Hi {{ $name }},
                         </p>
-                        <p style="margin: 12px 0 0 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">
-                            Your mock interview evaluation is ready!
-                        </p>
+                        <p style="margin: 12px 0 0 0; font-size: 16px; color: #3f3f46; line-height: 1.6;">{{ __("Your mock interview evaluation is ready!") }}</p>
                     </td>
                 </tr>
 
@@ -48,9 +46,7 @@
                 <tr>
                     <td style="padding: 30px 40px;">
                         <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); border-radius: 12px; padding: 30px; text-align: center;">
-                            <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 1px;">
-                                Overall Score
-                            </p>
+                            <p style="margin: 0 0 4px 0; font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 1px;">{{ __("Overall Score") }}</p>
                             <span style="font-size: 40px; font-weight: 700; color: #ffffff;">
                                 {{ $score }}/100
                             </span>
@@ -64,7 +60,7 @@
                 <!-- Summary -->
                 <tr>
                     <td style="padding: 0 40px 10px 40px;">
-                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #71717a;">Summary</p>
+                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #71717a;">{{ __("Summary") }}</p>
                         <p style="margin: 0; font-size: 15px; color: #18181b; line-height: 1.6;">
                             {{ Str::limit($summary, 300) }}
                         </p>
@@ -75,7 +71,7 @@
                 @if(is_array($strengths) && count($strengths) > 0)
                 <tr>
                     <td style="padding: 10px 40px;">
-                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #71717a;">Top Strengths</p>
+                        <p style="margin: 0 0 8px 0; font-size: 13px; color: #71717a;">{{ __("Top Strengths") }}</p>
                         <ul style="margin: 0; padding: 0 0 0 20px;">
                             @foreach(array_slice($strengths, 0, 3) as $strength)
                             <li style="font-size: 14px; color: #18181b; line-height: 1.6; margin-bottom: 4px;">{{ $strength }}</li>
@@ -88,9 +84,7 @@
                 <!-- CTA -->
                 <tr>
                     <td style="padding: 20px 40px;" align="center">
-                        <a href="{{ route('ai.interview') }}" style="display: inline-block; padding: 12px 32px; background-color: #18181b; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">
-                            View Full Results
-                        </a>
+                        <a href="{{ route('ai.interview') }}" style="display: inline-block; padding: 12px 32px; background-color: #18181b; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600;">{{ __("View Full Results") }}</a>
                     </td>
                 </tr>
 
@@ -104,9 +98,7 @@
                 <!-- Footer -->
                 <tr>
                     <td style="padding: 20px 40px 40px 40px; text-align: center;">
-                        <p style="margin: 0; font-size: 12px; color: #a1a1aa;">
-                            If you didn't expect this, please contact support.
-                        </p>
+                        <p style="margin: 0; font-size: 12px; color: #a1a1aa;">{{ __("If you didn't expect this, please contact support.") }}</p>
                         <p style="margin: 12px 0 0 0; font-size: 12px; color: #a1a1aa;">
                             &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
                         </p>
