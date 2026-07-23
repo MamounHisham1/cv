@@ -35,6 +35,10 @@ class EvaluateInterview implements ShouldQueue
      */
     public function handle(): void
     {
+        // Queue jobs boot fresh request context, so re-resolve the locale
+        // from the user's stored preference before the agent runs.
+        app()->setLocale(User::find($this->userId)?->locale ?? 'en');
+
         $session = InterviewSession::with(['messages', 'cv', 'user'])->find($this->sessionId);
 
         if (! $session) {

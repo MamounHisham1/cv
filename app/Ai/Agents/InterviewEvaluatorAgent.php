@@ -3,6 +3,7 @@
 namespace App\Ai\Agents;
 
 use App\Models\Cv;
+use App\Support\AiLocaleDirective;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
@@ -36,7 +37,7 @@ class InterviewEvaluatorAgent implements Agent
             ? "Job Description:\n{$this->jobDescription}"
             : 'No specific job description provided.';
 
-        return <<<INSTRUCTIONS
+        $base = <<<INSTRUCTIONS
         You are an expert technical interviewer and recruiter evaluating a mock interview transcript.
 
         ## Candidate Context
@@ -87,5 +88,7 @@ class InterviewEvaluatorAgent implements Agent
         }
         ```
         INSTRUCTIONS;
+
+        return $base.AiLocaleDirective::for();
     }
 }

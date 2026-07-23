@@ -52,6 +52,11 @@ class ProcessCoverLetter implements ShouldQueue
 
         $letter->update(['status' => CoverLetter::STATUS_GENERATING]);
 
+        // Queue jobs boot fresh request context, so re-resolve the locale
+        // from the user's stored preference before the agent runs —
+        // otherwise the cover letter is always drafted in English.
+        app()->setLocale(User::find($letter->user_id)?->locale ?? 'en');
+
         try {
             $cv->load(['experiences', 'educations', 'skills', 'certifications', 'projects', 'languages']);
             $prompt = $this->buildPrompt($cv->toText(), $letter->job_description);

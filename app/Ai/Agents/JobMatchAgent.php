@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Support\AiLocaleDirective;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
@@ -27,7 +28,7 @@ class JobMatchAgent implements Agent
 
     public function instructions(): Stringable|string
     {
-        return <<<'INSTRUCTIONS'
+        $base = <<<'INSTRUCTIONS'
 You are an expert ATS and recruiter analyst. Compare the candidate's CV
 to the target job description and produce a precise compatibility report.
 
@@ -55,5 +56,7 @@ Field rules:
 
 Be grounded — never invent requirements. Output the JSON object now.
 INSTRUCTIONS;
+
+        return $base.AiLocaleDirective::for();
     }
 }

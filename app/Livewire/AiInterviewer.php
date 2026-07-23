@@ -7,6 +7,7 @@ use App\Models\Cv;
 use App\Models\InterviewEvaluation;
 use App\Models\InterviewSession;
 use App\Services\CreditManager;
+use App\Support\AiLocaleDirective;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -339,6 +340,10 @@ class AiInterviewer extends Component
 
     protected function buildGreeting(Cv $cv): string
     {
+        if (Auth::user()->locale === 'ar') {
+            return $this->buildGreetingArabic($cv);
+        }
+
         $pi = $cv->personal_info;
         $firstName = $pi['first_name'] ?? 'there';
         $title = $cv->title ? " as a {$cv->title}" : '';
@@ -351,13 +356,52 @@ class AiInterviewer extends Component
         return "Hello {$firstName}! Welcome to your mock interview{$title}.{$experienceContext} Let's jump right in — could you tell me a bit about yourself and what you're looking for in your next role?";
     }
 
+    protected function buildGreetingArabic(Cv $cv): string
+    {
+        $pi = $cv->personal_info;
+        $firstName = $pi['first_name'] ?? 'هناك';
+        $title = $cv->title ? " كـ {$cv->title}" : '';
+
+        $expCount = $cv->experiences()->count();
+        $experienceContext = $expCount > 0
+            ? " أرى أن لديك {$expCount} ".self::pluralRoleArabic($expCount).' في سيرتك الذاتية.'
+            : '';
+
+        return "مرحبًا {$firstName}! أهلاً بك في مقابلتك التجريبية{$title}.{$experienceContext} لنبدأ على الفور — هل يمكنك أن تحدثني قليلًا عن نفسك وعما تبحث عنه في وظيفتك القادمة؟";
+    }
+
+    /**
+     * Arabic pluralization for "role/roles" — Arabic has dual form.
+     */
+    protected static function pluralRoleArabic(int $count): string
+    {
+        return match (true) {
+            $count === 1 => 'وظيفة واحدة',
+            $count === 2 => 'وظيفتان',
+            default => 'وظائف',
+        };
+    }
+
     protected function buildFreeTrialGreeting(Cv $cv): string
     {
+        if (Auth::user()->locale === 'ar') {
+            return $this->buildFreeTrialGreetingArabic($cv);
+        }
+
         $pi = $cv->personal_info;
         $firstName = $pi['first_name'] ?? 'there';
         $title = $cv->title ? " as a {$cv->title}" : '';
 
         return "Hello {$firstName}! Welcome to your free practice interview{$title}. You have 3 minutes to experience how our AI interviews work. Let's get started — could you tell me a bit about yourself?";
+    }
+
+    protected function buildFreeTrialGreetingArabic(Cv $cv): string
+    {
+        $pi = $cv->personal_info;
+        $firstName = $pi['first_name'] ?? 'هناك';
+        $title = $cv->title ? " كـ {$cv->title}" : '';
+
+        return "مرحبًا {$firstName}! أهلاً بك في مقابلتك التجريبية المجانية{$title}. لديك 3 دقائق لتجربة كيفية عمل مقابلات الذكاء الاصطناعي لدينا. لنبدأ — هل يمكنك أن تحدثني قليلًا عن نفسك؟";
     }
 
     public function handleTimeLimitReached(): void
@@ -407,7 +451,7 @@ class AiInterviewer extends Component
             5. Do not provide feedback or corrections during the interview unless specifically asked.
             6. After about 5-8 questions, when the candidate asks to end the interview, or when the interview has reached a natural conclusion, thank the candidate and say exactly: "Thank you for your time. This concludes our interview."
             7. If the candidate explicitly asks to stop, end, or wrap up the interview, immediately agree and say the closing phrase.
-            PROMPT;
+            PROMPT.AiLocaleDirective::for(Auth::user()->locale);
     }
 
     protected function formatCvData(Cv $cv): string

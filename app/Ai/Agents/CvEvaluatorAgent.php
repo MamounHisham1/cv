@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Support\AiLocaleDirective;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Provider;
@@ -29,7 +30,7 @@ class CvEvaluatorAgent implements Agent, HasStructuredOutput
      */
     public function instructions(): Stringable|string
     {
-        return <<<'INSTRUCTIONS'
+        $base = <<<'INSTRUCTIONS'
 You are a professional CV/Resume evaluator with deep expertise in ATS systems, talent acquisition, and career coaching.
 
 ## How to Use the Reference Context
@@ -73,6 +74,8 @@ Criteria:
 
 Respond ONLY with the structured JSON. No additional commentary outside the schema.
 INSTRUCTIONS;
+
+        return $base.AiLocaleDirective::for();
     }
 
     /**

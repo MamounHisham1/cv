@@ -35,6 +35,11 @@ class ProcessCvEvaluation implements ShouldQueue
 
     public function handle(): void
     {
+        // Queue jobs boot fresh request context, so re-resolve the locale
+        // from the user's stored preference before the agent runs —
+        // otherwise the Arabic directive never triggers.
+        app()->setLocale(User::find($this->userId)?->locale ?? 'en');
+
         if ($this->evaluationId) {
             $evaluation = CvEvaluation::find($this->evaluationId);
             if (! $evaluation) {

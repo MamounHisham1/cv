@@ -30,3 +30,4 @@ master_resumes.jsonl
 .claude/worktrees/
 .gstack/
 .commandcode/
+.zcode/plans/

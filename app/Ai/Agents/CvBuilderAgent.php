@@ -31,6 +31,7 @@ use App\Ai\Tools\UpdateCvSkill;
 use App\Ai\Tools\UpdateCvSummary;
 use App\Models\Cv;
 use App\Services\ResumeVectorStore;
+use App\Support\AiLocaleDirective;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
 use Laravel\Ai\Concerns\RemembersConversations;
@@ -174,7 +175,9 @@ INSTRUCTIONS;
             $instructions .= "\n\n=== INDUSTRY CONTEXT ===\n{$packContext}\n=== END OF INDUSTRY CONTEXT ===";
         }
 
-        return $instructions;
+        // Locale-driven response language (Arabic when the user's locale is
+        // ar; otherwise mirror whatever language the user writes in).
+        return $instructions.AiLocaleDirective::for();
     }
 
     /**

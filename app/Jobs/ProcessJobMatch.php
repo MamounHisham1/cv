@@ -42,6 +42,10 @@ class ProcessJobMatch implements ShouldQueue
 
         $match->update(['status' => CvJobMatch::STATUS_PROCESSING]);
 
+        // Queue jobs boot fresh request context, so re-resolve the locale
+        // from the user's stored preference before the agent runs.
+        app()->setLocale(User::find($match->user_id)?->locale ?? 'en');
+
         try {
             $cvText = $cv->toText();
             $prompt = $this->buildPrompt($cvText, $match->job_description, $match->job_title);

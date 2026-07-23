@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Support\AiLocaleDirective;
 use Laravel\Ai\Attributes\MaxTokens;
 use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Temperature;
@@ -27,7 +28,7 @@ class CoverLetterAgent implements Agent
 
     public function instructions(): Stringable|string
     {
-        return <<<'INSTRUCTIONS'
+        $base = <<<'INSTRUCTIONS'
 You are an expert cover-letter writer who helps candidates land interviews.
 
 Your output has TWO parts:
@@ -68,5 +69,7 @@ TITLE
 
 ...
 INSTRUCTIONS;
+
+        return $base.AiLocaleDirective::for();
     }
 }
